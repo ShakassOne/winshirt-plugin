@@ -1,7 +1,12 @@
 <?php
 // Hook de démarrage
 add_action('admin_menu', function () {
-    add_menu_page('WinShirt', 'WinShirt', 'manage_options', 'winshirt', 'winshirt_admin_page', 'dashicons-tshirt', 56);
+    $icon_path = WINSHIRT_PATH . 'assets/logo.svg';
+    $icon_data_uri = 'dashicons-tshirt';
+    if (file_exists($icon_path)) {
+        $icon_data_uri = 'data:image/svg+xml;base64,' . base64_encode(file_get_contents($icon_path));
+    }
+    add_menu_page('WinShirt', 'WinShirt', 'manage_options', 'winshirt', 'winshirt_admin_page', $icon_data_uri, 56);
 });
 
 function winshirt_admin_page() {
