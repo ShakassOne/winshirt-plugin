@@ -9,6 +9,16 @@ add_action('wp_enqueue_scripts', function () {
     }
 });
 
+// Register custom post type for lotteries
+add_action('init', function () {
+    register_post_type('winshirt_lottery', [
+        'label'       => 'Loteries',
+        'public'      => false,
+        'show_ui'     => false,
+        'supports'    => ['title', 'editor', 'thumbnail'],
+    ]);
+});
+
 // Register custom post type for visuals
 add_action('init', function () {
     register_post_type('winshirt_visual', [
