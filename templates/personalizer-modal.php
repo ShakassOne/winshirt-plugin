@@ -1,4 +1,4 @@
-<div id="winshirt-customizer-modal" class="ws-modal hidden" data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>" data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>" data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>' data-zones='<?php echo esc_attr( $ws_zones ?? '[]' ); ?>'>
+<div id="winshirt-customizer-modal" class="ws-modal hidden" data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>" data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>" data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>' data-zones='<?php echo esc_attr( $ws_zones ?? '[]' ); ?>' data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'>
   <div class="ws-modal-content">
     <div class="ws-tabs-header">
       <button class="ws-tab-button active" data-tab="gallery">🖼 Galerie</button>

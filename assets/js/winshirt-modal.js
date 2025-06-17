@@ -1,6 +1,7 @@
 jQuery(function($){
   var $modal = $('#winshirt-customizer-modal');
   if(!$modal.length) return;
+  $('body').append($modal);
 
   var state = {side:'front'};
   var $canvas = $('#ws-canvas');
@@ -9,6 +10,16 @@ jQuery(function($){
   var zones  = $modal.data('zones') || [];
   var $colorsWrap = $modal.find('.ws-colors');
   var activeItem = null;
+
+  var gallery = $modal.data('gallery') || [];
+  var $gallery = $modal.find('.ws-gallery');
+  gallery.forEach(function(g){
+    var $img = $('<img class="ws-gallery-thumb" />').attr('src', g.url).attr('data-id', g.id).attr('alt', g.title || '');
+    $gallery.append($img);
+  });
+  $gallery.on('click', '.ws-gallery-thumb', function(){
+    addItem('image', $(this).attr('src'));
+  });
 
   colors.forEach(function(c,idx){
     var $b = $('<button class="ws-color-btn" />').css('background-color', c.code || '#fff').attr('data-index', idx);
