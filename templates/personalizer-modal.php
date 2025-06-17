@@ -8,6 +8,8 @@
       <button id="winshirt-close-modal" class="ws-close ws-ml-auto">Fermer ✖️</button>
     </div>
 
+    <div class="ws-body">
+
     <div class="ws-tab-content" id="ws-tab-gallery">
       <p>Choisissez un design dans la galerie.</p>
       <div class="ws-gallery"></div>
@@ -72,6 +74,7 @@
         <button id="winshirt-back-btn" class="ws-side-btn">Verso</button>
       </div>
       <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
+    </div>
     </div>
   </div>
 </div>

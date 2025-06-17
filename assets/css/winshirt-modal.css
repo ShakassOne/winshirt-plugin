@@ -2,12 +2,12 @@
 .ws-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:9999}
 .hidden{display:none}
 .ws-modal.hidden{display:none}
-.ws-modal-content{position:relative;width:100%;max-width:960px;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.2);border-radius:1rem;box-shadow:0 10px 25px rgba(0,0,0,0.3);padding:1.5rem;color:#fff;overflow:hidden;transform:scale(.9);opacity:0;transition:transform .3s,opacity .3s}
+.ws-modal-content{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;max-width:none;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.2);border-radius:0;box-shadow:0 10px 25px rgba(0,0,0,0.3);padding:1.5rem;color:#fff;overflow-y:auto;transform:scale(.9);opacity:0;transition:transform .3s,opacity .3s}
 .ws-modal.open .ws-modal-content{transform:scale(1);opacity:1}
-@media(max-width:640px){.ws-modal-content{height:100%;max-width:none;border-radius:0}}
+.ws-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
 .ws-close{background:rgba(255,255,255,0.1);padding:.25rem .75rem;border:1px solid rgba(255,255,255,0.2);border-radius:.375rem;cursor:pointer;transition:background .2s}
 .ws-close:hover{background:rgba(255,255,255,0.2)}
-.ws-tabs-header{display:flex;gap:.5rem;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:.5rem}
+.ws-tabs-header{display:flex;gap:.5rem;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:.5rem;position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%)}
 .ws-tab-button{padding:.5rem 1rem;border-radius:.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:background .3s}
 .ws-ml-auto{margin-left:auto}
 .ws-tab-button:hover,.ws-tab-button.active{background:rgba(255,255,255,0.2)}
@@ -27,7 +27,7 @@
 .ws-item img{width:100%;height:100%;object-fit:contain;display:block}
 .ws-item .ws-text{display:block;width:100%;height:100%;color:#000;text-align:center;word-break:break-word}
 .ws-remove{position:absolute;top:-12px;right:-12px;width:24px;height:24px;border-radius:50%;background:#ef4444;color:#fff;font-weight:bold;border:none;cursor:pointer}
-.ws-actions{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.ws-actions{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem;width:100%}
 .ws-toggle{display:flex;gap:.5rem}
 .ws-side-btn{background:rgba(255,255,255,0.1);padding:.5rem 1rem;border:1px solid rgba(255,255,255,0.2);border-radius:.5rem;color:#fff;cursor:pointer;margin-right:.5rem}
 .ws-side-btn.active,.ws-side-btn:hover{background:rgba(255,255,255,0.2)}
@@ -47,6 +47,8 @@
 .ws-sidebar{position:absolute;top:1.5rem;right:1.5rem;width:200px;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.2);border-radius:.5rem;padding:1rem;display:none;flex-direction:column;gap:.5rem}
 .ws-sidebar.show{display:flex}
 @media(max-width:768px){.ws-sidebar{display:none!important}}
+.ws-tabs-header::-webkit-scrollbar{display:none}
+@media(max-width:640px){.ws-tabs-header{overflow-x:auto;white-space:nowrap;-webkit-overflow-scrolling:touch}}
 .ws-sidebar label{display:flex;flex-direction:column;font-size:.875rem}
 .ws-delete{background:#ef4444;color:#fff;border:none;padding:.25rem .75rem;border-radius:.25rem;cursor:pointer}
 .ws-delete:hover{background:#dc2626}
