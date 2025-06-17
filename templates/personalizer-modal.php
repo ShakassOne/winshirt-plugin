@@ -48,6 +48,20 @@
       <div class="ws-print-zone" data-side="front"></div>
       <div class="ws-print-zone" data-side="back"></div>
     </div>
+    <div class="ws-sidebar hidden">
+      <h3><?php esc_html_e( 'Édition', 'winshirt' ); ?></h3>
+      <label><?php esc_html_e( 'Taille', 'winshirt' ); ?>
+        <input type="range" id="ws-prop-scale" min="0.5" max="2" step="0.1" value="1">
+      </label>
+      <label><?php esc_html_e( 'Rotation', 'winshirt' ); ?>
+        <input type="range" id="ws-prop-rotate" min="0" max="360" step="1" value="0">
+      </label>
+      <label class="ws-color-field">
+        <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
+        <input type="color" id="ws-prop-color" value="#000000">
+      </label>
+      <button id="ws-prop-delete" class="ws-delete" type="button"><?php esc_html_e( 'Supprimer', 'winshirt' ); ?></button>
+    </div>
     <div class="ws-colors"></div>
 
     <input type="hidden" id="winshirt-custom-data" value="" />
