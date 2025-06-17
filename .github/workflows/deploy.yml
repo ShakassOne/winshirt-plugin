@@ -23,5 +23,4 @@ jobs:
           port: 22
           source: "."
           target: "/Winshirt/wp-content/plugins/winshirt"
-          protocol: sftp
-          strip_components: 0
+          strip_components: 1
