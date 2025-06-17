@@ -6,17 +6,32 @@
   data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'>
   
   <div class="ws-modal-content">
-    
-    <div class="ws-tabs-header">
-      <button class="ws-tab-button active" data-tab="gallery">🖼 Galerie</button>
-      <button class="ws-tab-button" data-tab="text">🔤 Texte</button>
-      <button class="ws-tab-button" data-tab="ai">🤖 IA</button>
-      <button class="ws-tab-button" data-tab="svg">✒️ SVG</button>
-      <button id="ws-reset-visual" class="ws-reset">Réinitialiser ↺</button>
-      <button id="winshirt-close-modal" class="ws-close ws-ml-auto">Fermer ✖️</button>
+
+    <div class="ws-left">
+      <div class="ws-preview">
+        <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
+        <div id="ws-canvas" class="ws-canvas"></div>
+        <div id="ws-print-zones"></div>
+      </div>
     </div>
 
-    <div class="ws-body">
+    <div class="ws-right">
+      <div class="ws-tabs-header">
+        <button class="ws-tab-button active" data-tab="gallery">🖼 Galerie</button>
+        <button class="ws-tab-button" data-tab="text">🔤 Texte</button>
+        <button class="ws-tab-button" data-tab="ai">🤖 IA</button>
+        <button class="ws-tab-button" data-tab="svg">✒️ SVG</button>
+        <button id="ws-reset-visual" class="ws-reset">Réinitialiser ↺</button>
+        <button id="winshirt-close-modal" class="ws-close ws-ml-auto">Fermer ✖️</button>
+      </div>
+
+      <select id="ws-tab-select" class="ws-tab-select">
+        <option value="gallery">Galerie</option>
+        <option value="text">Texte</option>
+        <option value="ai">IA</option>
+        <option value="svg">SVG</option>
+      </select>
+
 
       <div class="ws-tab-content" id="ws-tab-gallery">
         <p>Choisissez un design dans la galerie.</p>
@@ -57,11 +72,6 @@
         <p>Bibliothèque d’icônes vectorielles (SVG).</p>
       </div>
 
-      <div class="ws-preview">
-        <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
-        <div id="ws-canvas" class="ws-canvas"></div>
-        <div id="ws-print-zones"></div>
-      </div>
 
       <div class="ws-sidebar hidden">
         <h3><?php esc_html_e( 'Édition', 'winshirt' ); ?></h3>
@@ -96,6 +106,7 @@
             <button class="ws-format-btn" data-format="A7">A7</button>
             <span id="ws-current-format" class="ws-format-label"></span>
           </div>
+          <small class="ws-size-note">Taille réelle estimée basée sur un visuel 1500px.</small>
           <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
         </div>
 
