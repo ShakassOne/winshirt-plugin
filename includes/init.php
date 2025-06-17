@@ -64,16 +64,52 @@ function winshirt_render_customize_button() {
     $mockups_raw    = get_post_meta( $pid, '_winshirt_mockups', true );
     $has_mockup     = $front_id || $back_id || ! empty( $mockups_raw );
 
-    if ( ! $enabled || ! $show_button || ! $has_mockup ) {
+    // Display button only if the product is marked as customizable
+    if ( ! $enabled || ! $has_mockup ) {
         return;
     }
 
     $front_url  = $front_id ? get_the_post_thumbnail_url( $front_id, 'full' ) : '';
     $back_url   = $back_id ? get_the_post_thumbnail_url( $back_id, 'full' ) : '';
 
+    // Retrieve available colors from the default mockup
+    $colors_meta = $front_id ? get_post_meta( $front_id, '_winshirt_colors', true ) : [];
+    $colors_meta = is_array( $colors_meta ) ? $colors_meta : [];
+    $colors      = [];
+    foreach ( $colors_meta as $c ) {
+        $colors[] = [
+            'name'  => $c['name'] ?? '',
+            'code'  => $c['code'] ?? '',
+            'front' => ! empty( $c['front'] ) ? wp_get_attachment_image_url( $c['front'], 'full' ) : '',
+            'back'  => ! empty( $c['back'] ) ? wp_get_attachment_image_url( $c['back'], 'full' ) : '',
+        ];
+    }
+
+    // Retrieve print zones for front/back sides
+    $zones      = [];
+    foreach ( [ $front_id, $back_id ] as $mid ) {
+        if ( ! $mid ) {
+            continue;
+        }
+        $zmeta = get_post_meta( $mid, '_winshirt_print_zones', true );
+        if ( $zmeta && is_array( $zmeta ) ) {
+            foreach ( $zmeta as $z ) {
+                $zones[] = [
+                    'side'   => $z['side'] ?? 'front',
+                    'top'    => floatval( $z['top'] ?? 0 ),
+                    'left'   => floatval( $z['left'] ?? 0 ),
+                    'width'  => floatval( $z['width'] ?? 0 ),
+                    'height' => floatval( $z['height'] ?? 0 ),
+                ];
+            }
+        }
+    }
+
     echo '<button id="winshirt-open-modal" class="button">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
     $default_front = $front_url;
     $default_back  = $back_url;
+    $ws_colors     = wp_json_encode( $colors );
+    $ws_zones      = wp_json_encode( $zones );
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );

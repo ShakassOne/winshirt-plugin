@@ -1,4 +1,4 @@
-<div id="winshirt-customizer-modal" class="ws-modal hidden" data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>" data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>">
+<div id="winshirt-customizer-modal" class="ws-modal hidden" data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>" data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>" data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>' data-zones='<?php echo esc_attr( $ws_zones ?? '[]' ); ?>'>
   <div class="ws-modal-content">
     <div class="ws-tabs-header">
       <button class="ws-tab-button active" data-tab="gallery">🖼 Galerie</button>
@@ -16,7 +16,22 @@
     </div>
 
     <div class="ws-tab-content hidden" id="ws-tab-text">
-      <textarea id="winshirt-text-input" placeholder="Ajoutez votre texte ici..." class="ws-textarea"></textarea>
+      <input type="text" id="ws-text-content" class="ws-input" placeholder="Votre texte..." />
+      <select id="ws-font-select" class="ws-select">
+        <option value="Arial">Arial</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Courier New">Courier New</option>
+        <option value="Times New Roman">Times</option>
+      </select>
+      <div class="ws-formatting">
+        <button type="button" id="ws-bold-btn">B</button>
+        <button type="button" id="ws-italic-btn">I</button>
+        <button type="button" id="ws-underline-btn">U</button>
+        <input type="color" id="ws-color-picker" value="#000000" />
+      </div>
+      <label><?php esc_html_e('Taille', 'winshirt'); ?> <input type="range" id="ws-scale-range" min="0.5" max="2" step="0.1" value="1"></label>
+      <label><?php esc_html_e('Rotation', 'winshirt'); ?> <input type="range" id="ws-rotate-range" min="0" max="360" step="1" value="0"></label>
+      <button class="ws-upload-btn" id="ws-add-text">Ajouter</button>
     </div>
 
     <div class="ws-tab-content hidden" id="ws-tab-ai">
@@ -30,7 +45,10 @@
     <div class="ws-preview">
       <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
       <div id="ws-canvas" class="ws-canvas"></div>
+      <div class="ws-print-zone" data-side="front"></div>
+      <div class="ws-print-zone" data-side="back"></div>
     </div>
+    <div class="ws-colors"></div>
 
     <input type="hidden" id="winshirt-custom-data" value="" />
 
