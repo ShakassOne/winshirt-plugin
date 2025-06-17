@@ -16,6 +16,10 @@ jQuery(function($){
   var colors = $modal.data('colors') || [];
   var zones  = $modal.data('zones') || [];
   var $colorsWrap = $modal.find('.ws-colors');
+  var $formatWrap = $modal.find('.ws-format-buttons');
+  var $formatBtns = $formatWrap.find('.ws-format-btn');
+  var formatRatios = {A3:0.8, A4:0.65, A5:0.5, A6:0.35, A7:0.2};
+  var formatOrder = ['A3','A4','A5','A6','A7'];
   var activeItem = null;
 
   var gallery = $modal.data('gallery') || [];
@@ -80,6 +84,36 @@ jQuery(function($){
     return '.ws-preview';
   }
 
+  function detectFormat($it){
+    var $zone = $(getContainment());
+    var ref = Math.min($zone.width(), $zone.height());
+    var size = Math.max($it.width(), $it.height());
+    var ratio = size / ref;
+    var fmt = formatOrder[formatOrder.length-1];
+    for(var i=0;i<formatOrder.length;i++){
+      var f = formatOrder[i];
+      if(ratio >= formatRatios[f]){ fmt = f; break; }
+    }
+    return fmt;
+  }
+
+  function updateFormatButtons(fmt){
+    $formatBtns.removeClass('active');
+    $formatBtns.filter('[data-format="'+fmt+'"]').addClass('active');
+  }
+
+  function applyFormat($it, fmt){
+    var $zone = $(getContainment());
+    var zpos = $zone.position();
+    var zw = $zone.width();
+    var zh = $zone.height();
+    var size = Math.min(zw, zh) * (formatRatios[fmt] || 0);
+    var left = zpos.left + (zw - size)/2;
+    var top  = zpos.top + (zh - size)/2;
+    $it.css({width:size, height:size, left:left, top:top});
+    updateFormatButtons(fmt);
+  }
+
   function updateItemTransform($it){
     var sc = parseFloat($it.attr('data-scale') || 1);
     var rot = parseInt($it.attr('data-rotation') || 0,10);
@@ -137,6 +171,12 @@ jQuery(function($){
     selectItem($it);
   });
 
+  $formatWrap.on('click', '.ws-format-btn', function(){
+    if(!activeItem) return;
+    var fmt = $(this).data('format');
+    applyFormat(activeItem, fmt);
+  });
+
   function addItem(type, content){
     if(type === 'image') $canvas.children('.ws-item[data-type="image"]').remove();
     var $item = $('<div class="ws-item" />').attr('data-type', type).attr('data-side', state.side).attr('data-scale','1').attr('data-rotation','0').attr('data-x','0').attr('data-y','0').css({left:0,top:0});
@@ -157,8 +197,16 @@ jQuery(function($){
     $canvas.append($item);
     var cont = getContainment();
     $item.draggable({ containment:cont });
-    $item.resizable({ handles:'ne, se, sw, nw', containment:cont });
+    $item.resizable({ handles:'ne, se, sw, nw', containment:cont })
+      .on('resize resizestop', function(){
+        var $t = $(this);
+        clearTimeout($t.data('rt'));
+        $t.data('rt', setTimeout(function(){
+          updateFormatButtons(detectFormat($t));
+        }, 100));
+      });
     updateItemTransform($item);
+    updateFormatButtons(detectFormat($item));
     return $item;
   }
 
@@ -184,9 +232,11 @@ jQuery(function($){
       } else {
         $colorInput.closest('label').hide();
       }
+      updateFormatButtons(detectFormat(activeItem));
       $sidebar.addClass('show');
     } else {
       $sidebar.removeClass('show');
+      $formatBtns.removeClass('active');
     }
   }
 
@@ -194,6 +244,7 @@ jQuery(function($){
     if(!activeItem) return;
     activeItem.attr('data-scale', $(this).val());
     updateItemTransform(activeItem);
+    updateFormatButtons(detectFormat(activeItem));
   });
   $rotateInput.on('input change', function(){
     if(!activeItem) return;
@@ -234,6 +285,7 @@ jQuery(function($){
       $canvas.children('.ws-item').hide().filter('[data-side="front"]').show();
       $modal.find('.ws-print-zone').hide().filter('[data-side="front"]').show();
     }
+    if(activeItem){ updateFormatButtons(detectFormat(activeItem)); }
   }
   $('#winshirt-front-btn').on('click', function(){ switchSide('front'); });
   $('#winshirt-back-btn').on('click', function(){ switchSide('back'); });

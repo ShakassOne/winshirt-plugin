@@ -63,6 +63,13 @@
         <div class="ws-print-zone" data-side="front"></div>
         <div class="ws-print-zone" data-side="back"></div>
       </div>
+      <div class="ws-format-buttons">
+        <button class="ws-format-btn" data-format="A3">A3</button>
+        <button class="ws-format-btn" data-format="A4">A4</button>
+        <button class="ws-format-btn" data-format="A5">A5</button>
+        <button class="ws-format-btn" data-format="A6">A6</button>
+        <button class="ws-format-btn" data-format="A7">A7</button>
+      </div>
 
       <div class="ws-sidebar hidden">
         <h3><?php esc_html_e( 'Édition', 'winshirt' ); ?></h3>
