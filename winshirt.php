@@ -15,7 +15,8 @@ require_once WINSHIRT_PATH . 'includes/init.php';
 require_once WINSHIRT_PATH . 'includes/pages/mockups.php';
 require_once WINSHIRT_PATH . 'includes/pages/visuels.php';
 require_once WINSHIRT_PATH . 'includes/pages/loteries.php';
-require_once WINSHIRT_PATH . 'includes/pages/produits.php';
+require_once WINSHIRT_PATH . 'includes/pages/commandes.php';
+require_once WINSHIRT_PATH . 'includes/pages/configuration.php';
 
 // Register WinShirt admin pages
 add_action('admin_menu', 'winshirt_register_admin_pages');
@@ -79,11 +80,20 @@ function winshirt_register_admin_pages() {
 
     add_submenu_page(
         'winshirt-dashboard',
-        'Produits',
-        'Produits',
+        'Commandes WinShirt',
+        'Commandes',
         'manage_options',
-        'winshirt-products',
-        'winshirt_page_products'
+        'winshirt-orders',
+        'winshirt_page_orders'
+    );
+
+    add_submenu_page(
+        'winshirt-dashboard',
+        'Configuration',
+        'Configuration',
+        'manage_options',
+        'winshirt-settings',
+        'winshirt_page_settings'
     );
 }
 
