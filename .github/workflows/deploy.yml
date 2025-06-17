@@ -10,15 +10,17 @@ jobs:
     name: FTP Deploy
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: FTP Deploy
-        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+         - name: Upload plugin via SFTP
+        uses: appleboy/scp-action@v0.1.4
         with:
-          server: ${{ secrets.FTP_HOST }}
+          host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp
-          local-dir: ./ # Dossier racine du repo
-          server-dir: /wp-content/plugins/winshirt/ # Cible sur ton FTP
+          port: 22
+          source: "."
+          target: "/Winshirt/wp-content/plugins/winshirt"
+          protocol: sftp
+
+
+
+
