@@ -5,6 +5,7 @@
       <button class="ws-tab-button" data-tab="text">🔤 Texte</button>
       <button class="ws-tab-button" data-tab="ai">🤖 IA</button>
       <button class="ws-tab-button" data-tab="svg">✒️ SVG</button>
+      <button id="ws-reset-btn" class="ws-reset">🗑 Réinitialiser</button>
       <button id="winshirt-close-modal" class="ws-close ws-ml-auto">Fermer ✖️</button>
     </div>
 
@@ -12,6 +13,7 @@
 
     <div class="ws-tab-content" id="ws-tab-gallery">
       <p>Choisissez un design dans la galerie.</p>
+      <select id="ws-category-select" class="ws-select" style="margin-bottom:.5rem;"></select>
       <div class="ws-gallery"></div>
       <button class="ws-upload-btn">Uploader un visuel</button>
       <input type="file" id="ws-upload-input" accept="image/*" class="hidden" />

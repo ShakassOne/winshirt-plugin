@@ -7,6 +7,8 @@
 .ws-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:0}
 .ws-close{background:rgba(255,255,255,0.1);padding:.25rem .75rem;border:1px solid rgba(255,255,255,0.2);border-radius:.375rem;cursor:pointer;transition:background .2s}
 .ws-close:hover{background:rgba(255,255,255,0.2)}
+.ws-reset{background:rgba(239,68,68,0.15);padding:.25rem .75rem;border:1px solid rgba(255,255,255,0.2);border-radius:.375rem;cursor:pointer}
+.ws-reset:hover{background:rgba(239,68,68,0.3)}
 .ws-tabs-header{display:flex;gap:.5rem;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:.5rem;position:sticky;top:0;z-index:10;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%)}
 .ws-tab-button{padding:.5rem 1rem;border-radius:.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:background .3s}
 .ws-ml-auto{margin-left:auto}
@@ -52,3 +54,8 @@
 .ws-sidebar label{display:flex;flex-direction:column;font-size:.875rem}
 .ws-delete{background:#ef4444;color:#fff;border:none;padding:.25rem .75rem;border-radius:.25rem;cursor:pointer}
 .ws-delete:hover{background:#dc2626}
+.ui-resizable-handle{position:absolute;width:12px;height:12px;background:#fff;border:1px solid #000;border-radius:50%}
+.ui-resizable-nw{left:-6px;top:-6px;cursor:nw-resize}
+.ui-resizable-ne{right:-6px;top:-6px;cursor:ne-resize}
+.ui-resizable-sw{left:-6px;bottom:-6px;cursor:sw-resize}
+.ui-resizable-se{right:-6px;bottom:-6px;cursor:se-resize}

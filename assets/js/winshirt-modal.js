@@ -6,6 +6,8 @@ jQuery(function($){
   var state = {side:'front'};
   var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
+  var initialFront = $modal.data('default-front');
+  var initialBack  = $modal.data('default-back');
   var $sidebar = $modal.find('.ws-sidebar');
   var $scaleInput = $('#ws-prop-scale');
   var $rotateInput = $('#ws-prop-rotate');
@@ -18,10 +20,30 @@ jQuery(function($){
 
   var gallery = $modal.data('gallery') || [];
   var $gallery = $modal.find('.ws-gallery');
+  var $catSelect = $('#ws-category-select');
+
+  var categories = [];
   gallery.forEach(function(g){
-    var $img = $('<img class="ws-gallery-thumb" />').attr('src', g.url).attr('data-id', g.id).attr('alt', g.title || '');
-    $gallery.append($img);
+    g.category = g.category || g.type || '';
+    if(g.category && categories.indexOf(g.category)===-1){ categories.push(g.category); }
   });
+
+  if(categories.length){
+    $catSelect.append('<option value="all">Toutes</option>');
+    categories.forEach(function(c){ $catSelect.append('<option value="'+c+'">'+c+'</option>'); });
+  } else { $catSelect.hide(); }
+
+  function renderGallery(cat){
+    $gallery.empty();
+    gallery.forEach(function(g){
+      if(cat && cat!=='all' && g.category!==cat) return;
+      var $img = $('<img class="ws-gallery-thumb" />').attr('src', g.url).attr('data-id', g.id).attr('alt', g.title || '').attr('data-category', g.category);
+      $gallery.append($img);
+    });
+  }
+  renderGallery('all');
+
+  $catSelect.on('change', function(){ renderGallery($(this).val()); });
   $gallery.on('click', '.ws-gallery-thumb', function(){
     addItem('image', $(this).attr('src'));
   });
@@ -101,9 +123,17 @@ jQuery(function($){
   });
 
   function addItem(type, content){
+    if(type === 'image'){
+      $canvas.children('.ws-item[data-type="image"]').remove();
+    }
     var $item = $('<div class="ws-item" />').attr('data-type', type).attr('data-side', state.side).attr('data-scale','1').attr('data-rotation','0');
+    var cont = getContainment();
     if(type === 'image'){
       $item.append('<img src="'+content+'" alt="" />');
+      var cw = $(cont).width();
+      var ch = $(cont).height();
+      var size = Math.min(cw, ch) * 0.5;
+      $item.css({width:size,height:size});
     }else{
       $item.append('<span class="ws-text">'+content+'</span>');
       var col = $('#ws-color-picker').val() || '#000000';
@@ -112,9 +142,8 @@ jQuery(function($){
     }
     $item.append('<button class="ws-remove" title="Supprimer">×</button>');
     $canvas.append($item);
-    var cont = getContainment();
-    $item.draggable({containment:cont,snap:cont,snapTolerance:10});
-    $item.resizable({handles:'n, e, s, w, ne, se, sw, nw',containment:cont,snap:cont,snapTolerance:10});
+    $item.draggable({containment:cont});
+    $item.resizable({handles:'ne, se, sw, nw',containment:cont,aspectRatio:type==='image'});
     updateItemTransform($item);
     return $item;
   }
@@ -188,6 +217,16 @@ jQuery(function($){
   });
   $deleteBtn.on('click', function(){
     if(activeItem){ activeItem.remove(); activeItem=null; $sidebar.removeClass('show'); }
+  });
+
+  $('#ws-reset-btn').on('click', function(e){
+    e.preventDefault();
+    $canvas.empty();
+    $modal.data('default-front', initialFront);
+    $modal.data('default-back', initialBack);
+    $previewImg.attr('src', state.side==='back' ? initialBack : initialFront);
+    $colorsWrap.find('.ws-color-btn').removeClass('active');
+    selectItem(null);
   });
 
   function switchSide(side){
