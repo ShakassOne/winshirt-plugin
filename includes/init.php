@@ -5,7 +5,8 @@
 add_action('wp_enqueue_scripts', function () {
     if (is_product()) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
-        wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable'], '1.0', true);
+        wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
+        wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
     }
 });
 
@@ -130,10 +131,10 @@ function winshirt_render_customize_button() {
         $url = get_the_post_thumbnail_url( $g->ID, 'full' );
         if ( $url ) {
             $gallery[] = [
-                'id'    => $g->ID,
-                'title' => $g->post_title,
-                'url'   => $url,
-                'type'  => get_post_meta( $g->ID, '_winshirt_visual_type', true ),
+                'id'       => $g->ID,
+                'title'    => $g->post_title,
+                'url'      => $url,
+                'category' => get_post_meta( $g->ID, '_winshirt_visual_type', true ),
             ];
         }
     }
