@@ -2,7 +2,8 @@
 .ws-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:9999}
 .hidden{display:none}
 .ws-modal.hidden{display:none}
-.ws-modal-content{position:relative;width:100%;max-width:960px;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.2);border-radius:1rem;box-shadow:0 10px 25px rgba(0,0,0,0.3);padding:1.5rem;color:#fff;overflow:hidden}
+.ws-modal-content{position:relative;width:100%;max-width:960px;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.2);border-radius:1rem;box-shadow:0 10px 25px rgba(0,0,0,0.3);padding:1.5rem;color:#fff;overflow:hidden;transform:scale(.9);opacity:0;transition:transform .3s,opacity .3s}
+.ws-modal.open .ws-modal-content{transform:scale(1);opacity:1}
 @media(max-width:640px){.ws-modal-content{height:100%;max-width:none;border-radius:0}}
 .ws-close{background:rgba(255,255,255,0.1);padding:.25rem .75rem;border:1px solid rgba(255,255,255,0.2);border-radius:.375rem;cursor:pointer;transition:background .2s}
 .ws-close:hover{background:rgba(255,255,255,0.2)}
@@ -30,3 +31,14 @@
 .ws-side-btn.active,.ws-side-btn:hover{background:rgba(255,255,255,0.2)}
 .ws-validate{background:#22c55e;padding:.5rem 1.5rem;border-radius:.5rem;color:#fff;cursor:pointer}
 .ws-validate:hover{background:#16a34a}
+.ws-colors{display:flex;gap:.25rem;margin-top:.5rem;flex-wrap:wrap;justify-content:center}
+.ws-color-btn{width:24px;height:24px;border-radius:50%;border:1px solid #fff;cursor:pointer;opacity:.8}
+.ws-color-btn.active{outline:2px solid #fff;opacity:1}
+.ws-print-zone{position:absolute;border:1px dashed rgba(255,255,255,0.7);pointer-events:none;display:none}
+.ws-item.ws-selected{outline:2px solid #93c5fd}
+.ws-formatting{display:flex;gap:.25rem;margin:.5rem 0}
+.ws-formatting button{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:.25rem .5rem;border-radius:.25rem;color:#fff;cursor:pointer}
+.ws-formatting button.active,.ws-formatting button:hover{background:rgba(255,255,255,0.3)}
+.ws-item.bold .ws-text{font-weight:700}
+.ws-item.italic .ws-text{font-style:italic}
+.ws-item.underline .ws-text{text-decoration:underline}
