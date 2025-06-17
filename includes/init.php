@@ -9,6 +9,23 @@ add_action('wp_enqueue_scripts', function () {
     }
 });
 
+// Register custom post type for visuals
+add_action('init', function () {
+    register_post_type('winshirt_visual', [
+        'label'       => 'Visuels',
+        'public'      => false,
+        'show_ui'     => false,
+        'supports'    => ['title', 'thumbnail'],
+    ]);
+});
+
+// Register FTP options
+add_action('admin_init', function () {
+    register_setting('winshirt_options', 'winshirt_ftp_host');
+    register_setting('winshirt_options', 'winshirt_ftp_user');
+    register_setting('winshirt_options', 'winshirt_ftp_pass');
+});
+
 // Enqueue assets on WinShirt admin pages
 add_action('admin_enqueue_scripts', function ($hook) {
     if (strpos($hook, 'winshirt') !== false) {
