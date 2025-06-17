@@ -1,4 +1,4 @@
-name: Deploy WinShirt Plugin via SFTP
+name: Deploy to FTP
 
 on:
   push:
@@ -6,19 +6,19 @@ on:
       - main
 
 jobs:
-  deploy:
+  ftp-deploy:
+    name: FTP Deploy
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Upload via SFTP
-        uses: appleboy/scp-action@v0.1.4
+      - name: FTP Deploy
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.4
         with:
-          host: ${{ secrets.FTP_HOST }}
+          server: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          port: 22
-          source: "./*"
-          target: "wp-content/plugins/winshirt"
+          protocol: ftp
+          local-dir: ./ # Dossier racine du repo
+          server-dir: /wp-content/plugins/winshirt/ # Cible sur ton FTP
