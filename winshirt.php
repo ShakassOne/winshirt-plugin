@@ -111,5 +111,48 @@ function winshirt_register_admin_pages() {
  * Display the dashboard page.
  */
 function winshirt_page_dashboard() {
-    echo '<div class="wrap"><h1>Bienvenue sur le tableau de bord WinShirt. Interface à venir.</h1></div>';
+    // Gather counts based on product metadata
+    $products          = wc_get_products(['limit' => -1, 'status' => 'publish']);
+    $mockup_ids        = [];
+    $visual_ids        = [];
+    $lotteries         = [];
+    $product_count     = 0;
+    $lottery_products  = 0;
+
+    foreach ($products as $product) {
+        $pid     = $product->get_id();
+        $mockups = get_post_meta($pid, '_winshirt_mockups', true);
+        $visuals = get_post_meta($pid, '_winshirt_visuals', true);
+        $lottery = get_post_meta($pid, '_winshirt_lottery', true);
+        $enabled = get_post_meta($pid, '_winshirt_enabled', true) === 'yes';
+
+        if ($enabled) {
+            $product_count++;
+        }
+
+        if ($mockups) {
+            $ids        = array_filter(array_map('trim', explode(',', $mockups)));
+            $mockup_ids = array_merge($mockup_ids, $ids);
+        }
+
+        if ($visuals) {
+            $ids        = array_filter(array_map('trim', explode(',', $visuals)));
+            $visual_ids = array_merge($visual_ids, $ids);
+        }
+
+        if ($lottery) {
+            $lotteries[] = $lottery;
+            $lottery_products++;
+        }
+    }
+
+    $mockup_count   = count(array_unique($mockup_ids));
+    $visual_count   = count(array_unique($visual_ids));
+    $lottery_count  = count(array_unique($lotteries));
+    $total_products = count($products);
+    $lottery_progress = $total_products > 0 ? ($lottery_products / $total_products) * 100 : 0;
+
+    echo '<div class="wrap">';
+    include WINSHIRT_PATH . 'templates/admin/partials/dashboard.php';
+    echo '</div>';
 }
