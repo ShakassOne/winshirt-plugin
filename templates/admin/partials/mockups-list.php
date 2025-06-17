@@ -154,11 +154,15 @@
     <div id="print-zone-wrapper">
         <div id="mockup-canvas-front" class="mockup-canvas">
             <?php if ($front) { echo wp_get_attachment_image($front, 'medium'); } ?>
-            <?php foreach ($zones as $i => $z) { if ($z['side'] !== 'front') continue; echo '<div class="print-zone" data-index="'.$i.'" data-side="front" data-format="'.$z['format'].'" style="top:'.$z['top'].'%;left:'.$z['left'].'%;width:'.$z['width'].'%;height:'.$z['height'].'%;">'.$z['format'].'</div>'; } ?>
+            <?php foreach ($zones as $i => $z) : if ($z['side'] !== 'front') continue; ?>
+                <div class="print-zone" data-index="<?php echo esc_attr($i); ?>" data-side="front" data-format="<?php echo esc_attr($z['format']); ?>" style="top:<?php echo esc_attr($z['top']); ?>%;left:<?php echo esc_attr($z['left']); ?>%;width:<?php echo esc_attr($z['width']); ?>%;height:<?php echo esc_attr($z['height']); ?>%;"><?php echo esc_html($z['format']); ?></div>
+            <?php endforeach; ?>
         </div>
         <div id="mockup-canvas-back" class="mockup-canvas">
             <?php if ($back) { echo wp_get_attachment_image($back, 'medium'); } ?>
-            <?php foreach ($zones as $i => $z) { if ($z['side'] !== 'back') continue; echo '<div class="print-zone" data-index="'.$i.'" data-side="back" data-format="'.$z['format'].'" style="top:'.$z['top'].'%;left:'.$z['left'].'%;width:'.$z['width'].'%;height:'.$z['height'].'%;">'.$z['format'].'</div>'; } ?>
+            <?php foreach ($zones as $i => $z) : if ($z['side'] !== 'back') continue; ?>
+                <div class="print-zone" data-index="<?php echo esc_attr($i); ?>" data-side="back" data-format="<?php echo esc_attr($z['format']); ?>" style="top:<?php echo esc_attr($z['top']); ?>%;left:<?php echo esc_attr($z['left']); ?>%;width:<?php echo esc_attr($z['width']); ?>%;height:<?php echo esc_attr($z['height']); ?>%;"><?php echo esc_html($z['format']); ?></div>
+            <?php endforeach; ?>
         </div>
     </div>
     <p>
