@@ -110,6 +110,34 @@ function winshirt_render_customize_button() {
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );
     $ws_zones      = wp_json_encode( $zones );
+
+    // Retrieve validated visuals for the gallery
+    $gallery_posts = get_posts([
+        'post_type'   => 'winshirt_visual',
+        'numberposts' => -1,
+        'orderby'     => 'date',
+        'order'       => 'DESC',
+        'meta_query'  => [
+            [
+                'key'   => '_winshirt_visual_validated',
+                'value' => 'yes',
+            ],
+        ],
+    ]);
+
+    $gallery = [];
+    foreach ( $gallery_posts as $g ) {
+        $url = get_the_post_thumbnail_url( $g->ID, 'full' );
+        if ( $url ) {
+            $gallery[] = [
+                'id'    => $g->ID,
+                'title' => $g->post_title,
+                'url'   => $url,
+                'type'  => get_post_meta( $g->ID, '_winshirt_visual_type', true ),
+            ];
+        }
+    }
+    $ws_gallery = wp_json_encode( $gallery );
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
