@@ -23,3 +23,13 @@ function winshirt_render_customize_button() {
     include WINSHIRT_PATH . 'templates/frontend/modal-personnalisation.php';
 }
 add_action('woocommerce_single_product_summary', 'winshirt_render_customize_button', 35);
+
+// Register custom post type for mockups
+add_action('init', function () {
+    register_post_type('winshirt_mockup', [
+        'label'       => 'Mockups',
+        'public'      => false,
+        'show_ui'     => false,
+        'supports'    => ['title', 'thumbnail'],
+    ]);
+});
