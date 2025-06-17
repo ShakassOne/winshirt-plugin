@@ -18,7 +18,13 @@ jQuery(function($){
   var $colorsWrap = $modal.find('.ws-colors');
   var $formatWrap = $modal.find('.ws-format-buttons');
   var $formatBtns = $formatWrap.find('.ws-format-btn');
-  var formatRatios = {A3:0.8, A4:0.65, A5:0.5, A6:0.35, A7:0.2};
+  var formatSizes = {
+    A3: {w:700, h:990},
+    A4: {w:495, h:700},
+    A5: {w:350, h:495},
+    A6: {w:247, h:350},
+    A7: {w:175, h:247}
+  };
   var formatOrder = ['A3','A4','A5','A6','A7'];
   var activeItem = null;
 
@@ -85,14 +91,13 @@ jQuery(function($){
   }
 
   function detectFormat($it){
-    var $zone = $(getContainment());
-    var ref = Math.min($zone.width(), $zone.height());
-    var size = Math.max($it.width(), $it.height());
-    var ratio = size / ref;
+    var w = $it.width();
+    var h = $it.height();
     var fmt = formatOrder[formatOrder.length-1];
     for(var i=0;i<formatOrder.length;i++){
       var f = formatOrder[i];
-      if(ratio >= formatRatios[f]){ fmt = f; break; }
+      var s = formatSizes[f];
+      if(w >= s.w && h >= s.h){ fmt = f; break; }
     }
     return fmt;
   }
@@ -107,10 +112,10 @@ jQuery(function($){
     var zpos = $zone.position();
     var zw = $zone.width();
     var zh = $zone.height();
-    var size = Math.min(zw, zh) * (formatRatios[fmt] || 0);
-    var left = zpos.left + (zw - size)/2;
-    var top  = zpos.top + (zh - size)/2;
-    $it.css({width:size, height:size, left:left, top:top});
+    var s = formatSizes[fmt] || {w:0,h:0};
+    var left = zpos.left + (zw - s.w)/2;
+    var top  = zpos.top + (zh - s.h)/2;
+    $it.css({width:s.w, height:s.h, left:left, top:top});
     updateFormatButtons(fmt);
   }
 

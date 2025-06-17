@@ -63,13 +63,6 @@
         <div class="ws-print-zone" data-side="front"></div>
         <div class="ws-print-zone" data-side="back"></div>
       </div>
-      <div class="ws-format-buttons">
-        <button class="ws-format-btn" data-format="A3">A3</button>
-        <button class="ws-format-btn" data-format="A4">A4</button>
-        <button class="ws-format-btn" data-format="A5">A5</button>
-        <button class="ws-format-btn" data-format="A6">A6</button>
-        <button class="ws-format-btn" data-format="A7">A7</button>
-      </div>
 
       <div class="ws-sidebar hidden">
         <h3><?php esc_html_e( 'Édition', 'winshirt' ); ?></h3>
@@ -91,13 +84,20 @@
       <div class="ws-colors"></div>
       <input type="hidden" id="winshirt-custom-data" value="" />
 
-      <div class="ws-actions">
-        <div class="ws-toggle">
-          <button id="winshirt-front-btn" class="ws-side-btn active">Recto</button>
-          <button id="winshirt-back-btn" class="ws-side-btn">Verso</button>
+        <div class="ws-actions">
+          <div class="ws-toggle">
+            <button id="winshirt-front-btn" class="ws-side-btn active">Recto</button>
+            <button id="winshirt-back-btn" class="ws-side-btn">Verso</button>
+          </div>
+          <div class="ws-format-buttons">
+            <button class="ws-format-btn" data-format="A3">A3</button>
+            <button class="ws-format-btn" data-format="A4">A4</button>
+            <button class="ws-format-btn" data-format="A5">A5</button>
+            <button class="ws-format-btn" data-format="A6">A6</button>
+            <button class="ws-format-btn" data-format="A7">A7</button>
+          </div>
+          <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
         </div>
-        <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
-      </div>
 
     </div>
   </div>
