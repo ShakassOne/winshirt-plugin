@@ -1,16 +1,34 @@
-#winshirt-modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.8);z-index:9999;align-items:center;justify-content:center;}
-#winshirt-modal.open{display:flex;}
-#winshirt-modal .winshirt-modal-content{background:#fff;width:90%;max-width:900px;max-height:90%;overflow:auto;padding:20px;position:relative;border-radius:4px;display:flex;flex-direction:column;}
-#winshirt-modal .winshirt-close{position:absolute;top:10px;right:15px;font-size:24px;cursor:pointer;}
-.winshirt-tab-links{list-style:none;padding:0;margin:0 0 10px;display:flex;flex-wrap:wrap;}
-.winshirt-tab-links li{margin-right:5px;}
-.winshirt-tab-links li a{display:block;padding:8px 12px;background:#eee;text-decoration:none;color:#000;border-radius:3px;}
-.winshirt-tab-links li.active a{background:#ddd;}
-.winshirt-tab{display:none;}
-.winshirt-tab.active{display:block;}
-.winshirt-upload{float:right;}
-.winshirt-preview{text-align:center;margin-top:20px;}
-.winshirt-preview img{max-width:250px;}
-.winshirt-preview-buttons{text-align:center;margin-bottom:10px;}
-@media(max-width:600px){#winshirt-modal .winshirt-modal-content{width:100%;height:100%;max-height:100%;border-radius:0;}}
-.winshirt-text{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:24px;color:#000;}
+/* WinShirt product customizer - glassmorphism style */
+.ws-modal{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,0.6);backdrop-filter:blur(6px);z-index:9999}
+.hidden{display:none}
+.ws-modal.hidden{display:none}
+.ws-modal-content{position:relative;width:100%;max-width:960px;background:rgba(255,255,255,0.1);backdrop-filter:blur(16px) saturate(180%);border:1px solid rgba(255,255,255,0.2);border-radius:1rem;box-shadow:0 10px 25px rgba(0,0,0,0.3);padding:1.5rem;color:#fff;overflow:hidden}
+@media(max-width:640px){.ws-modal-content{height:100%;max-width:none;border-radius:0}}
+.ws-close{background:rgba(255,255,255,0.1);padding:.25rem .75rem;border:1px solid rgba(255,255,255,0.2);border-radius:.375rem;cursor:pointer;transition:background .2s}
+.ws-close:hover{background:rgba(255,255,255,0.2)}
+.ws-tabs-header{display:flex;gap:.5rem;margin-bottom:1rem;border-bottom:1px solid rgba(255,255,255,0.1);padding-bottom:.5rem}
+.ws-tab-button{padding:.5rem 1rem;border-radius:.5rem;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);cursor:pointer;transition:background .3s}
+.ws-ml-auto{margin-left:auto}
+.ws-tab-button:hover,.ws-tab-button.active{background:rgba(255,255,255,0.2)}
+.ws-tab-content{display:none;animation:wsFade .3s ease}
+.ws-tab-content.active{display:block}
+@keyframes wsFade{from{opacity:0}to{opacity:1}}
+.ws-textarea{width:100%;min-height:100px;border-radius:.5rem;padding:.75rem;color:#000;resize:none}
+.ws-upload-btn{margin-top:1rem;padding:.5rem 1rem;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:.5rem;color:#fff;cursor:pointer}
+.ws-upload-btn:hover{background:rgba(255,255,255,0.2)}
+.ws-gallery{display:flex;flex-wrap:wrap;gap:.5rem}
+.ws-preview{position:relative;margin-top:1.5rem;width:100%;aspect-ratio:4/5;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.2);border-radius:.5rem;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.ws-preview-img{max-width:100%;max-height:100%;object-fit:contain}
+.ws-design-zone{position:absolute;top:30%;left:25%;width:200px;height:150px;border:2px dashed #60a5fa;background:rgba(255,255,255,0.2);border-radius:.25rem;cursor:move}
+.ws-handle{position:absolute;width:10px;height:10px;background:#60a5fa;border-radius:50%}
+.ws-handle-nw{top:-5px;left:-5px;cursor:nwse-resize}
+.ws-handle-ne{top:-5px;right:-5px;cursor:nesw-resize}
+.ws-handle-sw{bottom:-5px;left:-5px;cursor:nesw-resize}
+.ws-handle-se{bottom:-5px;right:-5px;cursor:nwse-resize}
+.ws-remove{position:absolute;top:-12px;right:-12px;width:24px;height:24px;border-radius:50%;background:#ef4444;color:#fff;font-weight:bold;border:none;cursor:pointer}
+.ws-actions{display:flex;justify-content:space-between;align-items:center;margin-top:1.5rem}
+.ws-toggle{display:flex;gap:.5rem}
+.ws-side-btn{background:rgba(255,255,255,0.1);padding:.5rem 1rem;border:1px solid rgba(255,255,255,0.2);border-radius:.5rem;color:#fff;cursor:pointer;margin-right:.5rem}
+.ws-side-btn.active,.ws-side-btn:hover{background:rgba(255,255,255,0.2)}
+.ws-validate{background:#22c55e;padding:.5rem 1.5rem;border-radius:.5rem;color:#fff;cursor:pointer}
+.ws-validate:hover{background:#16a34a}
