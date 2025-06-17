@@ -56,14 +56,18 @@ function winshirt_render_customize_button() {
         return;
     }
 
-    $pid      = $product->get_id();
-    $enabled  = get_post_meta( $pid, '_winshirt_enabled', true );
-    if ( 'yes' !== $enabled ) {
+    $pid            = $product->get_id();
+    $enabled        = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
+    $show_button    = get_post_meta( $pid, '_winshirt_show_button', true ) === 'yes';
+    $front_id       = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
+    $back_id        = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
+    $mockups_raw    = get_post_meta( $pid, '_winshirt_mockups', true );
+    $has_mockup     = $front_id || $back_id || ! empty( $mockups_raw );
+
+    if ( ! $enabled || ! $show_button || ! $has_mockup ) {
         return;
     }
 
-    $front_id   = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
-    $back_id    = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
     $front_url  = $front_id ? get_the_post_thumbnail_url( $front_id, 'full' ) : '';
     $back_url   = $back_id ? get_the_post_thumbnail_url( $back_id, 'full' ) : '';
 

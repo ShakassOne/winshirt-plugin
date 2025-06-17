@@ -29,14 +29,10 @@
 
     <div class="ws-preview">
       <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
-      <div id="design-zone" class="ws-design-zone">
-        <button class="ws-remove" title="Supprimer">×</button>
-        <div class="ws-handle ws-handle-nw"></div>
-        <div class="ws-handle ws-handle-ne"></div>
-        <div class="ws-handle ws-handle-sw"></div>
-        <div class="ws-handle ws-handle-se"></div>
-      </div>
+      <div id="ws-canvas" class="ws-canvas"></div>
     </div>
+
+    <input type="hidden" id="winshirt-custom-data" value="" />
 
     <div class="ws-actions">
       <div class="ws-toggle">
