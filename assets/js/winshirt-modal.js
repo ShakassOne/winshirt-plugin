@@ -23,8 +23,13 @@ jQuery(function($){
   var $cats   = $modal.find('.ws-gallery-cats');
   var cats = [];
   gallery.forEach(function(g){
-    if(g.type && cats.indexOf(g.type)===-1) cats.push(g.type);
-    var $img = $('<img class="ws-gallery-thumb" />').attr('src', g.url).attr('data-id', g.id).attr('alt', g.title || '').attr('data-cat', g.type || '');
+    var cat = g.category || g.type || '';
+    if(cat && cats.indexOf(cat) === -1) cats.push(cat);
+    var $img = $('<img class="ws-gallery-thumb" />')
+      .attr('src', g.url)
+      .attr('data-id', g.id)
+      .attr('alt', g.title || '')
+      .attr('data-cat', cat);
     $gallery.append($img);
   });
   if(cats.length){
@@ -69,7 +74,10 @@ jQuery(function($){
 
   function getContainment(){
     var $zone = $modal.find('.ws-print-zone[data-side="'+state.side+'"]');
-    return $zone.length ? $zone : '.ws-preview';
+    if($zone.length && $zone.width() > 0 && $zone.height() > 0){
+      return $zone;
+    }
+    return '.ws-preview';
   }
 
   function updateItemTransform($it){
@@ -90,7 +98,14 @@ jQuery(function($){
 
   $('#winshirt-open-modal').on('click', function(e){ e.preventDefault(); openModal(); });
   $('#winshirt-close-modal').on('click', closeModal);
-  $('#ws-reset-visual').on('click', function(){ $canvas.children('.ws-item[data-type="image"]').remove(); });
+  $('#ws-reset-visual').on('click', function(){
+    $canvas.children('.ws-item[data-type="image"]').remove();
+    $modal.data('default-front', initialFront);
+    $modal.data('default-back', initialBack);
+    $previewImg.attr('src', state.side === 'back' ? initialBack : initialFront);
+    $colorsWrap.find('.ws-color-btn').removeClass('active');
+    selectItem(null);
+  });
   $modal.on('click', function(e){ if($(e.target).is('.ws-modal')) closeModal(); });
   $(document).on('keyup', function(e){ if(e.key === 'Escape') closeModal(); });
 
