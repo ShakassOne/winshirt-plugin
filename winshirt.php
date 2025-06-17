@@ -12,6 +12,10 @@ define('WINSHIRT_PATH', plugin_dir_path(__FILE__));
 define('WINSHIRT_URL', plugin_dir_url(__FILE__));
 
 require_once WINSHIRT_PATH . 'includes/init.php';
+require_once WINSHIRT_PATH . 'includes/pages/mockups.php';
+require_once WINSHIRT_PATH . 'includes/pages/visuels.php';
+require_once WINSHIRT_PATH . 'includes/pages/loteries.php';
+require_once WINSHIRT_PATH . 'includes/pages/produits.php';
 
 // Register WinShirt admin pages
 add_action('admin_menu', 'winshirt_register_admin_pages');
@@ -88,32 +92,4 @@ function winshirt_register_admin_pages() {
  */
 function winshirt_page_dashboard() {
     echo '<div class="wrap"><h1>Bienvenue sur le tableau de bord WinShirt. Interface à venir.</h1></div>';
-}
-
-/**
- * Display the mockups page.
- */
-function winshirt_page_mockups() {
-    echo '<div class="wrap"><h1>Page de gestion des mockups</h1></div>';
-}
-
-/**
- * Display the designs page.
- */
-function winshirt_page_designs() {
-    echo '<div class="wrap"><h1>Page de gestion des visuels</h1></div>';
-}
-
-/**
- * Display the lotteries page.
- */
-function winshirt_page_lotteries() {
-    echo '<div class="wrap"><h1>Page de gestion des loteries</h1></div>';
-}
-
-/**
- * Display the products page.
- */
-function winshirt_page_products() {
-    echo '<div class="wrap"><h1>Liste des produits WooCommerce connectés à WinShirt</h1></div>';
 }
