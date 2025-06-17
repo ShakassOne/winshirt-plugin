@@ -32,7 +32,7 @@
         <option value="svg">SVG</option>
       </select>
 
-
+      <button class="ws-accordion-header" data-tab="gallery">🖼 Galerie</button>
       <div class="ws-tab-content" id="ws-tab-gallery">
         <p>Choisissez un design dans la galerie.</p>
         <div class="ws-gallery-cats"></div>
@@ -41,6 +41,7 @@
         <input type="file" id="ws-upload-input" accept="image/*" class="hidden" />
       </div>
 
+      <button class="ws-accordion-header" data-tab="text">🔤 Texte</button>
       <div class="ws-tab-content hidden" id="ws-tab-text">
         <input type="text" id="ws-text-content" class="ws-input" placeholder="Votre texte..." />
         <select id="ws-font-select" class="ws-select">
@@ -64,10 +65,12 @@
         <button class="ws-upload-btn" id="ws-add-text">Ajouter</button>
       </div>
 
+      <button class="ws-accordion-header" data-tab="ai">🤖 IA</button>
       <div class="ws-tab-content hidden" id="ws-tab-ai">
         <p>Générez une image grâce à l’IA (bientôt disponible).</p>
       </div>
 
+      <button class="ws-accordion-header" data-tab="svg">✒️ SVG</button>
       <div class="ws-tab-content hidden" id="ws-tab-svg">
         <p>Bibliothèque d’icônes vectorielles (SVG).</p>
       </div>
