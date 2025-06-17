@@ -28,8 +28,9 @@ jQuery(function($){
     function initZone($z){
         var side = $z.data('side');
         var cont = side === 'back' ? '#mockup-canvas-back' : '#mockup-canvas-front';
-        $z.draggable({ containment: cont, stop: function(){ saveZonePosition($z); } });
-        $z.resizable({ containment: cont, handles:'n,e,s,w,ne,se,sw,nw', stop: function(){ saveZonePosition($z); } });
+        $z.draggable({ containment: cont, scroll:false, helper:'original', stop: function(){ saveZonePosition($z); } });
+        $z.resizable({ containment: cont, handles:'n,e,s,w,ne,se,sw,nw', stop: function(){ saveZonePosition($z); },
+            create:function(){ $(this).css('overflow','visible'); } });
         saveZonePosition($z);
     }
 
