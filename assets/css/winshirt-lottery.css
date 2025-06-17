@@ -1,0 +1,5 @@
+.winshirt-lottery-info{border:1px solid #ccc;padding:10px;margin-bottom:15px;text-align:center}
+.winshirt-lottery-info img{max-width:100px;display:block;margin:0 auto 10px}
+.winshirt-lottery-progress{background:#eee;border-radius:4px;overflow:hidden;height:8px;margin-top:5px}
+.winshirt-lottery-progress .bar{height:8px;width:0;background:green}
+.winshirt-lottery-full{color:#c00;font-weight:bold;margin-top:5px}

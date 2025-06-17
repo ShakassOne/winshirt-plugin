@@ -9,7 +9,8 @@ function winshirt_page_products() {
         update_post_meta($product_id, '_winshirt_mockups', implode(',', $mockups));
 
         update_post_meta($product_id, '_winshirt_visuals', sanitize_text_field($_POST['winshirt_visuals'] ?? ''));
-        update_post_meta($product_id, '_winshirt_lottery', sanitize_text_field($_POST['winshirt_lottery'] ?? ''));
+        update_post_meta($product_id, 'linked_lottery', absint($_POST['linked_lottery'] ?? 0));
+        update_post_meta($product_id, 'loterie_tickets', absint($_POST['loterie_tickets'] ?? 0));
 
         update_post_meta($product_id, '_winshirt_default_mockup_front', absint($_POST['winshirt_default_front'] ?? 0));
         update_post_meta($product_id, '_winshirt_default_mockup_back', absint($_POST['winshirt_default_back'] ?? 0));
@@ -29,6 +30,12 @@ function winshirt_page_products() {
 
     $all_mockups = get_posts([
         'post_type'   => 'winshirt_mockup',
+        'numberposts' => -1,
+        'orderby'     => 'title',
+    ]);
+
+    $all_lotteries = get_posts([
+        'post_type'   => 'winshirt_lottery',
         'numberposts' => -1,
         'orderby'     => 'title',
     ]);
