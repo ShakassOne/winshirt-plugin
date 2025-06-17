@@ -41,6 +41,58 @@ jQuery(function($){
 
   checkMobile();
 
+  function saveState(){
+    var items = [];
+    $canvas.children('.ws-item').each(function(){
+      var $it = $(this);
+      var pos = $it.position();
+      items.push({
+        type: $it.data('type'),
+        side: $it.data('side'),
+        position: { x:(pos.left / $canvas.width()).toFixed(4), y:(pos.top / $canvas.height()).toFixed(4) },
+        scale: parseFloat($it.attr('data-scale') || 1),
+        rotation: parseInt($it.attr('data-rotation') || 0,10),
+        color: $it.attr('data-color') || null,
+        width: ($it.width() / $canvas.width()).toFixed(4),
+        height: ($it.height() / $canvas.height()).toFixed(4),
+        content: $it.data('type')==='text' ? $it.find('.ws-text').text() : $it.find('img').attr('src')
+      });
+    });
+    var data = {
+      items: items,
+      defaultFront: $modal.data('default-front') || initialFront,
+      defaultBack: $modal.data('default-back') || initialBack,
+      side: state.side
+    };
+    localStorage.setItem('winshirt_custom', JSON.stringify(data));
+  }
+
+  function loadState(){
+    var raw = localStorage.getItem('winshirt_custom');
+    if(!raw) return;
+    try{ raw = JSON.parse(raw); }catch(e){ return; }
+    $canvas.empty();
+    if(raw.defaultFront){ $modal.data('default-front', raw.defaultFront); }
+    if(raw.defaultBack){ $modal.data('default-back', raw.defaultBack); }
+    switchSide(raw.side || 'front');
+    if(Array.isArray(raw.items)){
+      raw.items.forEach(function(it){
+        var $new = addItem(it.type, it.content);
+        $new.attr('data-side', it.side || 'front');
+        $new.attr('data-scale', it.scale || 1);
+        $new.attr('data-rotation', it.rotation || 0);
+        $new.css({
+          width: parseFloat(it.width) * $canvas.width(),
+          height: parseFloat(it.height) * $canvas.height(),
+          left: parseFloat(it.position.x) * $canvas.width(),
+          top: parseFloat(it.position.y) * $canvas.height()
+        });
+        if(it.color){ $new.attr('data-color', it.color); $new.find('.ws-text').css('color', it.color); }
+        updateItemTransform($new);
+      });
+    }
+  }
+
   var gallery = $modal.data('gallery') || [];
   var $gallery = $modal.find('.ws-gallery');
   var $cats   = $modal.find('.ws-gallery-cats');
@@ -88,6 +140,7 @@ jQuery(function($){
     $(this).addClass('active');
     if(col.front){ $modal.data('default-front', col.front); if(state.side==='front') $previewImg.attr('src', col.front); }
     if(col.back){ $modal.data('default-back', col.back); if(state.side==='back') $previewImg.attr('src', col.back); }
+    saveState();
   });
 
   zones.forEach(function(z, idx){
@@ -173,14 +226,16 @@ jQuery(function($){
     $it.css('transform','translate3d('+x+'px,'+y+'px,0) scale('+sc+') rotate('+rot+'deg)');
   }
 
-  function openModal(){
-    checkMobile();
-    $modal.removeClass('hidden').addClass('open');
-    if($modal.hasClass('ws-mobile')){
-      setTimeout(function(){ $modal.find('.ws-right').addClass('show'); }, 10);
-    }
-    openTab('gallery');
+function openModal(){
+  checkMobile();
+  loadState();
+  $modal.removeClass('hidden').addClass('open');
+  if (!$modal.hasClass('ws-mobile')) {
+    setTimeout(function(){ $modal.find('.ws-right').addClass('show'); }, 10);
   }
+  openTab('gallery');
+}
+
   function openTab(tab){
     if($modal.hasClass('ws-mobile')){
       var $c = $('#ws-tab-'+tab);
@@ -227,6 +282,7 @@ jQuery(function($){
     $previewImg.attr('src', state.side === 'back' ? initialBack : initialFront);
     $colorsWrap.find('.ws-color-btn').removeClass('active');
     selectItem(null);
+    saveState();
   });
   $modal.on('click', function(e){ if($(e.target).is('.ws-modal')) closeModal(); });
   $(document).on('keyup', function(e){ if(e.key === 'Escape') closeModal(); });
@@ -287,21 +343,41 @@ jQuery(function($){
     $item.append('<button class="ws-remove" title="Supprimer">×</button>');
     $canvas.append($item);
     var cont = getContainment();
-    $item.draggable({ containment:cont });
+    $item.draggable({
+      containment:cont,
+      drag:function(e,ui){
+        $item.attr('data-x', ui.position.left).attr('data-y', ui.position.top);
+        updateItemTransform($item);
+      },
+      stop:function(e,ui){
+        $item.attr('data-x', ui.position.left).attr('data-y', ui.position.top);
+        updateItemTransform($item);
+        saveState();
+      }
+    });
     $item.resizable({ handles:'ne, se, sw, nw', containment:cont })
-      .on('resize resizestop', function(){
+      .on('resize', function(){
+        saveState();
+      })
+      .on('resizestop', function(){
         var $t = $(this);
         clearTimeout($t.data('rt'));
         $t.data('rt', setTimeout(function(){
           updateFormatUIFromItem($t);
         }, 100));
+        saveState();
       });
     updateItemTransform($item);
     updateFormatUIFromItem($item);
+    saveState();
     return $item;
   }
 
-  $(document).on('click', '.ws-remove', function(e){ e.preventDefault(); $(this).closest('.ws-item').remove(); });
+  $(document).on('click', '.ws-remove', function(e){
+    e.preventDefault();
+    $(this).closest('.ws-item').remove();
+    saveState();
+  });
 
   $(document).on('mousedown', '.ws-item', function(e){
     if($(e.target).is('.ws-remove')) return;
@@ -337,19 +413,27 @@ jQuery(function($){
     activeItem.attr('data-scale', $(this).val());
     updateItemTransform(activeItem);
     updateFormatUIFromItem(activeItem);
+    saveState();
   });
   $rotateInput.on('input change', function(){
     if(!activeItem) return;
     activeItem.attr('data-rotation', $(this).val());
     updateItemTransform(activeItem);
+    saveState();
   });
   $colorInput.on('input change', function(){
     if(!activeItem || activeItem.data('type')!=='text') return;
     activeItem.attr('data-color', $(this).val());
     activeItem.find('.ws-text').css('color', $(this).val());
+    saveState();
   });
   $deleteBtn.on('click', function(){
-    if(activeItem){ activeItem.remove(); activeItem=null; $sidebar.removeClass('show'); }
+    if(activeItem){
+      activeItem.remove();
+      activeItem=null;
+      $sidebar.removeClass('show');
+      saveState();
+    }
   });
 
   $('#ws-reset-btn').on('click', function(e){
@@ -360,6 +444,7 @@ jQuery(function($){
     $previewImg.attr('src', state.side==='back' ? initialBack : initialFront);
     $colorsWrap.find('.ws-color-btn').removeClass('active');
     selectItem(null);
+    saveState();
   });
 
   function switchSide(side){
@@ -378,6 +463,7 @@ jQuery(function($){
       $modal.find('.ws-print-zone').hide().filter('[data-side="front"]').show();
     }
     if(activeItem){ updateFormatUIFromItem(activeItem); }
+    saveState();
   }
   $('#winshirt-front-btn').on('click', function(){ switchSide('front'); });
   $('#winshirt-back-btn').on('click', function(){ switchSide('back'); });
@@ -401,6 +487,7 @@ jQuery(function($){
     });
     $('#winshirt-custom-data').val(JSON.stringify(items));
     console.log('WinShirt data', JSON.stringify(items));
+    saveState();
     closeModal();
   });
 
