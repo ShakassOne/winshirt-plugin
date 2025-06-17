@@ -34,6 +34,9 @@ jQuery(function($){
     }
 
     function createZone(index){
+        if($('.print-zone[data-index='+index+']').length){
+            return;
+        }
         var $row = $('.zone-row[data-index='+index+']');
         var side = $row.find('.zone-side').val();
         var fmt = $row.find('.zone-format').val();
