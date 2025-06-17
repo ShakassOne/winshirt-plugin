@@ -1,4 +1,4 @@
-name: Deploy to FTP
+name: Deploy WinShirt Plugin via SFTP
 
 on:
   push:
@@ -6,11 +6,15 @@ on:
       - main
 
 jobs:
-  ftp-deploy:
-    name: FTP Deploy
+  deploy:
+    name: SFTP Deploy
     runs-on: ubuntu-latest
+
     steps:
-         - name: Upload plugin via SFTP
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Upload via SFTP
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.FTP_HOST }}
@@ -20,7 +24,4 @@ jobs:
           source: "."
           target: "/Winshirt/wp-content/plugins/winshirt"
           protocol: sftp
-
-
-
-
+          strip_components: 0
