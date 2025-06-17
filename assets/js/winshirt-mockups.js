@@ -12,11 +12,25 @@ jQuery(function($){
         $(this).closest('.color-row').remove();
     });
 
+    function saveZonePosition($z){
+        var idx = $z.data('index');
+        var $row = $('.zone-row[data-index='+idx+']');
+        var $canvas = $z.closest('.mockup-canvas');
+        var img = $canvas.find('img')[0];
+        if(!img) return;
+        var pos = $z.position();
+        $row.find('.zone-top').val((pos.top / img.offsetHeight * 100).toFixed(2));
+        $row.find('.zone-left').val((pos.left / img.offsetWidth * 100).toFixed(2));
+        $row.find('.zone-width').val(($z.width() / img.offsetWidth * 100).toFixed(2));
+        $row.find('.zone-height').val(($z.height() / img.offsetHeight * 100).toFixed(2));
+    }
+
     function initZone($z){
         var side = $z.data('side');
         var cont = side === 'back' ? '#mockup-canvas-back' : '#mockup-canvas-front';
-        $z.draggable({ containment: cont });
-        $z.resizable({ containment: cont });
+        $z.draggable({ containment: cont, stop: function(){ saveZonePosition($z); } });
+        $z.resizable({ containment: cont, handles:'n,e,s,w,ne,se,sw,nw', stop: function(){ saveZonePosition($z); } });
+        saveZonePosition($z);
     }
 
     function createZone(index){
@@ -40,6 +54,17 @@ jQuery(function($){
         $zone.attr('data-side', side).appendTo($(cont));
         $zone.draggable('option','containment', cont);
         $zone.resizable('option','containment', cont);
+        saveZonePosition($zone);
+    }
+
+    var drawing = false;
+    var drawingIndex = null;
+    var startPos = null;
+
+    function startDrawing(index){
+        drawing = true;
+        drawingIndex = index;
+        $('.mockup-canvas').addClass('drawing');
     }
 
     $('#add-zone').on('click', function(e){
@@ -47,7 +72,39 @@ jQuery(function($){
         var index = $('#zones-container .zone-row').length;
         var tpl = $('#zone-template').html().replace(/%i%/g, index);
         $('#zones-container').append(tpl);
-        createZone(index);
+        startDrawing(index);
+    });
+
+    $(document).on('mousedown', '.mockup-canvas.drawing', function(e){
+        if(!drawing) return;
+        e.preventDefault();
+        var $canvas = $(this);
+        var side = $canvas.attr('id') === 'mockup-canvas-back' ? 'back' : 'front';
+        var $row = $('.zone-row[data-index='+drawingIndex+']');
+        $row.find('.zone-side').val(side);
+        var fmt = $row.find('.zone-format').val();
+        var offset = $canvas.offset();
+        startPos = {x:e.pageX - offset.left, y:e.pageY - offset.top, offset:offset};
+        var $zone = $('<div class="print-zone drawing" data-index="'+drawingIndex+'" data-side="'+side+'" data-format="'+fmt+'">'+fmt+'</div>');
+        $canvas.append($zone);
+        $(document).on('mousemove.drawZone', function(ev){
+            var x = ev.pageX - startPos.offset.left;
+            var y = ev.pageY - startPos.offset.top;
+            var left = Math.min(startPos.x, x);
+            var top = Math.min(startPos.y, y);
+            var width = Math.abs(x - startPos.x);
+            var height = Math.abs(y - startPos.y);
+            $zone.css({left:left, top:top, width:width, height:height});
+        });
+        $(document).on('mouseup.drawZone', function(){
+            $(document).off('.drawZone');
+            $zone.removeClass('drawing');
+            initZone($zone);
+            saveZonePosition($zone);
+            $('.mockup-canvas').removeClass('drawing');
+            drawing = false;
+            drawingIndex = null;
+        });
     });
 
     $(document).on('click', '.remove-zone', function(e){
