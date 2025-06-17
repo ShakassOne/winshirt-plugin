@@ -17,12 +17,19 @@ jQuery(function($){
         var $row = $('.zone-row[data-index='+idx+']');
         var $canvas = $z.closest('.mockup-canvas');
         var img = $canvas.find('img')[0];
-        if(!img) return;
+        if(!img || !img.offsetWidth || !img.offsetHeight) return;
         var pos = $z.position();
         $row.find('.zone-top').val((pos.top / img.offsetHeight * 100).toFixed(2));
         $row.find('.zone-left').val((pos.left / img.offsetWidth * 100).toFixed(2));
         $row.find('.zone-width').val(($z.width() / img.offsetWidth * 100).toFixed(2));
         $row.find('.zone-height').val(($z.height() / img.offsetHeight * 100).toFixed(2));
+    }
+
+    function whenImageReady($canvas, cb){
+        var img = $canvas.find('img')[0];
+        if(!img){ cb(); return; }
+        if(img.complete && img.naturalWidth){ cb(); }
+        else $(img).one('load', cb);
     }
 
     function initZone($z){
@@ -31,7 +38,7 @@ jQuery(function($){
         $z.draggable({ containment: cont, scroll:false, helper:'original', stop: function(){ saveZonePosition($z); } });
         $z.resizable({ containment: cont, handles:'n,e,s,w,ne,se,sw,nw', stop: function(){ saveZonePosition($z); },
             create:function(){ $(this).css('overflow','visible'); } });
-        saveZonePosition($z);
+        whenImageReady($(cont), function(){ saveZonePosition($z); });
     }
 
     function createZone(index){
