@@ -36,10 +36,28 @@ add_action('admin_enqueue_scripts', function ($hook) {
 
 // Add customize button and modal on product page
 function winshirt_render_customize_button() {
-    echo '<button id="winshirt-open-modal" class="button">' . esc_html__('Personnaliser ce produit', 'winshirt') . '</button>';
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+
+    $pid        = $product->get_id();
+    $show       = get_post_meta( $pid, '_winshirt_show_button', true );
+    if ( 'yes' !== $show ) {
+        return;
+    }
+
+    $front_id   = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
+    $back_id    = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
+    $front_url  = $front_id ? get_the_post_thumbnail_url( $front_id, 'full' ) : '';
+    $back_url   = $back_id ? get_the_post_thumbnail_url( $back_id, 'full' ) : '';
+
+    echo '<button id="winshirt-open-modal" class="button">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
+    $default_front = $front_url;
+    $default_back  = $back_url;
     include WINSHIRT_PATH . 'templates/frontend/modal-personnalisation.php';
 }
-add_action('woocommerce_single_product_summary', 'winshirt_render_customize_button', 35);
+add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
 
 // Register custom post type for mockups
 add_action('init', function () {
