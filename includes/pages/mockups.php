@@ -86,16 +86,24 @@ function winshirt_page_mockups() {
         }
         update_post_meta($mockup_id, '_winshirt_colors', $colors);
 
-        $areas = [];
-        foreach (['A3', 'A4', 'A5', 'A6', 'A7'] as $fmt) {
-            $areas[$fmt] = [
-                'top'    => floatval($_POST['area_' . $fmt . '_top'] ?? 0),
-                'left'   => floatval($_POST['area_' . $fmt . '_left'] ?? 0),
-                'width'  => floatval($_POST['area_' . $fmt . '_width'] ?? 0),
-                'height' => floatval($_POST['area_' . $fmt . '_height'] ?? 0),
-            ];
+        $zones = [];
+        if (!empty($_POST['zones']) && is_array($_POST['zones'])) {
+            foreach ((array) $_POST['zones'] as $z) {
+                if (empty($z['name'])) {
+                    continue;
+                }
+                $zones[] = [
+                    'name'   => sanitize_text_field($z['name']),
+                    'format' => in_array($z['format'], ['A3','A4','A5','A6','A7']) ? $z['format'] : 'A4',
+                    'side'   => $z['side'] === 'back' ? 'back' : 'front',
+                    'top'    => floatval($z['top'] ?? 0),
+                    'left'   => floatval($z['left'] ?? 0),
+                    'width'  => floatval($z['width'] ?? 0),
+                    'height' => floatval($z['height'] ?? 0),
+                ];
+            }
         }
-        update_post_meta($mockup_id, '_winshirt_print_areas', $areas);
+        update_post_meta($mockup_id, '_winshirt_print_zones', $zones);
 
         echo '<div class="updated"><p>' . esc_html__('Mockup enregistre.', 'winshirt') . '</p></div>';
         $editing = get_post($mockup_id);

@@ -1,5 +1,7 @@
 #colors-container .color-row{margin-bottom:10px;border:1px solid #ddd;padding:10px;position:relative;}
 #colors-container .remove-color{position:absolute;top:4px;right:4px;}
-#print-zone-wrapper{margin-top:15px;}
-#print-zone-wrapper #mockup-canvas{position:relative;display:inline-block;border:1px solid #ccc;}
-#print-zone-wrapper .print-zone{border:2px dashed #f00;position:absolute;background:rgba(255,0,0,0.2);text-align:center;color:#000;}
+#print-zone-wrapper{margin-top:15px;display:flex;gap:20px;flex-wrap:wrap;}
+#print-zone-wrapper .mockup-canvas{position:relative;display:inline-block;border:1px solid #ccc;}
+#print-zone-wrapper .print-zone{border:2px dashed #f00;position:absolute;background:rgba(255,0,0,0.2);text-align:center;color:#000;cursor:move;}
+#zone-controls .zone-row{margin-bottom:10px;border:1px solid #ddd;padding:10px;position:relative;}
+#zone-controls .remove-zone{position:absolute;top:4px;right:4px;}

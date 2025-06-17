@@ -95,25 +95,72 @@
         </div>
     </script>
     <h3><?php esc_html_e('Zones d\'impression', 'winshirt'); ?></h3>
+    <?php
+        $zones = $editing->ID ? get_post_meta($editing->ID, '_winshirt_print_zones', true) : [];
+        $zones = is_array($zones) ? $zones : [];
+    ?>
+    <div id="zone-controls">
+        <div id="zones-container">
+        <?php $zindex = 0; foreach ($zones as $z) : ?>
+            <div class="zone-row" data-index="<?php echo $zindex; ?>">
+                <button class="remove-zone button">&times;</button>
+                <label><?php esc_html_e('Nom', 'winshirt'); ?> <input type="text" name="zones[<?php echo $zindex; ?>][name]" value="<?php echo esc_attr($z['name']); ?>" /></label>
+                <label><?php esc_html_e('Format', 'winshirt'); ?>
+                    <select name="zones[<?php echo $zindex; ?>][format]" class="zone-format">
+                        <?php foreach(['A3','A4','A5','A6','A7'] as $fmt) echo '<option value="'.$fmt.'" '.selected($z['format'],$fmt,false).'>'.$fmt.'</option>'; ?>
+                    </select>
+                </label>
+                <label><?php esc_html_e('Face', 'winshirt'); ?>
+                    <select name="zones[<?php echo $zindex; ?>][side]" class="zone-side">
+                        <option value="front" <?php selected($z['side'],'front'); ?>><?php esc_html_e('Recto','winshirt'); ?></option>
+                        <option value="back" <?php selected($z['side'],'back'); ?>><?php esc_html_e('Verso','winshirt'); ?></option>
+                    </select>
+                </label>
+                <input type="hidden" name="zones[<?php echo $zindex; ?>][top]" class="zone-top" value="<?php echo esc_attr($z['top']); ?>" />
+                <input type="hidden" name="zones[<?php echo $zindex; ?>][left]" class="zone-left" value="<?php echo esc_attr($z['left']); ?>" />
+                <input type="hidden" name="zones[<?php echo $zindex; ?>][width]" class="zone-width" value="<?php echo esc_attr($z['width']); ?>" />
+                <input type="hidden" name="zones[<?php echo $zindex; ?>][height]" class="zone-height" value="<?php echo esc_attr($z['height']); ?>" />
+            </div>
+        <?php $zindex++; endforeach; ?>
+        </div>
+        <p><a href="#" id="add-zone" class="button"><?php esc_html_e('Ajouter une zone', 'winshirt'); ?></a></p>
+    </div>
+    <script type="text/template" id="zone-template">
+        <div class="zone-row" data-index="%i%">
+            <button class="remove-zone button">&times;</button>
+            <label><?php esc_html_e('Nom', 'winshirt'); ?> <input type="text" name="zones[%i%][name]" /></label>
+            <label><?php esc_html_e('Format', 'winshirt'); ?>
+                <select name="zones[%i%][format]" class="zone-format">
+                    <option value="A3">A3</option>
+                    <option value="A4" selected>A4</option>
+                    <option value="A5">A5</option>
+                    <option value="A6">A6</option>
+                    <option value="A7">A7</option>
+                </select>
+            </label>
+            <label><?php esc_html_e('Face', 'winshirt'); ?>
+                <select name="zones[%i%][side]" class="zone-side">
+                    <option value="front"><?php esc_html_e('Recto','winshirt'); ?></option>
+                    <option value="back"><?php esc_html_e('Verso','winshirt'); ?></option>
+                </select>
+            </label>
+            <input type="hidden" name="zones[%i%][top]" class="zone-top" value="10" />
+            <input type="hidden" name="zones[%i%][left]" class="zone-left" value="10" />
+            <input type="hidden" name="zones[%i%][width]" class="zone-width" value="20" />
+            <input type="hidden" name="zones[%i%][height]" class="zone-height" value="20" />
+        </div>
+    </script>
+
     <div id="print-zone-wrapper">
-        <div id="mockup-canvas">
+        <div id="mockup-canvas-front" class="mockup-canvas">
             <?php if ($front) { echo wp_get_attachment_image($front, 'medium'); } ?>
-            <?php
-            $areas = $editing->ID ? get_post_meta($editing->ID, '_winshirt_print_areas', true) : [];
-            $areas = is_array($areas) ? $areas : [];
-            foreach (['A3','A4','A5','A6','A7'] as $fmt) {
-                $a = $areas[$fmt] ?? ['top'=>10,'left'=>10,'width'=>20,'height'=>20];
-                echo '<div class="print-zone" data-format="'.$fmt.'" style="top:'.$a['top'].'%;left:'.$a['left'].'%;width:'.$a['width'].'%;height:'.$a['height'].'%;">'.$fmt.'</div>';
-            }
-            ?>
+            <?php foreach ($zones as $i => $z) { if ($z['side'] !== 'front') continue; echo '<div class="print-zone" data-index="'.$i.'" data-side="front" data-format="'.$z['format'].'" style="top:'.$z['top'].'%;left:'.$z['left'].'%;width:'.$z['width'].'%;height:'.$z['height'].'%;">'.$z['format'].'</div>'; } ?>
+        </div>
+        <div id="mockup-canvas-back" class="mockup-canvas">
+            <?php if ($back) { echo wp_get_attachment_image($back, 'medium'); } ?>
+            <?php foreach ($zones as $i => $z) { if ($z['side'] !== 'back') continue; echo '<div class="print-zone" data-index="'.$i.'" data-side="back" data-format="'.$z['format'].'" style="top:'.$z['top'].'%;left:'.$z['left'].'%;width:'.$z['width'].'%;height:'.$z['height'].'%;">'.$z['format'].'</div>'; } ?>
         </div>
     </div>
-    <?php foreach (['A3','A4','A5','A6','A7'] as $fmt) : $a = $areas[$fmt] ?? ['top'=>0,'left'=>0,'width'=>0,'height'=>0]; ?>
-        <input type="hidden" id="area_<?php echo $fmt; ?>_top" name="area_<?php echo $fmt; ?>_top" value="<?php echo esc_attr($a['top']); ?>" />
-        <input type="hidden" id="area_<?php echo $fmt; ?>_left" name="area_<?php echo $fmt; ?>_left" value="<?php echo esc_attr($a['left']); ?>" />
-        <input type="hidden" id="area_<?php echo $fmt; ?>_width" name="area_<?php echo $fmt; ?>_width" value="<?php echo esc_attr($a['width']); ?>" />
-        <input type="hidden" id="area_<?php echo $fmt; ?>_height" name="area_<?php echo $fmt; ?>_height" value="<?php echo esc_attr($a['height']); ?>" />
-    <?php endforeach; ?>
     <p>
         <input type="submit" class="button button-primary" value="<?php echo $editing && $editing->ID ? esc_attr__('Mettre à jour', 'winshirt') : esc_attr__('Enregistrer', 'winshirt'); ?>" />
     </p>
