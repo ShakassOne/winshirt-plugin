@@ -6,11 +6,17 @@ jQuery(function($){
     }
 
     function loadState(){
+        var frontDefault = $('#winshirt-modal').data('default-front') || '';
+        var backDefault  = $('#winshirt-modal').data('default-back') || '';
         if(state.front){
             $('#winshirt-preview-front img').attr('src', state.front);
+        } else if(frontDefault){
+            $('#winshirt-preview-front img').attr('src', frontDefault);
         }
         if(state.back){
             $('#winshirt-preview-back img').attr('src', state.back);
+        } else if(backDefault){
+            $('#winshirt-preview-back img').attr('src', backDefault);
         }
         if(state.text){
             $('#winshirt-text-input').val(state.text);

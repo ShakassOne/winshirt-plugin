@@ -12,10 +12,10 @@
     <thead>
         <tr>
             <th><?php esc_html_e( 'Produit', 'winshirt' ); ?></th>
+            <th style="text-align:center;"><?php esc_html_e( 'Personnalisable', 'winshirt' ); ?></th>
+            <th style="text-align:center;"><?php esc_html_e( 'Afficher bouton', 'winshirt' ); ?></th>
             <th><?php esc_html_e( 'Mockups', 'winshirt' ); ?></th>
-            <th><?php esc_html_e( 'Visuels', 'winshirt' ); ?></th>
             <th><?php esc_html_e( 'Loterie', 'winshirt' ); ?></th>
-            <th><?php esc_html_e( 'Personnalisation', 'winshirt' ); ?></th>
             <th><?php esc_html_e( 'Action', 'winshirt' ); ?></th>
         </tr>
     </thead>
@@ -23,18 +23,45 @@
     <?php if ( $products ) : ?>
         <?php foreach ( $products as $product ) : ?>
             <?php
-                $pid     = $product->get_id();
-                $mockups = get_post_meta( $pid, '_winshirt_mockups', true );
-                $visuals = get_post_meta( $pid, '_winshirt_visuals', true );
-                $lottery = get_post_meta( $pid, '_winshirt_lottery', true );
-                $enabled = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
+                $pid           = $product->get_id();
+                $mockups_raw   = get_post_meta( $pid, '_winshirt_mockups', true );
+                $mockups       = $mockups_raw ? array_map( 'intval', explode( ',', $mockups_raw ) ) : [];
+                $lottery       = get_post_meta( $pid, '_winshirt_lottery', true );
+                $enabled       = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
+                $show_button   = get_post_meta( $pid, '_winshirt_show_button', true ) === 'yes';
+                $default_front = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
+                $default_back  = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
             ?>
             <tr>
                 <td><?php echo esc_html( $product->get_name() ); ?></td>
-                <td><input type="text" name="winshirt_mockups" value="<?php echo esc_attr( $mockups ); ?>" form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
-                <td><input type="text" name="winshirt_visuals" value="<?php echo esc_attr( $visuals ); ?>" form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
-                <td><input type="text" name="winshirt_lottery" value="<?php echo esc_attr( $lottery ); ?>" form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
                 <td style="text-align:center;"><input type="checkbox" name="winshirt_enabled" value="1" <?php checked( $enabled ); ?> form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
+                <td style="text-align:center;"><input type="checkbox" name="winshirt_show_button" value="1" <?php checked( $show_button ); ?> form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
+                <td>
+                    <select name="winshirt_mockups[]" multiple size="3" form="winshirt-form-<?php echo esc_attr( $pid ); ?>">
+                        <?php foreach ( $all_mockups as $m ) : ?>
+                            <option value="<?php echo esc_attr( $m->ID ); ?>" <?php selected( in_array( $m->ID, $mockups, true ) ); ?>><?php echo esc_html( $m->post_title ); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <br />
+                    <label><?php esc_html_e( 'Mockup recto', 'winshirt' ); ?>
+                        <select name="winshirt_default_front" form="winshirt-form-<?php echo esc_attr( $pid ); ?>">
+                            <option value="">-<?php esc_html_e( 'Aucun', 'winshirt' ); ?>-</option>
+                            <?php foreach ( $all_mockups as $m ) : ?>
+                                <option value="<?php echo esc_attr( $m->ID ); ?>" <?php selected( $default_front, $m->ID ); ?>><?php echo esc_html( $m->post_title ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                    <br />
+                    <label><?php esc_html_e( 'Mockup verso', 'winshirt' ); ?>
+                        <select name="winshirt_default_back" form="winshirt-form-<?php echo esc_attr( $pid ); ?>">
+                            <option value="">-<?php esc_html_e( 'Aucun', 'winshirt' ); ?>-</option>
+                            <?php foreach ( $all_mockups as $m ) : ?>
+                                <option value="<?php echo esc_attr( $m->ID ); ?>" <?php selected( $default_back, $m->ID ); ?>><?php echo esc_html( $m->post_title ); ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </label>
+                </td>
+                <td><input type="text" name="winshirt_lottery" value="<?php echo esc_attr( $lottery ); ?>" form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
                 <td>
                     <form method="post" id="winshirt-form-<?php echo esc_attr( $pid ); ?>">
                         <?php wp_nonce_field( 'save_winshirt_product_meta', 'winshirt_product_nonce' ); ?>

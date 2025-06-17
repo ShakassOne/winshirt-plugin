@@ -1,4 +1,4 @@
-<div id="winshirt-modal" class="winshirt-modal">
+<div id="winshirt-modal" class="winshirt-modal" data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>" data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>">
   <div class="winshirt-modal-content">
     <span class="winshirt-close">&times;</span>
     <ul class="winshirt-tab-links">
@@ -33,11 +33,11 @@
     </div>
     <div class="winshirt-preview">
       <div id="winshirt-preview-front" style="display:none;position:relative;">
-        <img src="" alt="Preview front" />
+        <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Preview front" />
         <span class="winshirt-text"></span>
       </div>
       <div id="winshirt-preview-back" style="display:none;position:relative;">
-        <img src="" alt="Preview back" />
+        <img src="<?php echo esc_url( $default_back ?? '' ); ?>" alt="Preview back" />
         <span class="winshirt-text"></span>
       </div>
     </div>
