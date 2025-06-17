@@ -64,6 +64,7 @@ jQuery(function($){
     function startDrawing(index){
         drawing = true;
         drawingIndex = index;
+        $('.print-zone[data-index='+index+']').remove();
         $('.mockup-canvas').addClass('drawing');
     }
 
