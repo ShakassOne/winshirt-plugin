@@ -18,12 +18,14 @@ jQuery(function($){
   var $colorsWrap = $modal.find('.ws-colors');
   var $formatWrap = $modal.find('.ws-format-buttons');
   var $formatBtns = $formatWrap.find('.ws-format-btn');
-  var formatSizes = {
-    A3: {w:700, h:990},
-    A4: {w:495, h:700},
-    A5: {w:350, h:495},
-    A6: {w:247, h:350},
-    A7: {w:175, h:247}
+  var $formatLabel = $('#ws-current-format');
+  var $zonesWrap = $('#ws-print-zones');
+  var formatRatios = {
+    A3: 0.40,
+    A4: 0.25,
+    A5: 0.12,
+    A6: 0.07,
+    A7: 0.04
   };
   var formatOrder = ['A3','A4','A5','A6','A7'];
   var activeItem = null;
@@ -77,34 +79,46 @@ jQuery(function($){
     if(col.back){ $modal.data('default-back', col.back); if(state.side==='back') $previewImg.attr('src', col.back); }
   });
 
-  zones.forEach(function(z){
-    var $z = $modal.find('.ws-print-zone[data-side="'+z.side+'"]');
-    $z.css({top:z.top+'%',left:z.left+'%',width:z.width+'%',height:z.height+'%'});
+  zones.forEach(function(z, idx){
+    var $z = $('<div class="ws-print-zone" />')
+      .attr('data-side', z.side || 'front')
+      .attr('data-index', idx)
+      .css({top:z.top+'%',left:z.left+'%',width:z.width+'%',height:z.height+'%'});
+    $zonesWrap.append($z);
   });
 
   function getContainment(){
-    var $zone = $modal.find('.ws-print-zone[data-side="'+state.side+'"]');
-    if($zone.length && $zone.width() > 0 && $zone.height() > 0){
-      return $zone;
+    var $zones = $modal.find('.ws-print-zone[data-side="'+state.side+'"]');
+    if($zones.length){
+      var $z = $zones.eq(0);
+      if($z.width()>0 && $z.height()>0){
+        return $z;
+      }
     }
     return '.ws-preview';
   }
 
+  function getBaseWidth(){
+    var cont = $(getContainment());
+    return cont.width() || $('.ws-preview').width();
+  }
+
   function detectFormat($it){
     var w = $it.width();
-    var h = $it.height();
+    var base = getBaseWidth();
     var fmt = formatOrder[formatOrder.length-1];
     for(var i=0;i<formatOrder.length;i++){
       var f = formatOrder[i];
-      var s = formatSizes[f];
-      if(w >= s.w && h >= s.h){ fmt = f; break; }
+      var ratio = formatRatios[f];
+      if(w >= base * ratio){ fmt = f; break; }
     }
     return fmt;
   }
 
-  function updateFormatButtons(fmt){
+  function updateFormatUI(fmt){
     $formatBtns.removeClass('active');
     $formatBtns.filter('[data-format="'+fmt+'"]').addClass('active');
+    if($formatLabel.length){ $formatLabel.text(fmt); }
   }
 
   function applyFormat($it, fmt){
@@ -112,11 +126,14 @@ jQuery(function($){
     var zpos = $zone.position();
     var zw = $zone.width();
     var zh = $zone.height();
-    var s = formatSizes[fmt] || {w:0,h:0};
-    var left = zpos.left + (zw - s.w)/2;
-    var top  = zpos.top + (zh - s.h)/2;
-    $it.css({width:s.w, height:s.h, left:left, top:top});
-    updateFormatButtons(fmt);
+    var base = getBaseWidth();
+    var ratio = formatRatios[fmt] || 0;
+    var w = base * ratio;
+    var h = w * 1.414;
+    var left = zpos.left + (zw - w)/2;
+    var top  = zpos.top + (zh - h)/2;
+    $it.css({width:w, height:h, left:left, top:top});
+    updateFormatUI(fmt);
   }
 
   function updateItemTransform($it){
@@ -207,11 +224,11 @@ jQuery(function($){
         var $t = $(this);
         clearTimeout($t.data('rt'));
         $t.data('rt', setTimeout(function(){
-          updateFormatButtons(detectFormat($t));
+          updateFormatUI(detectFormat($t));
         }, 100));
       });
     updateItemTransform($item);
-    updateFormatButtons(detectFormat($item));
+    updateFormatUI(detectFormat($item));
     return $item;
   }
 
@@ -237,11 +254,12 @@ jQuery(function($){
       } else {
         $colorInput.closest('label').hide();
       }
-      updateFormatButtons(detectFormat(activeItem));
+      updateFormatUI(detectFormat(activeItem));
       $sidebar.addClass('show');
     } else {
       $sidebar.removeClass('show');
       $formatBtns.removeClass('active');
+      $formatLabel.text('');
     }
   }
 
@@ -249,7 +267,7 @@ jQuery(function($){
     if(!activeItem) return;
     activeItem.attr('data-scale', $(this).val());
     updateItemTransform(activeItem);
-    updateFormatButtons(detectFormat(activeItem));
+    updateFormatUI(detectFormat(activeItem));
   });
   $rotateInput.on('input change', function(){
     if(!activeItem) return;
@@ -290,7 +308,7 @@ jQuery(function($){
       $canvas.children('.ws-item').hide().filter('[data-side="front"]').show();
       $modal.find('.ws-print-zone').hide().filter('[data-side="front"]').show();
     }
-    if(activeItem){ updateFormatButtons(detectFormat(activeItem)); }
+    if(activeItem){ updateFormatUI(detectFormat(activeItem)); }
   }
   $('#winshirt-front-btn').on('click', function(){ switchSide('front'); });
   $('#winshirt-back-btn').on('click', function(){ switchSide('back'); });

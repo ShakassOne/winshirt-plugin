@@ -313,6 +313,17 @@
   pointer-events: none;
   display: none;
 }
+#ws-print-zones {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.ws-format-label {
+  margin-left: .5rem;
+  font-size: .875rem;
+  opacity: .8;
+  line-height: 2rem;
+}
 .ws-item.ws-selected {
   outline: 1px solid #fff;
 }

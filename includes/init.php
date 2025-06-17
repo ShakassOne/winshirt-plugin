@@ -97,6 +97,8 @@ function winshirt_render_customize_button() {
             foreach ( $zmeta as $z ) {
                 $zones[] = [
                     'side'   => $z['side'] ?? 'front',
+                    'name'   => $z['name'] ?? '',
+                    'format' => $z['format'] ?? 'A4',
                     'top'    => floatval( $z['top'] ?? 0 ),
                     'left'   => floatval( $z['left'] ?? 0 ),
                     'width'  => floatval( $z['width'] ?? 0 ),

@@ -60,8 +60,7 @@
       <div class="ws-preview">
         <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
         <div id="ws-canvas" class="ws-canvas"></div>
-        <div class="ws-print-zone" data-side="front"></div>
-        <div class="ws-print-zone" data-side="back"></div>
+        <div id="ws-print-zones"></div>
       </div>
 
       <div class="ws-sidebar hidden">
@@ -95,6 +94,7 @@
             <button class="ws-format-btn" data-format="A5">A5</button>
             <button class="ws-format-btn" data-format="A6">A6</button>
             <button class="ws-format-btn" data-format="A7">A7</button>
+            <span id="ws-current-format" class="ws-format-label"></span>
           </div>
           <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
         </div>
