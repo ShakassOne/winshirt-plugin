@@ -5,6 +5,7 @@
 add_action('wp_enqueue_scripts', function () {
     if (is_product()) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
+        wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
     }
@@ -144,6 +145,82 @@ function winshirt_render_customize_button() {
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
+
+function winshirt_render_lottery_info() {
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+
+    $pid      = $product->get_id();
+    $lottery  = absint( get_post_meta( $pid, 'linked_lottery', true ) );
+    if ( ! $lottery ) {
+        return;
+    }
+
+    $tickets   = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
+    $max       = absint( get_post_meta( $lottery, 'max_participants', true ) );
+    $count     = absint( get_post_meta( $lottery, 'participants_count', true ) );
+    $img_id    = get_post_meta( $lottery, '_winshirt_lottery_animation', true );
+    $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'thumbnail' ) : '';
+    $percent   = $max > 0 ? min( 100, ( $count / $max ) * 100 ) : 0;
+
+    echo '<div class="winshirt-lottery-info">';
+    echo '<h3>' . esc_html( get_the_title( $lottery ) ) . '</h3>';
+    if ( $img_url ) {
+        echo '<img src="' . esc_url( $img_url ) . '" alt="" />';
+    }
+    if ( $tickets ) {
+        echo '<p>+' . esc_html( $tickets ) . ' tickets</p>';
+    }
+    if ( $max ) {
+        echo '<p>' . esc_html( $count . ' / ' . $max . ' participants' ) . '</p>';
+        echo '<div class="winshirt-lottery-progress"><div class="bar" style="width:' . esc_attr( $percent ) . '%;background:' . ( $percent > 80 ? '#c00' : ( $percent > 50 ? '#e67e00' : '#2ecc71' ) ) . '"></div></div>';
+        if ( $count >= $max ) {
+            echo '<p class="winshirt-lottery-full">' . esc_html__( 'Loterie complète', 'winshirt' ) . '</p>';
+        }
+    } else {
+        echo '<p>' . esc_html( $count ) . ' participants</p>';
+    }
+    echo '</div>';
+}
+add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_info', 29 );
+
+function winshirt_lottery_purchasable( $purchasable, $product ) {
+    $lottery = absint( get_post_meta( $product->get_id(), 'linked_lottery', true ) );
+    if ( $lottery ) {
+        $max   = absint( get_post_meta( $lottery, 'max_participants', true ) );
+        $count = absint( get_post_meta( $lottery, 'participants_count', true ) );
+        if ( $max > 0 && $count >= $max ) {
+            return false;
+        }
+    }
+    return $purchasable;
+}
+add_filter( 'woocommerce_is_purchasable', 'winshirt_lottery_purchasable', 10, 2 );
+
+function winshirt_register_lottery_participant( $order_id ) {
+    $order = wc_get_order( $order_id );
+    if ( ! $order ) {
+        return;
+    }
+
+    foreach ( $order->get_items() as $item ) {
+        $pid     = $item->get_product_id();
+        $lottery = absint( get_post_meta( $pid, 'linked_lottery', true ) );
+        if ( ! $lottery ) {
+            continue;
+        }
+        $count = absint( get_post_meta( $lottery, 'participants_count', true ) );
+        $tickets = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
+        $increment = max( 1, $item->get_quantity() );
+        if ( $tickets > 0 ) {
+            $increment = $increment; // participant count per quantity
+        }
+        update_post_meta( $lottery, 'participants_count', $count + $increment );
+    }
+}
+add_action( 'woocommerce_thankyou', 'winshirt_register_lottery_participant' );
 
 // Register custom post type for mockups
 add_action('init', function () {

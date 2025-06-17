@@ -16,6 +16,7 @@
             <th style="text-align:center;"><?php esc_html_e( 'Afficher bouton', 'winshirt' ); ?></th>
             <th><?php esc_html_e( 'Mockups', 'winshirt' ); ?></th>
             <th><?php esc_html_e( 'Loterie', 'winshirt' ); ?></th>
+            <th><?php esc_html_e( 'Tickets', 'winshirt' ); ?></th>
             <th><?php esc_html_e( 'Action', 'winshirt' ); ?></th>
         </tr>
     </thead>
@@ -26,7 +27,8 @@
                 $pid           = $product->get_id();
                 $mockups_raw   = get_post_meta( $pid, '_winshirt_mockups', true );
                 $mockups       = $mockups_raw ? array_map( 'intval', explode( ',', $mockups_raw ) ) : [];
-                $lottery       = get_post_meta( $pid, '_winshirt_lottery', true );
+                $lottery       = get_post_meta( $pid, 'linked_lottery', true );
+                $tickets       = get_post_meta( $pid, 'loterie_tickets', true );
                 $enabled       = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
                 $show_button   = get_post_meta( $pid, '_winshirt_show_button', true ) === 'yes';
                 $default_front = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
@@ -61,7 +63,15 @@
                         </select>
                     </label>
                 </td>
-                <td><input type="text" name="winshirt_lottery" value="<?php echo esc_attr( $lottery ); ?>" form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
+                <td>
+                    <select name="linked_lottery" form="winshirt-form-<?php echo esc_attr( $pid ); ?>">
+                        <option value="">-</option>
+                        <?php foreach ( $all_lotteries as $l ) : ?>
+                            <option value="<?php echo esc_attr( $l->ID ); ?>" <?php selected( $lottery, $l->ID ); ?>><?php echo esc_html( $l->post_title ); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </td>
+                <td><input type="number" name="loterie_tickets" value="<?php echo esc_attr( $tickets ); ?>" form="winshirt-form-<?php echo esc_attr( $pid ); ?>" /></td>
                 <td>
                     <form method="post" id="winshirt-form-<?php echo esc_attr( $pid ); ?>">
                         <?php wp_nonce_field( 'save_winshirt_product_meta', 'winshirt_product_nonce' ); ?>
@@ -72,7 +82,7 @@
             </tr>
         <?php endforeach; ?>
     <?php else : ?>
-        <tr><td colspan="6"><?php esc_html_e( 'Aucun produit trouve.', 'winshirt' ); ?></td></tr>
+        <tr><td colspan="7"><?php esc_html_e( 'Aucun produit trouve.', 'winshirt' ); ?></td></tr>
     <?php endif; ?>
     </tbody>
 </table>

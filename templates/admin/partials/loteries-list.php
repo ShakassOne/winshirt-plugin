@@ -87,6 +87,13 @@
             <td><input type="number" name="product" id="lottery-product" value="<?php echo esc_attr(get_post_meta($editing->ID ?? 0, '_winshirt_lottery_product', true)); ?>" /></td>
         </tr>
         <tr>
+            <th scope="row"><label for="lottery-max">Participants max</label></th>
+            <td>
+                <input type="number" name="max_participants" id="lottery-max" value="<?php echo esc_attr(get_post_meta($editing->ID ?? 0, 'max_participants', true) ?: 0); ?>" />
+                <p class="description">Nombre total de participants autoris&eacute;s (0 = illimit&eacute;)</p>
+            </td>
+        </tr>
+        <tr>
             <th scope="row">Active</th>
             <td><label><input type="checkbox" name="active" value="1" <?php checked(get_post_meta($editing->ID ?? 0, '_winshirt_lottery_active', true), 'yes'); ?> /> <?php esc_html_e('Activer cette loterie', 'winshirt'); ?></label></td>
         </tr>
