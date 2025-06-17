@@ -109,10 +109,11 @@
             <button class="ws-format-btn" data-format="A7">A7</button>
             <span id="ws-current-format" class="ws-format-label"></span>
           </div>
-          <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
-          <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
+      <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
+      <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
         </div>
 
     </div>
+    <div id="ws-debug" class="ws-debug"></div>
   </div>
 </div>

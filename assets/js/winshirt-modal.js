@@ -21,6 +21,7 @@ jQuery(function($){
   var $formatLabel = $('#ws-current-format');
   var $zonesWrap = $('#ws-print-zones');
   var $tabSelect = $('#ws-tab-select');
+  var $debug = $('#ws-debug');
   var formatHeights = { A3:0.467 };
   formatHeights.A4 = formatHeights.A3 / Math.sqrt(2);
   formatHeights.A5 = formatHeights.A4 / Math.sqrt(2);
@@ -29,6 +30,33 @@ jQuery(function($){
   var formatOrder = ['A3','A4','A5','A6','A7'];
   var activeItem = null;
   var activeTab  = 'gallery';
+
+  function showTooltip(text){
+    if(!$debug.length) return;
+    $debug.text(text).addClass('show');
+    clearTimeout($debug.data('to'));
+    $debug.data('to', setTimeout(function(){ $debug.removeClass('show'); }, 800));
+  }
+
+  function updateDebug($it){
+    if(!$debug.length) return;
+    var pos = $it.position();
+    var info = 'x:'+Math.round(pos.left)+' y:'+Math.round(pos.top)+' w:'+Math.round($it.width())+' h:'+Math.round($it.height())+' ('+detectFormat($it)+')';
+    $debug.text(info);
+  }
+
+  function applyClip(){
+    var $z = $modal.find('.ws-print-zone[data-side="'+state.side+'"]').eq(0);
+    if($z.length){
+      var pos = $z.position();
+      var w = $z.parent().width();
+      var h = $z.parent().height();
+      var clip = 'inset(' + pos.top + 'px ' + (w - (pos.left + $z.width())) + 'px ' + (h - (pos.top + $z.height())) + 'px ' + pos.left + 'px)';
+      $canvas.css('clip-path', clip);
+    } else {
+      $canvas.css('clip-path','none');
+    }
+  }
 
   function checkMobile(){
     if(window.innerWidth <= 768){
@@ -40,6 +68,14 @@ jQuery(function($){
   }
 
   checkMobile();
+  if(localStorage.getItem('wsDebug')==='1'){ $debug.addClass('show'); }
+  $(document).on('keydown', function(e){
+    if(e.key.toLowerCase()==='d' && e.ctrlKey){
+      e.preventDefault();
+      if($debug.hasClass('show')){ $debug.removeClass('show'); localStorage.setItem('wsDebug','0'); }
+      else { $debug.addClass('show'); localStorage.setItem('wsDebug','1'); }
+    }
+  });
 
   function saveState(){
     var items = [];
@@ -150,6 +186,7 @@ jQuery(function($){
       .css({top:z.top+'%',left:z.left+'%',width:z.width+'%',height:z.height+'%'});
     $zonesWrap.append($z);
   });
+  applyClip();
 
   function getContainment(){
     var $zones = $modal.find('.ws-print-zone[data-side="'+state.side+'"]');
@@ -234,6 +271,8 @@ function openModal(){
     setTimeout(function(){ $modal.find('.ws-right').addClass('show'); }, 10);
   }
   openTab('gallery');
+  if(activeItem){ updateDebug(activeItem); }
+  applyClip();
 }
 
   function openTab(tab){
@@ -342,21 +381,26 @@ function openModal(){
     }
     $item.append('<button class="ws-remove" title="Supprimer">×</button>');
     $canvas.append($item);
+    applyClip();
     var cont = getContainment();
     $item.draggable({
       containment:cont,
       drag:function(e,ui){
         $item.attr('data-x', ui.position.left).attr('data-y', ui.position.top);
         updateItemTransform($item);
+        updateDebug($item);
       },
       stop:function(e,ui){
         $item.attr('data-x', ui.position.left).attr('data-y', ui.position.top);
         updateItemTransform($item);
+        updateDebug($item);
+        showTooltip('Taille estimée : '+detectFormat($item));
         saveState();
       }
     });
     $item.resizable({ handles:'ne, se, sw, nw', containment:cont })
       .on('resize', function(){
+        updateDebug($item);
         saveState();
       })
       .on('resizestop', function(){
@@ -365,6 +409,8 @@ function openModal(){
         $t.data('rt', setTimeout(function(){
           updateFormatUIFromItem($t);
         }, 100));
+        updateDebug($t);
+        showTooltip('Taille estimée : '+detectFormat($t));
         saveState();
       });
     updateItemTransform($item);
@@ -400,6 +446,7 @@ function openModal(){
         $colorInput.closest('label').hide();
       }
       updateFormatUIFromItem(activeItem);
+      updateDebug(activeItem);
       $sidebar.addClass('show');
     } else {
       $sidebar.removeClass('show');
@@ -413,12 +460,16 @@ function openModal(){
     activeItem.attr('data-scale', $(this).val());
     updateItemTransform(activeItem);
     updateFormatUIFromItem(activeItem);
+    updateDebug(activeItem);
+    showTooltip('Taille estimée : '+detectFormat(activeItem));
     saveState();
   });
   $rotateInput.on('input change', function(){
     if(!activeItem) return;
     activeItem.attr('data-rotation', $(this).val());
     updateItemTransform(activeItem);
+    updateDebug(activeItem);
+    showTooltip('Taille estimée : '+detectFormat(activeItem));
     saveState();
   });
   $colorInput.on('input change', function(){
@@ -432,6 +483,7 @@ function openModal(){
       activeItem.remove();
       activeItem=null;
       $sidebar.removeClass('show');
+      $debug.text('');
       saveState();
     }
   });
@@ -463,6 +515,8 @@ function openModal(){
       $modal.find('.ws-print-zone').hide().filter('[data-side="front"]').show();
     }
     if(activeItem){ updateFormatUIFromItem(activeItem); }
+    applyClip();
+    if(activeItem){ updateDebug(activeItem); }
     saveState();
   }
   $('#winshirt-front-btn').on('click', function(){ switchSide('front'); });
