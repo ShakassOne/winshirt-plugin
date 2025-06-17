@@ -2,84 +2,109 @@ jQuery(function($){
   var $modal = $('#winshirt-customizer-modal');
   if(!$modal.length) return;
 
-  var state = JSON.parse(localStorage.getItem('winshirt_state')) || {front:'', back:'', text:'', side:'front'};
+  var state = {side:'front'};
+  var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
 
-  function saveState(){
-    localStorage.setItem('winshirt_state', JSON.stringify(state));
+  function openModal(){
+    $modal.removeClass('hidden');
   }
-
-  function loadState(){
-    var frontDefault = $modal.data('default-front') || '';
-    var backDefault  = $modal.data('default-back') || '';
-    if(state.side === 'back'){
-      $('#winshirt-back-btn').addClass('active');
-      $('#winshirt-front-btn').removeClass('active');
-      $previewImg.attr('src', state.back || backDefault);
-    }else{
-      $('#winshirt-front-btn').addClass('active');
-      $('#winshirt-back-btn').removeClass('active');
-      $previewImg.attr('src', state.front || frontDefault);
-    }
-    if(state.text){
-      $('#winshirt-text-input').val(state.text);
-    }
-  }
-
-  function switchSide(side){
-    state.side = side;
-    loadState();
-    saveState();
+  function closeModal(){
+    $modal.addClass('hidden');
   }
 
   $('#winshirt-open-modal').on('click', function(e){
     e.preventDefault();
-    $modal.removeClass('hidden');
-    loadState();
+    openModal();
   });
-
-  $('#winshirt-close-modal').on('click', function(){
-    $modal.addClass('hidden');
-  });
+  $('#winshirt-close-modal').on('click', closeModal);
+  $modal.on('click', function(e){ if($(e.target).is('.ws-modal')) closeModal(); });
+  $(document).on('keyup', function(e){ if(e.key === 'Escape') closeModal(); });
 
   $('.ws-tab-button').on('click', function(){
     var tab = $(this).data('tab');
     $('.ws-tab-button').removeClass('active');
     $(this).addClass('active');
-    $('.ws-tab-content').removeClass('active').addClass('hidden');
-    $('#ws-tab-'+tab).addClass('active').removeClass('hidden');
+    $('.ws-tab-content').addClass('hidden').removeClass('active');
+    $('#ws-tab-'+tab).removeClass('hidden').addClass('active');
   });
 
-  $('.ws-upload-btn').on('click', function(){
-    $('#ws-upload-input').trigger('click');
-  });
-
+  $('.ws-upload-btn').on('click', function(){ $('#ws-upload-input').trigger('click'); });
   $('#ws-upload-input').on('change', function(){
-    var input = this;
-    if(!input.files.length) return;
+    var file = this.files[0];
+    if(!file) return;
     var reader = new FileReader();
-    reader.onload = function(e){
-      if(state.side === 'back'){
-        state.back = e.target.result;
-      }else{
-        state.front = e.target.result;
-      }
-      loadState();
-      saveState();
-    };
-    reader.readAsDataURL(input.files[0]);
+    reader.onload = function(e){ addItem('image', e.target.result); };
+    reader.readAsDataURL(file);
+    $(this).val('');
   });
 
-  $('#winshirt-text-input').on('input', function(){
-    state.text = $(this).val();
-    saveState();
+  $('#winshirt-text-input').on('keydown', function(e){
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      var txt = $(this).val().trim();
+      if(txt){
+        addItem('text', txt);
+        $(this).val('');
+      }
+    }
   });
+
+  function addItem(type, content){
+    var $item = $('<div class="ws-item" />').attr('data-type', type).attr('data-side', state.side);
+    if(type === 'image'){
+      $item.append('<img src="'+content+'" alt="" />');
+    }else{
+      $item.append('<span class="ws-text">'+content+'</span>');
+    }
+    $item.append('<button class="ws-remove" title="Supprimer">×</button>');
+    $canvas.append($item);
+    $item.draggable({containment:'.ws-preview',snap:'.ws-preview',snapTolerance:10});
+    $item.resizable({handles:'n, e, s, w, ne, se, sw, nw',containment:'.ws-preview',snap:'.ws-preview',snapTolerance:10});
+  }
+
+  $(document).on('click', '.ws-remove', function(e){
+    e.preventDefault();
+    $(this).closest('.ws-item').remove();
+  });
+
+  function switchSide(side){
+    state.side = side;
+    if(side === 'back'){
+      $('#winshirt-back-btn').addClass('active');
+      $('#winshirt-front-btn').removeClass('active');
+      $previewImg.attr('src', $modal.data('default-back'));
+      $canvas.children('.ws-item').hide().filter('[data-side="back"]').show();
+    }else{
+      $('#winshirt-front-btn').addClass('active');
+      $('#winshirt-back-btn').removeClass('active');
+      $previewImg.attr('src', $modal.data('default-front'));
+      $canvas.children('.ws-item').hide().filter('[data-side="front"]').show();
+    }
+  }
 
   $('#winshirt-front-btn').on('click', function(){ switchSide('front'); });
   $('#winshirt-back-btn').on('click', function(){ switchSide('back'); });
 
-  // Draggable + resizable zone
-  $('#design-zone').draggable({containment:'.ws-preview'}).resizable({containment:'.ws-preview'});
+  $('#winshirt-validate').on('click', function(){
+    var items = [];
+    $canvas.children('.ws-item').each(function(){
+      var $it = $(this);
+      var pos = $it.position();
+      items.push({
+        type: $it.data('type'),
+        side: $it.data('side'),
+        left: (pos.left / $canvas.width()).toFixed(4),
+        top: (pos.top / $canvas.height()).toFixed(4),
+        width: ($it.width() / $canvas.width()).toFixed(4),
+        height: ($it.height() / $canvas.height()).toFixed(4),
+        content: $it.data('type') === 'text' ? $it.find('.ws-text').text() : $it.find('img').attr('src')
+      });
+    });
+    $('#winshirt-custom-data').val(JSON.stringify(items));
+    console.log('WinShirt data', JSON.stringify(items));
+    closeModal();
+  });
 
-  loadState();
+  switchSide('front');
 });
