@@ -19,3 +19,8 @@ Un bouton "Personnaliser ce produit" ouvre un modale sur la fiche produit pour c
 
 ## Gestion des loteries
 Une page "Loteries" permet de créer et d'administrer les tirages. Chaque loterie peut être liée à un produit WooCommerce, disposer de dates de début/fin, de lots à gagner et d'une animation personnalisée. Les participants enregistrés et leur nombre sont visibles depuis cette interface.
+
+## Shortcodes
+* `[loterie_box id="123" vedette="true"]` – carte individuelle de loterie avec tous les détails.
+* `[winshirt_lotteries]` – liste de toutes les loteries sous forme de cartes.
+* `[loterie_thumb id="123"]` – uniquement l'image miniature.
