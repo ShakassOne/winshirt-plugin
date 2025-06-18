@@ -7,6 +7,7 @@
   justify-content: center;
   background: rgba(0,0,0,0.6);
   backdrop-filter: blur(6px);
+  padding: 1%;
   z-index: 9999;
 }
 .hidden,
@@ -43,6 +44,9 @@
   flex-basis: 75%;
   padding-right: 1rem;
   box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
 }
 
 .ws-right {
@@ -210,7 +214,7 @@
   background: rgba(255,255,255,0.2);
   border-radius: .25rem;
   cursor: move;
-  transition: transform .2s ease;
+  transition: none;
 }
 .ws-item .ui-resizable-handle {
   width: 8px;
