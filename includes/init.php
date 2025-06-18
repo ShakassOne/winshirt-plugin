@@ -414,9 +414,9 @@ function winshirt_register_lottery_participant( $order_id ) {
         }
         $count = absint( get_post_meta( $lottery, 'participants_count', true ) );
         $tickets = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
-        $increment = max( 1, $item->get_quantity() );
+        $increment = $item->get_quantity();
         if ( $tickets > 0 ) {
-            $increment = $increment; // participant count per quantity
+            $increment = $item->get_quantity() * $tickets; // participant count per ticket and quantity
         }
         update_post_meta( $lottery, 'participants_count', $count + $increment );
     }
