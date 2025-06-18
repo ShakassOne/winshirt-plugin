@@ -327,8 +327,11 @@ function winshirt_render_lottery_selector() {
         $max       = absint( get_post_meta( $lottery->ID, 'max_participants', true ) );
         $count     = absint( get_post_meta( $lottery->ID, 'participants_count', true ) );
         $img_id    = get_post_meta( $lottery->ID, '_winshirt_lottery_animation', true );
-        $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'thumbnail' ) : '';
+        $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
         $draw_date = get_post_meta( $lottery->ID, '_winshirt_lottery_end', true );
+        $active    = get_post_meta( $lottery->ID, '_winshirt_lottery_active', true ) === 'yes';
+        $value     = get_post_meta( $lottery->ID, '_winshirt_lottery_value', true );
+        $featured  = get_post_meta( $lottery->ID, '_winshirt_lottery_featured', true ) === 'yes';
         $info      = wp_json_encode([
             'tickets'      => $tickets,
             'goal'         => $max,
@@ -336,6 +339,9 @@ function winshirt_render_lottery_selector() {
             'image'        => $img_url,
             'name'         => $lottery->post_title,
             'drawDate'     => $draw_date,
+            'active'       => $active,
+            'value'        => $value,
+            'featured'     => $featured,
         ]);
         echo '<option value="' . esc_attr( $lottery->ID ) . '" data-info="' . esc_attr( $info ) . '">' . esc_html( $lottery->post_title ) . '</option>';
     }
