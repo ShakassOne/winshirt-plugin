@@ -1,9 +1,15 @@
 jQuery(function($){
-  var $container = $('.loteries-container');
-  if(!$container.length){
+  var $containers = $('.loteries-container');
+  if(!$containers.length){
     return;
   }
+  if($containers.length > 1){
+    $containers.slice(1).remove();
+  }
+  var $container = $containers.first();
 
+  // Ici, ton code de traitement des loteries continue...
+});
   $('.winshirt-lottery-select').each(function(index){
     var $select = $(this);
 

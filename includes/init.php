@@ -307,6 +307,11 @@ function winshirt_render_customize_button() {
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
 
 function winshirt_render_lottery_selector() {
+    static $rendered = false;
+    if ( $rendered ) {
+        return;
+    }
+    $rendered = true;
     global $product;
     if ( ! $product instanceof WC_Product ) {
         return;
