@@ -19,6 +19,19 @@ require_once WINSHIRT_PATH . 'includes/pages/loteries.php';
 require_once WINSHIRT_PATH . 'includes/pages/commandes.php';
 require_once WINSHIRT_PATH . 'includes/pages/configuration.php';
 
+// Register uninstall hook
+register_uninstall_hook(__FILE__, 'winshirt_plugin_uninstall');
+
+/**
+ * Callback executed on plugin uninstall.
+ *
+ * Loads the dedicated uninstall script which cleans up
+ * options and custom post data created by the plugin.
+ */
+function winshirt_plugin_uninstall() {
+    require_once WINSHIRT_PATH . 'uninstall.php';
+}
+
 // Register WinShirt admin pages
 add_action('admin_menu', 'winshirt_register_admin_pages');
 
