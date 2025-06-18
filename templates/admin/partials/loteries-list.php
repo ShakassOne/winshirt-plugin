@@ -12,7 +12,7 @@
             <th><?php esc_html_e('Dates', 'winshirt'); ?></th>
             <th style="text-align:center;">Actif</th>
             <th><?php esc_html_e('Participations', 'winshirt'); ?></th>
-            <th><?php esc_html_e('Shortcode', 'winshirt'); ?></th>
+            <th><?php esc_html_e('Shortcodes', 'winshirt'); ?></th>
             <th><?php esc_html_e('Actions', 'winshirt'); ?></th>
         </tr>
     </thead>
@@ -34,7 +34,10 @@
                 <td style="text-align:center;"><input type="checkbox" disabled <?php checked($active); ?> /></td>
                 <td><?php echo esc_html($count); ?></td>
                 <td>
+                    <input type="text" readonly class="regular-text code" value="[loterie_box id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+                    <p class="description"><?php esc_html_e('Carte complète', 'winshirt'); ?></p>
                     <input type="text" readonly class="regular-text code" value="[loterie_thumb id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+                    <p class="description"><?php esc_html_e('Miniature uniquement', 'winshirt'); ?></p>
                 </td>
                 <td>
                     <a class="button" href="<?php echo esc_url(add_query_arg(['page' => 'winshirt-lotteries', 'edit' => $lottery->ID], admin_url('admin.php'))); ?>"><?php esc_html_e('Modifier', 'winshirt'); ?></a>
@@ -47,6 +50,9 @@
     <?php endif; ?>
     </tbody>
 </table>
+<p class="description">
+    <?php esc_html_e('Utilisez [loterie_box id="123"] pour afficher la carte complète ou [loterie_thumb id="123"] pour uniquement la miniature (remplacez 123 par l\'ID de la loterie).', 'winshirt'); ?>
+</p>
 
 <?php if ($editing) : ?>
 <h2><?php esc_html_e('Participants', 'winshirt'); ?> (<?php echo count($participants); ?>)</h2>
