@@ -16,12 +16,16 @@ jQuery(function($){
     function render(){
       var $opt  = $select.find('option:selected');
       var data  = $opt.data('info');
+      var lid   = $opt.val();
       var $card = $container.find('#loterie-card-'+index);
 
       // Always remove previously rendered cards for this select
       $card.remove();
+      if(lid){
+        $container.find('.loterie-card[data-lottery="'+lid+'"]').remove();
+      }
 
-      if(!$opt.val()){
+      if(!lid){
         return;
       }
 
@@ -33,7 +37,7 @@ jQuery(function($){
       var percent = data.goal ? Math.min(100, Math.round((data.participants / data.goal) * 100)) : 0;
       var badge   = data.featured ? '<span class="loterie-badge">BEST</span>' : (data.active ? '<span class="loterie-badge">NOUVEAU</span>' : '');
       var price   = data.value ? '<span class="loterie-price">'+data.value+'€</span>' : '';
-      var html    = '<div class="loterie-card" id="loterie-card-'+index+'" data-index="'+index+'">'+
+      var html    = '<div class="loterie-card" id="loterie-card-'+index+'" data-index="'+index+'" data-lottery="'+lid+'">'+
         badge+
         '<button type="button" class="loterie-remove" aria-label="Retirer">&times;</button>'+
         (data.image ? '<img class="loterie-img" src="'+data.image+'" alt="" />' : '')+
