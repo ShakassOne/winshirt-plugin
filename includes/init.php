@@ -10,9 +10,8 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
 
-        wp_enqueue_script('vanilla-tilt', WINSHIRT_URL . 'assets/js/vanilla-tilt.min.js', [], '1.0', true);
-        wp_enqueue_script('winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', ['jquery', 'vanilla-tilt'], '1.0', true);
-        wp_enqueue_script('winshirt-lottery-select', WINSHIRT_URL . 'assets/js/winshirt-lottery.js', ['jquery', 'winshirt-lottery-cards'], '1.0', true);
+        wp_enqueue_style('winshirt-lottery-selected', WINSHIRT_URL . 'assets/css/winshirt-lottery-selected.css', [], '1.0');
+        wp_enqueue_script('winshirt-lottery-selected', WINSHIRT_URL . 'assets/js/winshirt-lottery-selected.js', ['jquery'], '1.0', true);
     }
 });
 
@@ -357,10 +356,10 @@ function winshirt_render_lottery_selector() {
             echo '<option value="' . esc_attr( $lottery->ID ) . '" data-info="' . esc_attr( $info ) . '">' . esc_html( $lottery->post_title ) . '</option>';
         }
         echo '</select>';
-        echo '<div class="winshirt-lottery-info"></div>';
         echo '</div>';
     }
     echo '</div>';
+    echo '<div class="loteries-container"></div>';
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_selector', 28 );
 
