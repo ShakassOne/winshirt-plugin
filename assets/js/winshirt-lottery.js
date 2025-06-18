@@ -13,21 +13,21 @@ jQuery(function($){
     if(typeof data === 'string'){
       try{ data = JSON.parse(data); } catch(e){ data = {}; }
     }
-    var html = '<div class="winshirt-lottery-info">';
-    if(data.img) html += '<img src="'+data.img+'" alt="" />';
-    html += '<h3>'+$opt.text()+'</h3>';
-    if(data.tickets) html += '<p>+'+data.tickets+' tickets</p>';
-    if(data.max){
-      var percent = data.max > 0 ? Math.min(100, (data.count/data.max)*100) : 0;
-      html += '<p>'+data.count+' / '+data.max+' participants</p>';
-      html += '<div class="winshirt-lottery-progress"><div class="bar" style="width:'+percent+'%;background:'+(percent>80?'#c00':(percent>50?'#e67e00':'#2ecc71'))+'"></div></div>';
-      if(data.count >= data.max) html += '<p class="winshirt-lottery-full">Loterie complète</p>';
-    }else if(typeof data.count !== 'undefined'){
-      html += '<p>'+data.count+' participants</p>';
-    }
-    html += '</div>';
+
+    var percent = data.goal ? Math.min(100, (data.participants / data.goal) * 100) : 0;
+    var draw = data.drawDate ? '<p style="margin-top:1rem;">\ud83d\udcc5 Tirage le '+data.drawDate+'</p>' : '';
+    var img = data.image ? '<img src="'+data.image+'" alt="'+(data.name||$opt.text())+'" />' : '';
+
+    var html = '<div class="lottery-card">'+
+      img+
+      '<h3>'+(data.name||$opt.text())+'</h3>'+
+      '<p>\ud83c\udf39 +'+data.tickets+' tickets</p>'+
+      '<p>'+data.participants+' / '+data.goal+' participants</p>'+
+      '<div class="lottery-progress"><div class="lottery-progress-bar" style="width:'+percent+'%"></div></div>'+
+      draw+
+      '</div>';
     $info.html(html);
   }
 
-  $select.on('change', update);
+  $select.on('change', update).trigger('change');
 });
