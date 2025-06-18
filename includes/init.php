@@ -8,6 +8,7 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
+        wp_enqueue_script('winshirt-lottery-select', WINSHIRT_URL . 'assets/js/winshirt-lottery.js', ['jquery'], '1.0', true);
     }
 });
 
@@ -146,6 +147,47 @@ function winshirt_render_customize_button() {
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
 
+function winshirt_render_lottery_selector() {
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+
+    $pid       = $product->get_id();
+    $tickets    = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
+    $lotteries  = get_posts([
+        'post_type'   => 'winshirt_lottery',
+        'numberposts' => -1,
+        'orderby'     => 'title',
+    ]);
+
+    if ( ! $lotteries ) {
+        return;
+    }
+
+    echo '<div class="winshirt-lottery-select">';
+    echo '<label for="winshirt-lottery-select">' . esc_html__( 'Choisissez votre loterie', 'winshirt' ) . '</label> ';
+    echo '<select id="winshirt-lottery-select">';
+    echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
+    foreach ( $lotteries as $lottery ) {
+        $max    = absint( get_post_meta( $lottery->ID, 'max_participants', true ) );
+        $count  = absint( get_post_meta( $lottery->ID, 'participants_count', true ) );
+        $img_id = get_post_meta( $lottery->ID, '_winshirt_lottery_animation', true );
+        $img_url= $img_id ? wp_get_attachment_image_url( $img_id, 'thumbnail' ) : '';
+        $info   = wp_json_encode([
+            'tickets' => $tickets,
+            'max'     => $max,
+            'count'   => $count,
+            'img'     => $img_url,
+        ]);
+        echo '<option value="' . esc_attr( $lottery->ID ) . '" data-info="' . esc_attr( $info ) . '">' . esc_html( $lottery->post_title ) . '</option>';
+    }
+    echo '</select>';
+    echo '<div id="winshirt-lottery-info"></div>';
+    echo '</div>';
+}
+add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_selector', 28 );
+
 function winshirt_render_lottery_info() {
     global $product;
     if ( ! $product instanceof WC_Product ) {
@@ -184,7 +226,6 @@ function winshirt_render_lottery_info() {
     }
     echo '</div>';
 }
-add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_info', 29 );
 
 function winshirt_lottery_purchasable( $purchasable, $product ) {
     $lottery = absint( get_post_meta( $product->get_id(), 'linked_lottery', true ) );
