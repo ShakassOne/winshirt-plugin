@@ -484,7 +484,8 @@ function winshirt_register_lottery_participant( $order_id ) {
         update_post_meta( $lottery, 'participants_count', $count + $increment );
     }
 }
-add_action( 'woocommerce_thankyou', 'winshirt_register_lottery_participant' );
+// Update lottery participation when a payment is confirmed
+add_action( 'woocommerce_payment_complete', 'winshirt_register_lottery_participant' );
 
 // Register custom post type for mockups
 add_action('init', function () {
