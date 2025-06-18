@@ -1,11 +1,12 @@
 <?php
 /**
  * List of WinShirt orders for production.
- * Variables: $orders, $filters
+ * Variables: $orders, $filters, $max_num_pages, $page
  */
 ?>
 <form method="get" style="margin-bottom:15px;">
     <input type="hidden" name="page" value="winshirt-orders" />
+    <input type="hidden" name="paged" value="<?php echo esc_attr($page); ?>" />
     <select name="status">
         <option value=""><?php esc_html_e('Tous les statuts', 'winshirt'); ?></option>
         <?php
@@ -86,3 +87,15 @@
         <?php endif; ?>
     </tbody>
 </table>
+<?php if (!empty($max_num_pages) && $max_num_pages > 1) : ?>
+    <div class="tablenav"><div class="tablenav-pages">
+        <?php
+        echo paginate_links([
+            'base'    => add_query_arg(array_merge($_GET, ['paged' => '%#%'])),
+            'format'  => '',
+            'current' => max(1, $page),
+            'total'   => $max_num_pages,
+        ]);
+        ?>
+    </div></div>
+<?php endif; ?>
