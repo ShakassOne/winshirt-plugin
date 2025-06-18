@@ -14,12 +14,14 @@ jQuery(function($){
     var $select = $(this);
 
     function render(){
-      var $opt = $select.find('option:selected');
-      var data = $opt.data('info');
-      var card = $container.find('.loterie-card[data-index="'+index+'"]');
+      var $opt  = $select.find('option:selected');
+      var data  = $opt.data('info');
+      var $card = $container.find('.loterie-card[data-index="'+index+'"]');
+
+      // Always remove previously rendered cards for this select
+      $card.remove();
 
       if(!$opt.val()){
-        card.remove();
         return;
       }
 
@@ -29,9 +31,9 @@ jQuery(function($){
       data = data || {};
 
       var percent = data.goal ? Math.min(100, Math.round((data.participants / data.goal) * 100)) : 0;
-      var badge = data.featured ? '<span class="loterie-badge">BEST</span>' : (data.active ? '<span class="loterie-badge">NOUVEAU</span>' : '');
-      var price = data.value ? '<span class="loterie-price">'+data.value+'€</span>' : '';
-      var html = '<div class="loterie-card" data-index="'+index+'">'+
+      var badge   = data.featured ? '<span class="loterie-badge">BEST</span>' : (data.active ? '<span class="loterie-badge">NOUVEAU</span>' : '');
+      var price   = data.value ? '<span class="loterie-price">'+data.value+'€</span>' : '';
+      var html    = '<div class="loterie-card" data-index="'+index+'">'+
         badge+
         '<button type="button" class="loterie-remove" aria-label="Retirer">&times;</button>'+
         (data.image ? '<img class="loterie-img" src="'+data.image+'" alt="" />' : '')+
@@ -48,15 +50,10 @@ jQuery(function($){
         '</div>'+
       '</div>';
 
-      if(card.length){
-        card.replaceWith(html);
-        card = $container.find('.loterie-card[data-index="'+index+'"]');
-      }else{
-        $container.append(html);
-        card = $container.find('.loterie-card[data-index="'+index+'"]');
-      }
+      $container.append(html);
+      $card = $container.find('.loterie-card[data-index="'+index+'"]');
 
-      card.find('.loterie-remove').on('click', function(e){
+      $card.find('.loterie-remove').on('click', function(e){
         e.preventDefault();
         $select.val('');
         $select.trigger('change');
