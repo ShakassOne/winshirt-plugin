@@ -313,9 +313,13 @@ function winshirt_render_lottery_selector() {
         return;
     }
 
-    $pid       = $product->get_id();
-    $tickets    = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
-    $lotteries  = get_posts([
+    $pid      = $product->get_id();
+    $tickets  = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
+    if ( $tickets < 1 ) {
+        return;
+    }
+
+    $lotteries = get_posts([
         'post_type'   => 'winshirt_lottery',
         'numberposts' => -1,
         'orderby'     => 'title',
@@ -325,34 +329,37 @@ function winshirt_render_lottery_selector() {
         return;
     }
 
-    echo '<div class="winshirt-lottery-select">';
-    echo '<label for="winshirt-lottery-select">' . esc_html__( 'Choisissez votre loterie', 'winshirt' ) . '</label> ';
-    echo '<select id="winshirt-lottery-select">';
-    echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
-    foreach ( $lotteries as $lottery ) {
-        $max       = absint( get_post_meta( $lottery->ID, 'max_participants', true ) );
-        $count     = absint( get_post_meta( $lottery->ID, 'participants_count', true ) );
-        $img_id    = get_post_meta( $lottery->ID, '_winshirt_lottery_animation', true );
-        $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
-        $draw_date = get_post_meta( $lottery->ID, '_winshirt_lottery_end', true );
-        $active    = get_post_meta( $lottery->ID, '_winshirt_lottery_active', true ) === 'yes';
-        $value     = get_post_meta( $lottery->ID, '_winshirt_lottery_value', true );
-        $featured  = get_post_meta( $lottery->ID, '_winshirt_lottery_featured', true ) === 'yes';
-        $info      = wp_json_encode([
-            'tickets'      => $tickets,
-            'goal'         => $max,
-            'participants' => $count,
-            'image'        => $img_url,
-            'name'         => $lottery->post_title,
-            'drawDate'     => $draw_date,
-            'active'       => $active,
-            'value'        => $value,
-            'featured'     => $featured,
-        ]);
-        echo '<option value="' . esc_attr( $lottery->ID ) . '" data-info="' . esc_attr( $info ) . '">' . esc_html( $lottery->post_title ) . '</option>';
+    echo '<div class="winshirt-lottery-selects">';
+    for ( $i = 1; $i <= $tickets; $i++ ) {
+        echo '<div class="winshirt-lottery-select">';
+        echo '<label for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Choisissez votre loterie', 'winshirt' ) . ' #' . $i . '</label> ';
+        echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select" name="winshirt_lotteries[]">';
+        echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
+        foreach ( $lotteries as $lottery ) {
+            $max       = absint( get_post_meta( $lottery->ID, 'max_participants', true ) );
+            $count     = absint( get_post_meta( $lottery->ID, 'participants_count', true ) );
+            $img_id    = get_post_meta( $lottery->ID, '_winshirt_lottery_animation', true );
+            $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+            $draw_date = get_post_meta( $lottery->ID, '_winshirt_lottery_end', true );
+            $active    = get_post_meta( $lottery->ID, '_winshirt_lottery_active', true ) === 'yes';
+            $value     = get_post_meta( $lottery->ID, '_winshirt_lottery_value', true );
+            $featured  = get_post_meta( $lottery->ID, '_winshirt_lottery_featured', true ) === 'yes';
+            $info      = wp_json_encode([
+                'goal'         => $max,
+                'participants' => $count,
+                'image'        => $img_url,
+                'name'         => $lottery->post_title,
+                'drawDate'     => $draw_date,
+                'active'       => $active,
+                'value'        => $value,
+                'featured'     => $featured,
+            ]);
+            echo '<option value="' . esc_attr( $lottery->ID ) . '" data-info="' . esc_attr( $info ) . '">' . esc_html( $lottery->post_title ) . '</option>';
+        }
+        echo '</select>';
+        echo '<div class="winshirt-lottery-info"></div>';
+        echo '</div>';
     }
-    echo '</select>';
-    echo '<div id="winshirt-lottery-info"></div>';
     echo '</div>';
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_selector', 28 );
@@ -406,6 +413,42 @@ function winshirt_lottery_purchasable( $purchasable, $product ) {
 }
 add_filter( 'woocommerce_is_purchasable', 'winshirt_lottery_purchasable', 10, 2 );
 
+function winshirt_add_lottery_to_cart_item( $cart_item_data, $product_id ) {
+    if ( isset( $_POST['winshirt_lotteries'] ) && is_array( $_POST['winshirt_lotteries'] ) ) {
+        $lotteries = array_map( 'absint', (array) $_POST['winshirt_lotteries'] );
+        $lotteries = array_filter( $lotteries );
+        if ( $lotteries ) {
+            $cart_item_data['winshirt_lotteries'] = $lotteries;
+        }
+    }
+    return $cart_item_data;
+}
+add_filter( 'woocommerce_add_cart_item_data', 'winshirt_add_lottery_to_cart_item', 10, 2 );
+
+function winshirt_display_cart_item_data( $item_data, $cart_item ) {
+    if ( ! empty( $cart_item['winshirt_lotteries'] ) ) {
+        $names = [];
+        foreach ( $cart_item['winshirt_lotteries'] as $lid ) {
+            $names[] = get_the_title( $lid );
+        }
+        if ( $names ) {
+            $item_data[] = [
+                'key'   => __( 'Loteries', 'winshirt' ),
+                'value' => implode( ', ', $names ),
+            ];
+        }
+    }
+    return $item_data;
+}
+add_filter( 'woocommerce_get_item_data', 'winshirt_display_cart_item_data', 10, 2 );
+
+function winshirt_save_lottery_order_item_meta( $item, $cart_item_key, $values, $order ) {
+    if ( ! empty( $values['winshirt_lotteries'] ) ) {
+        $item->update_meta_data( '_winshirt_lotteries', $values['winshirt_lotteries'] );
+    }
+}
+add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_lottery_order_item_meta', 10, 4 );
+
 function winshirt_register_lottery_participant( $order_id ) {
     $order = wc_get_order( $order_id );
     if ( ! $order ) {
@@ -413,6 +456,16 @@ function winshirt_register_lottery_participant( $order_id ) {
     }
 
     foreach ( $order->get_items() as $item ) {
+        $lotteries = $item->get_meta( '_winshirt_lotteries', true );
+        if ( $lotteries ) {
+            foreach ( (array) $lotteries as $lottery_id ) {
+                $count     = absint( get_post_meta( $lottery_id, 'participants_count', true ) );
+                $increment = $item->get_quantity();
+                update_post_meta( $lottery_id, 'participants_count', $count + $increment );
+            }
+            continue;
+        }
+
         $pid     = $item->get_product_id();
         $lottery = absint( get_post_meta( $pid, 'linked_lottery', true ) );
         if ( ! $lottery ) {
