@@ -6,13 +6,16 @@ add_action('wp_enqueue_scripts', function () {
     if (is_product()) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
+
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
+
         wp_enqueue_script('vanilla-tilt', WINSHIRT_URL . 'assets/js/vanilla-tilt.min.js', [], '1.0', true);
         wp_enqueue_script('winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', ['jquery', 'vanilla-tilt'], '1.0', true);
         wp_enqueue_script('winshirt-lottery-select', WINSHIRT_URL . 'assets/js/winshirt-lottery.js', ['jquery', 'winshirt-lottery-cards'], '1.0', true);
     }
 });
+
 
 // Enqueue assets when the lottery shortcode is present
 add_action('wp_enqueue_scripts', function(){
@@ -20,7 +23,8 @@ add_action('wp_enqueue_scripts', function(){
     if ( isset( $post->post_content ) && ( has_shortcode( $post->post_content, 'loterie_box' ) || has_shortcode( $post->post_content, 'winshirt_lotteries' ) ) ) {
         wp_enqueue_style( 'winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0' );
         wp_enqueue_script( 'vanilla-tilt', WINSHIRT_URL . 'assets/js/vanilla-tilt.min.js', [], '1.0', true );
-        wp_enqueue_script( 'winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', [ 'jquery', 'vanilla-tilt' ], '1.0', true );
+        wp_enqueue_script( 'winshirt-lottery-card', WINSHIRT_URL . 'assets/js/winshirt-lottery-card.js', [ 'vanilla-tilt' ], '1.0', true );
+        wp_enqueue_script( 'winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', [ 'jquery', 'winshirt-lottery-card' ], '1.0', true );
     }
 });
 
@@ -416,9 +420,9 @@ function winshirt_register_lottery_participant( $order_id ) {
         }
         $count = absint( get_post_meta( $lottery, 'participants_count', true ) );
         $tickets = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
-        $increment = max( 1, $item->get_quantity() );
+        $increment = $item->get_quantity();
         if ( $tickets > 0 ) {
-            $increment = $increment; // participant count per quantity
+            $increment = $item->get_quantity() * $tickets; // participant count per ticket and quantity
         }
         update_post_meta( $lottery, 'participants_count', $count + $increment );
     }
