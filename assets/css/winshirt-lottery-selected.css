@@ -1,0 +1,174 @@
+.loteries-container {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  max-width: 640px;
+  margin: auto;
+}
+
+.loterie-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: rgba(255,255,255,0.22);
+  box-shadow: 0 8px 40px rgba(110,135,180,0.18), 0 1.5px 12px rgba(60,90,130,0.08);
+  border-radius: 2.2rem;
+  backdrop-filter: blur(14px) saturate(120%);
+  padding: 12px 34px 12px 16px;
+  min-height: 96px;
+  transition: box-shadow .18s, transform .11s;
+  overflow: hidden;
+  animation: pop-in 0.8s cubic-bezier(.25,1.6,.5,1) backwards;
+}
+
+@keyframes pop-in {
+  0% { opacity:0; transform: translateY(30px) scale(0.95);}
+  80%{ transform: translateY(-5px) scale(1.025);}
+  100%{opacity:1; transform: none;}
+}
+
+.loterie-card:active {
+  box-shadow: 0 4px 16px rgba(90,110,160,0.13);
+  transform: scale(.99);
+}
+
+.loterie-img {
+  width: 90px;
+  height: 90px;
+  object-fit: cover;
+  border-radius: 2rem;
+  background: #f4f4fa;
+  box-shadow: 0 2px 10px rgba(30,60,90,0.06);
+  flex-shrink: 0;
+  border: 2.5px solid rgba(170,190,255,0.20);
+  transition: filter .15s;
+}
+
+.loterie-card:hover .loterie-img {
+  filter: brightness(1.06) saturate(1.2);
+}
+
+.loterie-info {
+  flex: 1;
+  margin-left: 24px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  gap: 2px;
+}
+
+.loterie-title {
+  font-weight: 700;
+  font-size: 1.22rem;
+  color: #23294a;
+  line-height: 1.16;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -.5px;
+}
+
+.loterie-meta {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  font-size: 1.05rem;
+  margin: 5px 0 2px 0;
+  color: #2b3c6d;
+}
+
+.loterie-price {
+  font-weight: 600;
+  color: #15bca7;
+  font-size: 1.11rem;
+}
+
+.loterie-participants {
+  color: #3b62b1;
+  font-size: 0.99rem;
+  opacity: 0.94;
+}
+
+.loterie-bar-bg {
+  height: 9px;
+  background: rgba(100,130,240,0.09);
+  border-radius: 5px;
+  overflow: hidden;
+  margin-top: 3px;
+  margin-right: 26px;
+  position: relative;
+  cursor: pointer;
+}
+
+.loterie-bar {
+  height: 100%;
+  background: linear-gradient(90deg, #a1ffce 0%, #3b82f6 100%);
+  border-radius: 5px;
+  transition: width 0.6s cubic-bezier(.48,.18,.26,1.13);
+  min-width: 7px;
+  box-shadow: 0 1px 8px rgba(60,160,230,0.07);
+}
+
+.loterie-badge {
+  position: absolute;
+  top: 12px; left: 18px;
+  background: rgba(60,110,230,0.15);
+  color: #376af2;
+  padding: 3px 14px;
+  font-size: 0.89rem;
+  font-weight: 600;
+  border-radius: 16px;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  z-index: 2;
+  box-shadow: 0 2px 7px rgba(100,120,220,0.10);
+  backdrop-filter: blur(2px);
+}
+
+.loterie-remove {
+  position: absolute;
+  top: 10px; right: 18px;
+  background: rgba(255,255,255,0.44);
+  border: none;
+  border-radius: 50%;
+  width: 30px; height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background .16s;
+  box-shadow: 0 2px 7px rgba(100,120,220,0.09);
+  font-size: 1.2rem;
+}
+.loterie-remove:hover { background: rgba(250,50,70,0.17); color: #d73333;}
+
+.loterie-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  background: rgba(40,70,120,0.95);
+  color: #fff;
+  padding: 4px 16px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 14px rgba(20,40,100,0.18);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .17s;
+  z-index: 8;
+}
+
+.loterie-bar-bg:hover .loterie-tooltip {
+  opacity: 1;
+}
+
+@media (max-width: 700px) {
+  .loteries-container { max-width: 99vw; }
+  .loterie-card { padding: 8px 8vw 8px 6vw; min-height: 66px; }
+  .loterie-img { width: 52px; height: 52px; border-radius: 1.1rem; }
+  .loterie-info { margin-left: 11px; }
+  .loterie-title { font-size: 1.04rem; }
+  .loterie-badge { left: 10px; top: 8px; font-size: 0.75rem; }
+  .loterie-remove { top: 6px; right: 6px; width: 22px; height: 22px; font-size: 1.02rem; }
+}
