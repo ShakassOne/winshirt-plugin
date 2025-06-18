@@ -10,6 +10,7 @@ function winshirt_page_orders() {
         'date_from' => sanitize_text_field($_GET['date_from'] ?? ''),
         'date_to'   => sanitize_text_field($_GET['date_to'] ?? ''),
     ];
+    $page   = max(1, absint($_GET['paged'] ?? 1));
 
     // Handle production validation
     if (isset($_POST['production_validate'], $_POST['order_id'], $_POST['validate_nonce']) && wp_verify_nonce($_POST['validate_nonce'], 'validate_production_' . absint($_POST['order_id']))) {
@@ -22,12 +23,14 @@ function winshirt_page_orders() {
 
     // Handle CSV export
     if (isset($_GET['export']) && isset($_GET['_wpnonce']) && wp_verify_nonce($_GET['_wpnonce'], 'winshirt_export_csv')) {
-        $orders = winshirt_get_production_orders($filters);
+        $orders = winshirt_get_production_orders($filters, -1, 1, false);
         winshirt_export_orders_csv($orders);
         exit;
     }
 
-    $orders = winshirt_get_production_orders($filters);
+    $results       = winshirt_get_production_orders($filters, 20, $page);
+    $orders        = $results['orders'];
+    $max_num_pages = $results['max'];
 
     echo '<div class="wrap"><h1>Commandes WinShirt</h1>';
     include WINSHIRT_PATH . 'templates/admin/partials/commandes-list.php';
@@ -37,51 +40,67 @@ function winshirt_page_orders() {
 /**
  * Retrieve orders containing WinShirt enabled products.
  *
- * @param array $filters Optional filters.
- * @return WC_Order[]
+ * @param array $filters  Optional filters.
+ * @param int   $limit    Results per page.
+ * @param int   $page     Page number.
+ * @param bool  $paginate Whether to paginate results.
+ * @return array|WC_Order[]
  */
-function winshirt_get_production_orders(array $filters = []) {
-    $args   = [
-        'limit'  => -1,
-        'orderby'=> 'date',
-        'order'  => 'DESC',
-    ];
-    $orders = wc_get_orders($args);
-    $result = [];
+function winshirt_get_production_orders(array $filters = [], int $limit = 20, int $page = 1, bool $paginate = true) {
+    $product_ids = get_posts([
+        'post_type'   => 'product',
+        'numberposts' => -1,
+        'fields'      => 'ids',
+        'meta_query'  => [
+            [
+                'key'   => '_winshirt_enabled',
+                'value' => 'yes',
+            ],
+        ],
+    ]);
 
-    foreach ($orders as $order) {
-        $include = false;
-        foreach ($order->get_items() as $item) {
-            $pid = $item->get_product_id();
-            if (get_post_meta($pid, '_winshirt_enabled', true) === 'yes') {
-                $include = true;
-                break;
-            }
-        }
-        if (!$include) {
-            continue;
-        }
-
-        $status = $order->get_meta('_winshirt_production_status');
-        if ($filters['status'] && $filters['status'] !== $status) {
-            continue;
-        }
-
-        $created = $order->get_date_created();
-        if ($created) {
-            $created = $created->format('Y-m-d');
-            if ($filters['date_from'] && $created < $filters['date_from']) {
-                continue;
-            }
-            if ($filters['date_to'] && $created > $filters['date_to']) {
-                continue;
-            }
-        }
-
-        $result[] = $order;
+    if (!$product_ids) {
+        return $paginate ? ['orders' => [], 'max' => 0] : [];
     }
 
-    return $result;
+    $args = [
+        'orderby'    => 'date',
+        'order'      => 'DESC',
+        'limit'      => $limit,
+        'page'       => $page,
+        'paginate'   => $paginate,
+        'product_id' => $product_ids,
+        'meta_query' => [],
+    ];
+
+    if ($filters['status']) {
+        $args['meta_query'][] = [
+            'key'   => '_winshirt_production_status',
+            'value' => $filters['status'],
+        ];
+    }
+
+    if ($filters['date_from'] || $filters['date_to']) {
+        $range = [];
+        if ($filters['date_from']) {
+            $range['after'] = $filters['date_from'];
+        }
+        if ($filters['date_to']) {
+            $range['before'] = $filters['date_to'];
+        }
+        $args['date_created'] = $range;
+    }
+
+    $results = wc_get_orders($args);
+
+    if ($paginate) {
+        return [
+            'orders' => $results->orders,
+            'max'    => $results->max_num_pages,
+        ];
+    }
+
+    return $results;
 }
 
 /**
