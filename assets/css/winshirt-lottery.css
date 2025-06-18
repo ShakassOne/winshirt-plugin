@@ -101,7 +101,7 @@
 
 @keyframes card-shine {
   from { transform: translateX(-100%) rotate(45deg); }
-  to { transform: translateX(400%) rotate(45deg); }
+  to { transform: translateX(600%) rotate(45deg); }
 }
 
 @keyframes fade-in-up {
@@ -122,7 +122,7 @@
   height:100%;
   pointer-events:none;
   background:linear-gradient(120deg,rgba(255,255,255,0.2),rgba(255,255,255,0.8),rgba(255,255,255,0.2));
-  animation: card-shine 0.6s linear forwards;
+  animation: card-shine 0.3s linear forwards;
 }
 
 .lottery-progress-bar.animate-progress {
