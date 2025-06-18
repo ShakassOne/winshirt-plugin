@@ -8,7 +8,9 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
-        wp_enqueue_script('winshirt-lottery-select', WINSHIRT_URL . 'assets/js/winshirt-lottery.js', ['jquery'], '1.0', true);
+        wp_enqueue_script('vanilla-tilt', WINSHIRT_URL . 'assets/js/vanilla-tilt.min.js', [], '1.0', true);
+        wp_enqueue_script('winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', ['jquery', 'vanilla-tilt'], '1.0', true);
+        wp_enqueue_script('winshirt-lottery-select', WINSHIRT_URL . 'assets/js/winshirt-lottery.js', ['jquery', 'winshirt-lottery-cards'], '1.0', true);
     }
 });
 
@@ -68,7 +70,7 @@ function winshirt_lottery_box_shortcode( $atts ) {
         <?php endif; ?>
         <div class="lottery-timer"></div>
         <p class="lottery-count"><?php echo esc_html( $count . ' participants - Objectif : ' . $max ); ?></p>
-        <div class="lottery-progress"><div class="lottery-progress-bar" style="width:<?php echo esc_attr( $percent ); ?>%"></div></div>
+        <div class="lottery-progress"><div class="lottery-progress-bar" data-progress="<?php echo esc_attr( $percent ); ?>" style="width:<?php echo esc_attr( $percent ); ?>%"></div></div>
         <?php if ( $draw_date ) : ?>
             <p class="lottery-draw"><?php echo esc_html( $draw_date ); ?></p>
         <?php endif; ?>
@@ -152,7 +154,7 @@ function winshirt_lotteries_shortcode() {
                 <p class="lottery-value">Valeur : <?php echo esc_html( $value ); ?> €</p>
             <?php endif; ?>
             <div class="lottery-timer"></div>
-            <div class="lottery-progress"><div class="lottery-progress-bar" style="width:<?php echo esc_attr( $percent ); ?>%"></div></div>
+            <div class="lottery-progress"><div class="lottery-progress-bar" data-progress="<?php echo esc_attr( $percent ); ?>" style="width:<?php echo esc_attr( $percent ); ?>%"></div></div>
             <p class="lottery-count"><?php echo esc_html( $count . ' participants / Objectif : ' . $max ); ?></p>
             <?php if ( $draw_date ) : ?>
                 <p class="lottery-draw">Tirage le <?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $draw_date ) ) ); ?></p>
@@ -380,7 +382,7 @@ function winshirt_render_lottery_info() {
         echo '<p>🎟️ +' . esc_html( $tickets ) . ' tickets</p>';
     }
     echo '<p>' . esc_html( $count . ' / ' . $max . ' participants' ) . '</p>';
-    echo '<div class="lottery-progress"><div class="lottery-progress-bar" style="width:' . esc_attr( $percent ) . '%"></div></div>';
+    echo '<div class="lottery-progress"><div class="lottery-progress-bar" data-progress="' . esc_attr( $percent ) . '" style="width:' . esc_attr( $percent ) . '%"></div></div>';
     if ( $draw_date ) {
         echo '<p style="margin-top:1rem;">📅 ' . esc_html__( 'Tirage le', 'winshirt' ) . ' ' . esc_html( $draw_date ) . '</p>';
     }
