@@ -78,6 +78,35 @@ function winshirt_lottery_box_shortcode( $atts ) {
 }
 add_shortcode( 'loterie_box', 'winshirt_lottery_box_shortcode' );
 
+/**
+ * Display only the lottery thumbnail image.
+ * Usage: [loterie_thumb id="123" size="thumbnail"].
+ */
+function winshirt_lottery_thumb_shortcode( $atts ) {
+    $atts = shortcode_atts([
+        'id'   => 0,
+        'size' => 'thumbnail',
+    ], $atts, 'loterie_thumb');
+
+    $id = absint( $atts['id'] );
+    if ( ! $id ) {
+        return '';
+    }
+
+    $img_id = get_post_meta( $id, '_winshirt_lottery_animation', true );
+    if ( ! $img_id ) {
+        return '';
+    }
+
+    $size = sanitize_key( $atts['size'] );
+    if ( ! $size ) {
+        $size = 'thumbnail';
+    }
+
+    return wp_get_attachment_image( $img_id, $size );
+}
+add_shortcode( 'loterie_thumb', 'winshirt_lottery_thumb_shortcode' );
+
 // Register custom post type for lotteries
 add_action('init', function () {
     register_post_type('winshirt_lottery', [

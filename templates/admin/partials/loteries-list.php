@@ -12,6 +12,7 @@
             <th><?php esc_html_e('Dates', 'winshirt'); ?></th>
             <th style="text-align:center;">Actif</th>
             <th><?php esc_html_e('Participations', 'winshirt'); ?></th>
+            <th><?php esc_html_e('Shortcode', 'winshirt'); ?></th>
             <th><?php esc_html_e('Actions', 'winshirt'); ?></th>
         </tr>
     </thead>
@@ -33,13 +34,16 @@
                 <td style="text-align:center;"><input type="checkbox" disabled <?php checked($active); ?> /></td>
                 <td><?php echo esc_html($count); ?></td>
                 <td>
+                    <input type="text" readonly class="regular-text code" value="[loterie_thumb id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+                </td>
+                <td>
                     <a class="button" href="<?php echo esc_url(add_query_arg(['page' => 'winshirt-lotteries', 'edit' => $lottery->ID], admin_url('admin.php'))); ?>"><?php esc_html_e('Modifier', 'winshirt'); ?></a>
                     <a class="button delete" href="<?php echo esc_url(wp_nonce_url(add_query_arg(['page' => 'winshirt-lotteries', 'delete' => $lottery->ID], admin_url('admin.php')), 'delete_lottery_' . $lottery->ID)); ?>"><?php esc_html_e('Supprimer', 'winshirt'); ?></a>
                 </td>
             </tr>
         <?php endforeach; ?>
     <?php else : ?>
-        <tr><td colspan="6"><?php esc_html_e('Aucune loterie', 'winshirt'); ?></td></tr>
+        <tr><td colspan="7"><?php esc_html_e('Aucune loterie', 'winshirt'); ?></td></tr>
     <?php endif; ?>
     </tbody>
 </table>
