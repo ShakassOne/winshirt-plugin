@@ -33,3 +33,14 @@
   font-weight: bold;
   margin-top: 5px;
 }
+.ws-lottery-card{position:relative;background:linear-gradient(145deg,#1a1a1a,#232323);border-radius:1rem;padding:1rem;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.4);transition:transform .3s ease;overflow:hidden}
+.ws-lottery-card img{width:100%;border-radius:.75rem;margin-bottom:1rem}
+.ws-lottery-card .lottery-badge{position:absolute;top:.5rem;left:.5rem;background:#22c55e;padding:.25rem .5rem;border-radius:.25rem;font-size:.75rem;font-weight:700}
+.ws-lottery-card .badge-featured{left:auto;right:.5rem;background:#a855f7}
+.ws-lottery-card .lottery-title{font-size:1.25rem;margin:0 0 .25rem}
+.ws-lottery-card .lottery-value{font-size:.875rem;margin:0 0 .25rem}
+.ws-lottery-card .lottery-timer{font-size:.875rem;margin-bottom:.5rem}
+.ws-lottery-card .lottery-count{font-size:.875rem;margin:0.25rem 0}
+.ws-lottery-card .lottery-draw{font-size:.75rem;margin-top:.5rem;opacity:.8}
+.ws-lottery-card .lottery-button{display:inline-block;margin-top:.75rem;padding:.5rem 1rem;border-radius:.5rem;background:#2563eb;color:#fff;text-decoration:none}
+.ws-lottery-card .lottery-button:hover{background:#1d4ed8}
