@@ -1,48 +1,84 @@
-.lottery-card {
-  background: linear-gradient(145deg, #1a1a1a, #232323);
-  border-radius: 1rem;
-  padding: 1rem;
-  color: #fff;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-  transform-style: preserve-3d;
-  transition: transform 0.3s ease;
-  perspective: 1000px;
+.ws-lottery-card{
+  position:relative;
+  background:#fff;
+  border-radius:1rem;
+  overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,0.2);
+  padding:1rem;
+  text-align:center;
+  transition:transform .3s ease;
 }
-.lottery-card:hover {
-  transform: scale(1.02) rotateX(3deg) rotateY(-3deg);
+.ws-lottery-card img{
+  width:100%;
+  border-radius:.5rem;
+  display:block;
 }
-.lottery-card img {
-  width: 100%;
-  border-radius: 0.75rem;
-  margin-bottom: 1rem;
+.ws-lottery-card .lottery-image{
+  margin-bottom:.75rem;
 }
-.lottery-progress {
-  height: 6px;
-  background: #444;
-  border-radius: 3px;
-  overflow: hidden;
-  margin-top: 0.5rem;
+.ws-lottery-card .lottery-badge{
+  position:absolute;
+  top:.5rem;
+  left:.5rem;
+  background:#22c55e;
+  color:#fff;
+  padding:.25rem .5rem;
+  font-size:.75rem;
+  font-weight:700;
+  border-radius:.25rem;
 }
-.lottery-progress-bar {
-  height: 100%;
-  background: linear-gradient(90deg, #7f5af0, #5eead4);
-  transition: width 0.5s ease;
+.ws-lottery-card .badge-featured{
+  left:auto;
+  right:.5rem;
+  background:#a855f7;
 }
-.lottery-full {
-  color: #c00;
-  font-weight: bold;
-  margin-top: 5px;
+.ws-lottery-card .lottery-title{
+  font-size:1.25rem;
+  margin:0 0 .25rem;
 }
-.ws-lottery-card{position:relative;background:linear-gradient(145deg,#1a1a1a,#232323);border-radius:1rem;padding:1rem;color:#fff;box-shadow:0 10px 30px rgba(0,0,0,0.4);transition:transform .3s ease;overflow:hidden}
-.ws-lottery-card img{width:100%;border-radius:.75rem;margin-bottom:1rem}
-.ws-lottery-card .lottery-badge{position:absolute;top:.5rem;left:.5rem;background:#22c55e;padding:.25rem .5rem;border-radius:.25rem;font-size:.75rem;font-weight:700}
-.ws-lottery-card .badge-featured{left:auto;right:.5rem;background:#a855f7}
-.ws-lottery-card .lottery-title{font-size:1.25rem;margin:0 0 .25rem}
-.ws-lottery-card .lottery-value{font-size:.875rem;margin:0 0 .25rem}
-.ws-lottery-card .lottery-timer{font-size:.875rem;margin-bottom:.5rem}
-.ws-lottery-card .lottery-count{font-size:.875rem;margin:0.25rem 0}
-.ws-lottery-card .lottery-draw{font-size:.75rem;margin-top:.5rem;opacity:.8}
-.ws-lottery-card .lottery-button{display:inline-block;margin-top:.75rem;padding:.5rem 1rem;border-radius:.5rem;background:#2563eb;color:#fff;text-decoration:none}
+.ws-lottery-card .lottery-value,
+.ws-lottery-card .lottery-count{
+  font-size:.875rem;
+  margin:0 0 .25rem;
+}
+.ws-lottery-card .lottery-timer{
+  font-size:.875rem;
+  margin-bottom:.5rem;
+  font-weight:600;
+}
+.ws-lottery-card .lottery-progress{
+  height:6px;
+  background:#e5e7eb;
+  border-radius:3px;
+  overflow:hidden;
+  margin-top:.25rem;
+}
+.ws-lottery-card .lottery-progress-bar{
+  height:100%;
+  width:0;
+  background:#2563eb;
+  transition:width .3s ease;
+}
+.ws-lottery-card .lottery-draw{
+  font-size:.75rem;
+  margin-top:.5rem;
+  opacity:.8;
+}
+.ws-lottery-card .lottery-button{
+  display:inline-block;
+  margin-top:.75rem;
+  padding:.5rem 1rem;
+  background:#2563eb;
+  color:#fff;
+  border-radius:.5rem;
+  text-decoration:none;
+}
 .ws-lottery-card .lottery-button:hover{background:#1d4ed8}
-.ws-lottery-list{display:flex;flex-wrap:wrap;gap:1rem}
-.ws-lottery-list .ws-lottery-card{flex:1 1 280px}
+.ws-lottery-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:1rem;
+}
+.ws-lottery-list .ws-lottery-card{
+  flex:1 1 280px;
+}

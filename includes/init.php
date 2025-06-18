@@ -16,8 +16,9 @@ add_action('wp_enqueue_scripts', function () {
 add_action('wp_enqueue_scripts', function(){
     global $post;
     if ( isset( $post->post_content ) && ( has_shortcode( $post->post_content, 'loterie_box' ) || has_shortcode( $post->post_content, 'winshirt_lotteries' ) ) ) {
-        wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
-        wp_enqueue_script('winshirt-lottery-box', WINSHIRT_URL . 'assets/js/winshirt-lottery-box.js', ['jquery'], '1.0', true);
+        wp_enqueue_style( 'winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0' );
+        wp_enqueue_script( 'vanilla-tilt', WINSHIRT_URL . 'assets/js/vanilla-tilt.min.js', [], '1.0', true );
+        wp_enqueue_script( 'winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', [ 'jquery', 'vanilla-tilt' ], '1.0', true );
     }
 });
 
@@ -142,17 +143,19 @@ function winshirt_lotteries_shortcode() {
                 <span class="lottery-badge badge-featured">En vedette</span>
             <?php endif; ?>
             <?php if ( $img_url ) : ?>
+            <div class="lottery-image" data-tilt>
                 <img src="<?php echo esc_url( $img_url ); ?>" alt="" />
+            </div>
             <?php endif; ?>
             <h3 class="lottery-title"><?php echo esc_html( $lottery->post_title ); ?></h3>
             <?php if ( $value ) : ?>
-                <p class="lottery-value">Valeur : <?php echo esc_html( $value ); ?>€</p>
+                <p class="lottery-value">Valeur : <?php echo esc_html( $value ); ?> €</p>
             <?php endif; ?>
             <div class="lottery-timer"></div>
-            <p class="lottery-count"><?php echo esc_html( $count . ' participants - Objectif : ' . $max ); ?></p>
             <div class="lottery-progress"><div class="lottery-progress-bar" style="width:<?php echo esc_attr( $percent ); ?>%"></div></div>
+            <p class="lottery-count"><?php echo esc_html( $count . ' participants / Objectif : ' . $max ); ?></p>
             <?php if ( $draw_date ) : ?>
-                <p class="lottery-draw">Tirage le <?php echo esc_html( $draw_date ); ?></p>
+                <p class="lottery-draw">Tirage le <?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $draw_date ) ) ); ?></p>
             <?php endif; ?>
             <a href="#" class="lottery-button">Participer</a>
         </div>
