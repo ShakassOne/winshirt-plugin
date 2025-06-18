@@ -7,28 +7,22 @@ jQuery(function($){
     $containers.slice(1).remove();
   }
   var $container = $containers.first();
+  var $selects   = $('.winshirt-lottery-select');
 
-  // Ici, ton code de traitement des loteries continue...
+  function renderAll(){
+    $container.empty();
+    var shown = {};
 
-  $('.winshirt-lottery-select').each(function(index){
-    var $select = $(this);
-
-    function render(){
-      var $opt  = $select.find('option:selected');
-      var data  = $opt.data('info');
-      var lid   = $opt.val();
-      var $card = $container.find('#loterie-card-'+index);
-
-      // Always remove previously rendered cards for this select
-      $card.remove();
-      if(lid){
-        $container.find('.loterie-card[data-lottery="'+lid+'"]').remove();
-      }
-
-      if(!lid){
+    $selects.each(function(index){
+      var $select = $(this);
+      var $opt    = $select.find('option:selected');
+      var lid     = $opt.val();
+      if(!lid || shown[lid]){
         return;
       }
+      shown[lid] = true;
 
+      var data = $opt.data('info');
       if(typeof data === 'string'){
         try{ data = JSON.parse(data); }catch(e){ data = {}; }
       }
@@ -55,16 +49,15 @@ jQuery(function($){
       '</div>';
 
       $container.append(html);
-      $card = $container.find('#loterie-card-'+index);
-
+      var $card = $container.find('#loterie-card-'+index);
       $card.find('.loterie-remove').on('click', function(e){
         e.preventDefault();
         $select.val('');
-        $select.trigger('change');
+        renderAll();
       });
-    }
+    });
+  }
 
-    $select.on('change', render);
-    render();
-  });
+  $selects.on('change', renderAll);
+  renderAll();
 });
