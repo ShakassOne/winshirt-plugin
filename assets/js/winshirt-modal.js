@@ -371,7 +371,12 @@ function openModal(){
       var cont = getContainment();
       var cw = $(cont).width();
       var ch = $(cont).height();
+      if(!cw || !ch){
+        cw = $canvas.width();
+        ch = $canvas.height();
+      }
       var size = Math.min(cw, ch) * 0.5;
+      if(!size){ size = 100; }
       $item.css({width:size,height:size});
     } else {
       $item.append('<span class="ws-text">'+content+'</span>');
