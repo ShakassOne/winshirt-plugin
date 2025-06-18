@@ -42,16 +42,16 @@
                 <td style="text-align:center;"><input type="checkbox" disabled <?php checked($active); ?> /></td>
                 <td><?php echo esc_html($count); ?></td>
                 <td>
-                    <div style="margin-bottom:4px;">
-                        <input type="text" readonly class="regular-text code" value="[loterie_box id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
-                        <br/>
-                        <small><?php esc_html_e('Carte complète', 'winshirt'); ?></small>
-                    </div>
-                    <div>
-                        <input type="text" readonly class="regular-text code" value="[loterie_thumb id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
-                        <br/>
-                        <small><?php esc_html_e('Miniature', 'winshirt'); ?></small>
-                    </div>
+<div style="margin-bottom:4px;">
+    <input type="text" readonly class="regular-text code" value="[loterie_box id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+    <br/>
+    <small><?php esc_html_e('Carte complète', 'winshirt'); ?></small>
+</div>
+<div>
+    <input type="text" readonly class="regular-text code" value="[loterie_thumb id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+    <br/>
+    <small><?php esc_html_e('Miniature uniquement', 'winshirt'); ?></small>
+</div>
                 </td>
                 <td>
                     <a class="button" href="<?php echo esc_url(add_query_arg(['page' => 'winshirt-lotteries', 'edit' => $lottery->ID], admin_url('admin.php'))); ?>"><?php esc_html_e('Modifier', 'winshirt'); ?></a>
@@ -64,6 +64,9 @@
     <?php endif; ?>
     </tbody>
 </table>
+<p class="description">
+    <?php esc_html_e('Utilisez [loterie_box id="123"] pour afficher la carte complète ou [loterie_thumb id="123"] pour uniquement la miniature (remplacez 123 par l\'ID de la loterie).', 'winshirt'); ?>
+</p>
 
 <?php if ($editing) : ?>
 <h2><?php esc_html_e('Participants', 'winshirt'); ?> (<?php echo count($participants); ?>)</h2>
