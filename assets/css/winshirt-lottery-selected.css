@@ -34,7 +34,7 @@
 
 .loterie-img {
   width: 90px;
-  height: 90px;
+  height: 90px!important;
   object-fit: cover;
   border-radius: 2rem;
   background: #f4f4fa;
