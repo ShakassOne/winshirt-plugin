@@ -2,8 +2,16 @@
 /**
  * Admin lottery management interface.
  * Variables: $lotteries, $editing, $participants
- */
+*/
 ?>
+<p class="description">
+    <?php
+    esc_html_e(
+        'Utilisez [loterie_box id="123"] pour afficher la carte complète, [loterie_thumb id="123"] pour la miniature et [winshirt_lotteries] pour la liste complète.',
+        'winshirt'
+    );
+    ?>
+</p>
 <table class="widefat fixed">
     <thead>
         <tr>
@@ -34,10 +42,16 @@
                 <td style="text-align:center;"><input type="checkbox" disabled <?php checked($active); ?> /></td>
                 <td><?php echo esc_html($count); ?></td>
                 <td>
-                    <input type="text" readonly class="regular-text code" value="[loterie_box id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
-                    <p class="description"><?php esc_html_e('Carte complète', 'winshirt'); ?></p>
-                    <input type="text" readonly class="regular-text code" value="[loterie_thumb id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
-                    <p class="description"><?php esc_html_e('Miniature uniquement', 'winshirt'); ?></p>
+<div style="margin-bottom:4px;">
+    <input type="text" readonly class="regular-text code" value="[loterie_box id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+    <br/>
+    <small><?php esc_html_e('Carte complète', 'winshirt'); ?></small>
+</div>
+<div>
+    <input type="text" readonly class="regular-text code" value="[loterie_thumb id=&quot;<?php echo esc_attr($lottery->ID); ?>&quot;]" onclick="this.select();" />
+    <br/>
+    <small><?php esc_html_e('Miniature uniquement', 'winshirt'); ?></small>
+</div>
                 </td>
                 <td>
                     <a class="button" href="<?php echo esc_url(add_query_arg(['page' => 'winshirt-lotteries', 'edit' => $lottery->ID], admin_url('admin.php'))); ?>"><?php esc_html_e('Modifier', 'winshirt'); ?></a>
