@@ -16,7 +16,7 @@ jQuery(function($){
     function render(){
       var $opt  = $select.find('option:selected');
       var data  = $opt.data('info');
-      var $card = $container.find('.loterie-card[data-index="'+index+'"]');
+      var $card = $container.find('#loterie-card-'+index);
 
       // Always remove previously rendered cards for this select
       $card.remove();
@@ -33,7 +33,7 @@ jQuery(function($){
       var percent = data.goal ? Math.min(100, Math.round((data.participants / data.goal) * 100)) : 0;
       var badge   = data.featured ? '<span class="loterie-badge">BEST</span>' : (data.active ? '<span class="loterie-badge">NOUVEAU</span>' : '');
       var price   = data.value ? '<span class="loterie-price">'+data.value+'€</span>' : '';
-      var html    = '<div class="loterie-card" data-index="'+index+'">'+
+      var html    = '<div class="loterie-card" id="loterie-card-'+index+'" data-index="'+index+'">'+
         badge+
         '<button type="button" class="loterie-remove" aria-label="Retirer">&times;</button>'+
         (data.image ? '<img class="loterie-img" src="'+data.image+'" alt="" />' : '')+
@@ -51,7 +51,7 @@ jQuery(function($){
       '</div>';
 
       $container.append(html);
-      $card = $container.find('.loterie-card[data-index="'+index+'"]');
+      $card = $container.find('#loterie-card-'+index);
 
       $card.find('.loterie-remove').on('click', function(e){
         e.preventDefault();
