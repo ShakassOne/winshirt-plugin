@@ -9,7 +9,7 @@ jQuery(function($){
   var $container = $containers.first();
 
   // Ici, ton code de traitement des loteries continue...
-});
+
   $('.winshirt-lottery-select').each(function(index){
     var $select = $(this);
 
