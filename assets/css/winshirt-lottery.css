@@ -44,3 +44,5 @@
 .ws-lottery-card .lottery-draw{font-size:.75rem;margin-top:.5rem;opacity:.8}
 .ws-lottery-card .lottery-button{display:inline-block;margin-top:.75rem;padding:.5rem 1rem;border-radius:.5rem;background:#2563eb;color:#fff;text-decoration:none}
 .ws-lottery-card .lottery-button:hover{background:#1d4ed8}
+.ws-lottery-list{display:flex;flex-wrap:wrap;gap:1rem}
+.ws-lottery-list .ws-lottery-card{flex:1 1 280px}

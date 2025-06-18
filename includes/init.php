@@ -15,7 +15,7 @@ add_action('wp_enqueue_scripts', function () {
 // Enqueue assets when the lottery shortcode is present
 add_action('wp_enqueue_scripts', function(){
     global $post;
-    if ( isset( $post->post_content ) && has_shortcode( $post->post_content, 'loterie_box' ) ) {
+    if ( isset( $post->post_content ) && ( has_shortcode( $post->post_content, 'loterie_box' ) || has_shortcode( $post->post_content, 'winshirt_lotteries' ) ) ) {
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
         wp_enqueue_script('winshirt-lottery-box', WINSHIRT_URL . 'assets/js/winshirt-lottery-box.js', ['jquery'], '1.0', true);
     }
@@ -106,6 +106,62 @@ function winshirt_lottery_thumb_shortcode( $atts ) {
     return wp_get_attachment_image( $img_id, $size );
 }
 add_shortcode( 'loterie_thumb', 'winshirt_lottery_thumb_shortcode' );
+
+/**
+ * Display a list of lottery cards with [winshirt_lotteries].
+ */
+function winshirt_lotteries_shortcode() {
+    $lotteries = get_posts([
+        'post_type'   => 'winshirt_lottery',
+        'numberposts' => -1,
+        'orderby'     => 'date',
+    ]);
+
+    if ( ! $lotteries ) {
+        return '';
+    }
+
+    ob_start();
+    echo '<div class="ws-lottery-list">';
+    foreach ( $lotteries as $lottery ) {
+        $id        = $lottery->ID;
+        $active    = get_post_meta( $id, '_winshirt_lottery_active', true ) === 'yes';
+        $value     = get_post_meta( $id, '_winshirt_lottery_value', true );
+        $max       = absint( get_post_meta( $id, 'max_participants', true ) );
+        $count     = absint( get_post_meta( $id, 'participants_count', true ) );
+        $draw_date = get_post_meta( $id, '_winshirt_lottery_end', true );
+        $img_id    = get_post_meta( $id, '_winshirt_lottery_animation', true );
+        $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+        $featured  = get_post_meta( $id, '_winshirt_lottery_featured', true ) === 'yes';
+        $percent   = $max > 0 ? min( 100, ( $count / $max ) * 100 ) : 0;
+
+        ?>
+        <div class="ws-lottery-card" data-end="<?php echo esc_attr( $draw_date ); ?>">
+            <span class="lottery-badge"><?php echo $active ? 'Active' : 'Terminé'; ?></span>
+            <?php if ( $featured ) : ?>
+                <span class="lottery-badge badge-featured">En vedette</span>
+            <?php endif; ?>
+            <?php if ( $img_url ) : ?>
+                <img src="<?php echo esc_url( $img_url ); ?>" alt="" />
+            <?php endif; ?>
+            <h3 class="lottery-title"><?php echo esc_html( $lottery->post_title ); ?></h3>
+            <?php if ( $value ) : ?>
+                <p class="lottery-value">Valeur : <?php echo esc_html( $value ); ?>€</p>
+            <?php endif; ?>
+            <div class="lottery-timer"></div>
+            <p class="lottery-count"><?php echo esc_html( $count . ' participants - Objectif : ' . $max ); ?></p>
+            <div class="lottery-progress"><div class="lottery-progress-bar" style="width:<?php echo esc_attr( $percent ); ?>%"></div></div>
+            <?php if ( $draw_date ) : ?>
+                <p class="lottery-draw">Tirage le <?php echo esc_html( $draw_date ); ?></p>
+            <?php endif; ?>
+            <a href="#" class="lottery-button">Participer</a>
+        </div>
+        <?php
+    }
+    echo '</div>';
+    return ob_get_clean();
+}
+add_shortcode( 'winshirt_lotteries', 'winshirt_lotteries_shortcode' );
 
 // Register custom post type for lotteries
 add_action('init', function () {
