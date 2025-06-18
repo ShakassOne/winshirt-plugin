@@ -97,10 +97,6 @@
       <input type="hidden" id="winshirt-custom-data" value="" />
 
         <div class="ws-actions">
-          <div class="ws-toggle">
-            <button id="winshirt-front-btn" class="ws-side-btn active">Recto</button>
-            <button id="winshirt-back-btn" class="ws-side-btn">Verso</button>
-          </div>
           <div class="ws-format-buttons">
             <button class="ws-format-btn" data-format="A3">A3</button>
             <button class="ws-format-btn" data-format="A4">A4</button>
@@ -109,8 +105,12 @@
             <button class="ws-format-btn" data-format="A7">A7</button>
             <span id="ws-current-format" class="ws-format-label"></span>
           </div>
-      <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
-      <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
+          <div class="ws-toggle">
+            <button id="winshirt-front-btn" class="ws-side-btn active">Recto</button>
+            <button id="winshirt-back-btn" class="ws-side-btn">Verso</button>
+          </div>
+          <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
+          <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
         </div>
 
     </div>
