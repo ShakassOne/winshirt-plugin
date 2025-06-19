@@ -337,7 +337,7 @@ function winshirt_render_lottery_selector() {
     echo '<div class="winshirt-lottery-selects">';
     for ( $i = 1; $i <= $tickets; $i++ ) {
         echo '<div class="winshirt-lottery-select">';
-        echo '<label for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Choisissez votre loterie', 'winshirt' ) . ' #' . $i . '</label> ';
+        echo '<label for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Ticket n°', 'winshirt' ) . $i . '</label> ';
         echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select" name="winshirt_lotteries[]">';
         echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
         foreach ( $lotteries as $lottery ) {

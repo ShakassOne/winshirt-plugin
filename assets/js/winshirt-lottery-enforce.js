@@ -5,7 +5,7 @@ jQuery(function($){
     return;
   }
 
-  var warningText = 'Aucune loterie s\xC3\xA9lectionn\xC3\xA9e : vous serez automatiquement inscrit(e) \xC3\xA0 la loterie la plus proche du tirage.';
+  var warningText = 'Aucune loterie sélectionnée : vous serez automatiquement inscrit(e) à la loterie la plus proche du tirage.';
   var $warning = $('<p class="winshirt-lottery-warning"></p>').text(warningText);
   $warning.insertAfter($button.first());
 
