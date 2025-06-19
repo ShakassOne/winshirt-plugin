@@ -50,6 +50,9 @@
   align-self: flex-start;
   height: 100%;
   overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ws-right {
@@ -201,6 +204,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.mockup-fixed {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 0;
 }
 .ws-preview-img {
   max-width: 100%;

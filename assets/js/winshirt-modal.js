@@ -22,6 +22,15 @@ jQuery(function($){
   var $zonesWrap = $('#ws-print-zones');
   var $tabSelect = $('#ws-tab-select');
   var $debug = $('#ws-debug');
+  function loadFont(f){
+    var id = 'ws-font-'+f.replace(/\s+/g,'-').toLowerCase();
+    if(!document.getElementById(id)){
+      $('head').append('<link id="'+id+'" rel="stylesheet" href="https://fonts.googleapis.com/css2?family='+f.replace(/\s+/g,'+')+':wght@400;700&display=swap">');
+    }
+  }
+  $('#ws-font-select option').each(function(){
+    loadFont($(this).val());
+  });
   var formatHeights = { A3:0.467 };
   formatHeights.A4 = formatHeights.A3 / Math.sqrt(2);
   formatHeights.A5 = formatHeights.A4 / Math.sqrt(2);
@@ -251,7 +260,9 @@ jQuery(function($){
     var w = h / 1.414;
     var left = zpos.left + (zw - w)/2;
     var top  = zpos.top + (zh - h)/2;
-    $it.css({width:w, height:h, left:left, top:top});
+    $it.css({width:w, height:h});
+    $it.attr('data-x', left).attr('data-y', top);
+    updateItemTransform($it);
     updateFormatUI(fmt);
   }
 
@@ -369,17 +380,28 @@ function openModal(){
     $(this).val('');
   });
 
+  var typingItem = null;
+  $('#ws-text-content').on('input', function(){
+    var txt = $(this).val();
+    if(!typingItem){
+      if(!txt.trim()) return;
+      typingItem = addItem('text', txt);
+      selectItem(typingItem);
+    }
+    if(typingItem){
+      typingItem.find('.ws-text').text(txt || ' ');
+      applyTextStyles(typingItem);
+    }
+  });
+
   $('#ws-add-text').on('click', function(e){
     e.preventDefault();
-    var txt = $('#ws-text-content').val().trim();
-    if(!txt) return;
-    var $it = addItem('text', txt);
+    typingItem = null;
     $('#ws-text-content').val('');
-    applyTextStyles($it);
-    selectItem($it);
   });
 
   $('#ws-font-select').on('change', function(){
+    loadFont($(this).val());
     if(activeItem && activeItem.data('type')==='text'){
       applyTextStyles(activeItem);
       saveState();
@@ -440,6 +462,19 @@ function openModal(){
     $canvas.append($item);
     applyClip();
     var cont = getContainment();
+    var $cont = $(cont);
+    var cpos = $cont.position();
+    var cw = $cont.width();
+    var ch = $cont.height();
+    if(!cw || !ch){
+      cw = $canvas.width();
+      ch = $canvas.height();
+      cpos = {left:0, top:0};
+    }
+    var left = cpos.left + (cw - $item.width())/2;
+    var top  = cpos.top + (ch - $item.height())/2;
+    $item.attr('data-x', left).attr('data-y', top);
+    updateItemTransform($item);
     $item.draggable({
       containment: cont,
       start: function(){
