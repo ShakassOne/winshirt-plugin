@@ -466,10 +466,18 @@ function winshirt_register_lottery_participant( $order_id ) {
     foreach ( $order->get_items() as $item ) {
         $lotteries = $item->get_meta( '_winshirt_lotteries', true );
         if ( $lotteries ) {
+            $counts = [];
             foreach ( (array) $lotteries as $lottery_id ) {
-                $count     = absint( get_post_meta( $lottery_id, 'participants_count', true ) );
-                $increment = $item->get_quantity();
-                update_post_meta( $lottery_id, 'participants_count', $count + $increment );
+                if ( ! isset( $counts[ $lottery_id ] ) ) {
+                    $counts[ $lottery_id ] = 0;
+                }
+                $counts[ $lottery_id ]++;
+            }
+
+            foreach ( $counts as $lottery_id => $times ) {
+                $current   = absint( get_post_meta( $lottery_id, 'participants_count', true ) );
+                $increment = $item->get_quantity() * $times;
+                update_post_meta( $lottery_id, 'participants_count', $current + $increment );
             }
             continue;
         }
