@@ -45,10 +45,25 @@
       <div class="ws-tab-content hidden" id="ws-tab-text">
         <input type="text" id="ws-text-content" class="ws-input" placeholder="Votre texte..." />
         <select id="ws-font-select" class="ws-select">
-          <option value="Arial">Arial</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Courier New">Courier New</option>
-          <option value="Times New Roman">Times</option>
+          <?php
+          $fonts = [
+            'Arial',
+            'Georgia',
+            'Courier New',
+            'Times New Roman',
+            'Comic Sans MS',
+            'Impact',
+            'Tahoma',
+            'Verdana',
+            'Trebuchet MS',
+            'Lucida Console',
+          ];
+          foreach ( $fonts as $font ) :
+            ?>
+            <option value="<?php echo esc_attr( $font ); ?>" style="font-family: '<?php echo esc_attr( $font ); ?>';">
+              <?php echo esc_html( $font ); ?>
+            </option>
+          <?php endforeach; ?>
         </select>
         <div class="ws-formatting">
           <button type="button" id="ws-bold-btn">B</button>
