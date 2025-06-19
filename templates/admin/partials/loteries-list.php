@@ -32,8 +32,7 @@
                 $end    = get_post_meta($lottery->ID, '_winshirt_lottery_end', true);
                 $product= get_post_meta($lottery->ID, '_winshirt_lottery_product', true);
                 $active = get_post_meta($lottery->ID, '_winshirt_lottery_active', true) === 'yes';
-                $parts  = get_post_meta($lottery->ID, '_winshirt_lottery_participants', true);
-                $count  = is_array($parts) ? count($parts) : 0;
+                $count  = absint(get_post_meta($lottery->ID, 'participants_count', true));
             ?>
             <tr>
                 <td><?php echo esc_html($lottery->post_title); ?></td>

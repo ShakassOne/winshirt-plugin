@@ -459,6 +459,10 @@ function winshirt_register_lottery_participant( $order_id ) {
         return;
     }
 
+    if ( $order->get_meta( '_winshirt_lottery_participants_registered' ) === 'yes' ) {
+        return;
+    }
+
     foreach ( $order->get_items() as $item ) {
         $lotteries = $item->get_meta( '_winshirt_lotteries', true );
         if ( $lotteries ) {
@@ -483,9 +487,14 @@ function winshirt_register_lottery_participant( $order_id ) {
         }
         update_post_meta( $lottery, 'participants_count', $count + $increment );
     }
+
+    $order->update_meta_data( '_winshirt_lottery_participants_registered', 'yes' );
+    $order->save();
 }
 // Update lottery participation when a payment is confirmed
 add_action( 'woocommerce_payment_complete', 'winshirt_register_lottery_participant' );
+add_action( 'woocommerce_order_status_processing', 'winshirt_register_lottery_participant' );
+add_action( 'woocommerce_order_status_completed', 'winshirt_register_lottery_participant' );
 
 // Register custom post type for mockups
 add_action('init', function () {

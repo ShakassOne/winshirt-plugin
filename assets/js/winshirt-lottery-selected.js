@@ -11,16 +11,14 @@ jQuery(function($){
 
   function renderAll(){
     $container.empty();
-    var shown = {};
 
     $selects.each(function(index){
       var $select = $(this);
       var $opt    = $select.find('option:selected');
       var lid     = $opt.val();
-      if(!lid || shown[lid]){
+      if(!lid){
         return;
       }
-      shown[lid] = true;
 
       var data = $opt.data('info');
       if(typeof data === 'string'){
