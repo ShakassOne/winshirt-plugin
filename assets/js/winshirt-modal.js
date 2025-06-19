@@ -263,6 +263,28 @@ jQuery(function($){
     $it.css('transform','translate3d('+x+'px,'+y+'px,0) scale('+sc+') rotate('+rot+'deg)');
   }
 
+  function applyTextStyles($it){
+    var font = $('#ws-font-select').val() || 'Arial';
+    var bold = $('#ws-bold-btn').hasClass('active');
+    var italic = $('#ws-italic-btn').hasClass('active');
+    var underline = $('#ws-underline-btn').hasClass('active');
+    var col = $('#ws-color-picker').val() || '#000000';
+    var scale = parseFloat($('#ws-scale-range').val() || 1);
+    var rot = parseInt($('#ws-rotate-range').val() || 0,10);
+    $it.attr('data-scale', scale);
+    $it.attr('data-rotation', rot);
+    $it.attr('data-color', col);
+    var $txt = $it.find('.ws-text');
+    $txt.css({
+      'font-family': font,
+      'font-weight': bold ? '700' : '400',
+      'font-style': italic ? 'italic' : 'normal',
+      'text-decoration': underline ? 'underline' : 'none',
+      'color': col
+    });
+    updateItemTransform($it);
+  }
+
 function openModal(){
   checkMobile();
   loadState();
@@ -357,6 +379,26 @@ function openModal(){
     selectItem($it);
   });
 
+  $('#ws-font-select').on('change', function(){
+    if(activeItem && activeItem.data('type')==='text'){
+      applyTextStyles(activeItem);
+      saveState();
+    }
+  });
+  $('#ws-bold-btn, #ws-italic-btn, #ws-underline-btn').on('click', function(){
+    $(this).toggleClass('active');
+    if(activeItem && activeItem.data('type')==='text'){
+      applyTextStyles(activeItem);
+      saveState();
+    }
+  });
+  $('#ws-color-picker, #ws-scale-range, #ws-rotate-range').on('input change', function(){
+    if(activeItem && activeItem.data('type')==='text'){
+      applyTextStyles(activeItem);
+      saveState();
+    }
+  });
+
   $formatWrap.on('click', '.ws-format-btn', function(){
     if(!activeItem) return;
     var fmt = $(this).data('format');
@@ -380,6 +422,16 @@ function openModal(){
       $item.css({width:size,height:size});
     } else {
       $item.append('<span class="ws-text">'+content+'</span>');
+      var cont = getContainment();
+      var cw = $(cont).width();
+      var ch = $(cont).height();
+      if(!cw || !ch){
+        cw = $canvas.width();
+        ch = $canvas.height();
+      }
+      var size = Math.min(cw, ch) * 0.3;
+      if(!size){ size = 100; }
+      $item.css({width:size,height:size});
       var col = $('#ws-color-picker').val() || '#000000';
       $item.attr('data-color', col);
       $item.find('.ws-text').css('color', col);
@@ -389,17 +441,33 @@ function openModal(){
     applyClip();
     var cont = getContainment();
     $item.draggable({
-      containment:cont,
-      drag:function(e,ui){
-        $item.attr('data-x', ui.position.left).attr('data-y', ui.position.top);
-        updateItemTransform($item);
-        updateDebug($item);
+      containment: cont,
+      start: function(){
+        var $t = $(this);
+        $t.data('startX', parseFloat($t.attr('data-x') || 0));
+        $t.data('startY', parseFloat($t.attr('data-y') || 0));
+        $t.css({left:0, top:0});
       },
-      stop:function(e,ui){
-        $item.attr('data-x', ui.position.left).attr('data-y', ui.position.top);
-        updateItemTransform($item);
-        updateDebug($item);
-        showTooltip('Taille estimée : '+detectFormat($item));
+      drag: function(e, ui){
+        var $t = $(this);
+        var newX = $t.data('startX') + ui.position.left;
+        var newY = $t.data('startY') + ui.position.top;
+        ui.position.left = 0;
+        ui.position.top = 0;
+        $t.attr('data-x', newX).attr('data-y', newY);
+        updateItemTransform($t);
+        updateDebug($t);
+      },
+      stop: function(e, ui){
+        var $t = $(this);
+        var newX = $t.data('startX') + ui.position.left;
+        var newY = $t.data('startY') + ui.position.top;
+        ui.position.left = 0;
+        ui.position.top = 0;
+        $t.attr('data-x', newX).attr('data-y', newY);
+        updateItemTransform($t);
+        updateDebug($t);
+        showTooltip('Taille estimée : '+detectFormat($t));
         saveState();
       }
     });
