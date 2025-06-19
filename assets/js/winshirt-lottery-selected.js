@@ -12,13 +12,20 @@ jQuery(function($){
   function renderAll(){
     $container.empty();
 
-    $selects.each(function(index){
+    var added = {};
+    var cardIndex = 0;
+
+    $selects.each(function(){
       var $select = $(this);
       var $opt    = $select.find('option:selected');
       var lid     = $opt.val();
       if(!lid){
         return;
       }
+      if(added[lid]){
+        return; // avoid duplicate cards for same lottery
+      }
+      added[lid] = true;
 
       var data = $opt.data('info');
       if(typeof data === 'string'){
@@ -29,7 +36,7 @@ jQuery(function($){
       var percent = data.goal ? Math.min(100, Math.round((data.participants / data.goal) * 100)) : 0;
       var badge   = data.featured ? '<span class="loterie-badge">BEST</span>' : (data.active ? '<span class="loterie-badge">NOUVEAU</span>' : '');
       var price   = data.value ? '<span class="loterie-price">'+data.value+'€</span>' : '';
-      var html    = '<div class="loterie-card" id="loterie-card-'+index+'" data-index="'+index+'" data-lottery="'+lid+'">'+
+      var html    = '<div class="loterie-card" id="loterie-card-'+cardIndex+'" data-index="'+cardIndex+'" data-lottery="'+lid+'">'+
         badge+
         '<button type="button" class="loterie-remove" aria-label="Retirer">&times;</button>'+
         (data.image ? '<img class="loterie-img" src="'+data.image+'" alt="" />' : '')+
@@ -47,12 +54,13 @@ jQuery(function($){
       '</div>';
 
       $container.append(html);
-      var $card = $container.find('#loterie-card-'+index);
+      var $card = $container.find('#loterie-card-'+cardIndex);
       $card.find('.loterie-remove').on('click', function(e){
         e.preventDefault();
         $select.val('');
         renderAll();
       });
+      cardIndex++;
     });
   }
 
