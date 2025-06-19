@@ -271,7 +271,10 @@ jQuery(function($){
     var rot = parseInt($it.attr('data-rotation') || 0,10);
     var x  = parseFloat($it.attr('data-x') || 0);
     var y  = parseFloat($it.attr('data-y') || 0);
-    $it.css('transform','translate3d('+x+'px,'+y+'px,0) scale('+sc+') rotate('+rot+'deg)');
+    $it.css({
+      'transform':'translate('+x+'px,'+y+'px) rotate('+rot+'deg) scale('+sc+')',
+      'transform-origin':'center center'
+    });
   }
 
   function applyTextStyles($it){
@@ -477,29 +480,26 @@ function openModal(){
     updateItemTransform($item);
     $item.draggable({
       containment: cont,
-      start: function(){
+      start: function(e, ui){
         var $t = $(this);
         $t.data('startX', parseFloat($t.attr('data-x') || 0));
         $t.data('startY', parseFloat($t.attr('data-y') || 0));
-        $t.css({left:0, top:0});
+        // Do not reset left/top here to avoid jump
       },
       drag: function(e, ui){
         var $t = $(this);
         var newX = $t.data('startX') + ui.position.left;
         var newY = $t.data('startY') + ui.position.top;
-        ui.position.left = 0;
-        ui.position.top = 0;
         $t.attr('data-x', newX).attr('data-y', newY);
         updateItemTransform($t);
         updateDebug($t);
       },
       stop: function(e, ui){
         var $t = $(this);
-        var newX = $t.data('startX') + ui.position.left;
-        var newY = $t.data('startY') + ui.position.top;
-        ui.position.left = 0;
-        ui.position.top = 0;
-        $t.attr('data-x', newX).attr('data-y', newY);
+        var finalX = $t.data('startX') + ui.position.left;
+        var finalY = $t.data('startY') + ui.position.top;
+        $t.attr('data-x', finalX).attr('data-y', finalY);
+        $t.css({left:0, top:0});
         updateItemTransform($t);
         updateDebug($t);
         showTooltip('Taille estimée : '+detectFormat($t));

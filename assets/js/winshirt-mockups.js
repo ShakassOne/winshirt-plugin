@@ -33,12 +33,97 @@ jQuery(function($){
     }
 
     function initZone($z){
+        if ($z.hasClass('zone-initialized')) {
+            return;
+        }
+
         var side = $z.data('side');
         var cont = side === 'back' ? '#mockup-canvas-back' : '#mockup-canvas-front';
-        $z.draggable({ containment: cont, scroll:false, helper:'original', stop: function(){ saveZonePosition($z); } });
-        $z.resizable({ containment: cont, handles:'n,e,s,w,ne,se,sw,nw', stop: function(){ saveZonePosition($z); },
-            create:function(){ $(this).css('overflow','visible'); } });
-        whenImageReady($(cont), function(){ saveZonePosition($z); });
+
+        if ($z.hasClass('ui-draggable')) {
+            $z.draggable('destroy');
+        }
+        if ($z.hasClass('ui-resizable')) {
+            $z.resizable('destroy');
+        }
+
+        $z.draggable({
+            containment: cont,
+            scroll: false,
+            start: function(e, ui) {
+                $('.print-zone').not(this).removeClass('active');
+                $(this).addClass('active');
+            },
+            drag: function(e, ui) {
+                e.stopPropagation();
+            },
+            stop: function(e, ui) {
+                saveZonePosition($z);
+            }
+        });
+
+        $z.resizable({
+            containment: cont,
+            handles: 'n,e,s,w,ne,se,sw,nw',
+            start: function(e, ui) {
+                $('.print-zone').not(this).removeClass('active');
+                $(this).addClass('active');
+            },
+            stop: function(e, ui) {
+                saveZonePosition($z);
+            },
+            create: function() {
+                $(this).css('overflow', 'visible');
+            }
+        });
+
+        $z.addClass('zone-initialized');
+
+        whenImageReady($(cont), function() {
+            saveZonePosition($z);
+        });
+    }
+
+    function cleanDuplicateZones() {
+        $('.print-zone').each(function() {
+            var $zone = $(this);
+            var zoneId = $zone.attr('id') || $zone.data('zone-id');
+
+            if (zoneId) {
+                $('.print-zone[id="' + zoneId + '"]').not(':first').remove();
+                $('.print-zone[data-zone-id="' + zoneId + '"]').not(':first').remove();
+            }
+        });
+    }
+
+    function createPrintZone(side, x, y, width, height) {
+        cleanDuplicateZones();
+
+        var zoneId = 'zone-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+        var cont = side === 'back' ? '#mockup-canvas-back' : '#mockup-canvas-front';
+
+        var $zone = $('<div>', {
+            'class': 'print-zone',
+            'id': zoneId,
+            'data-side': side,
+            'data-zone-id': zoneId
+        }).css({
+            position: 'absolute',
+            left: x + 'px',
+            top: y + 'px',
+            width: width + 'px',
+            height: height + 'px',
+            border: '2px dashed #007cba',
+            background: 'rgba(0, 124, 186, 0.1)',
+            cursor: 'move',
+            'z-index': 1000
+        });
+
+        $(cont).append($zone);
+
+        initZone($zone);
+
+        return $zone;
     }
 
     function createZone(index){
@@ -138,8 +223,14 @@ jQuery(function($){
         $('.print-zone[data-index='+idx+']').text($(this).val()).attr('data-format', $(this).val());
     });
 
+    cleanDuplicateZones();
+
     $('.zone-row').each(function(){
         createZone($(this).data('index'));
+    });
+
+    $('.print-zone').each(function(){
+        initZone($(this));
     });
 
     $('#mockup-form').on('submit', function(){

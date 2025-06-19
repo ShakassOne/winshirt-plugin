@@ -508,3 +508,50 @@
 .ui-resizable-ne { right: -6px; top: -6px; cursor: ne-resize; }
 .ui-resizable-sw { left: -6px; bottom: -6px; cursor: sw-resize; }
 .ui-resizable-se { right: -6px; bottom: -6px; cursor: se-resize; }
+
+/* Additional styles for draggable items and print zones */
+.ws-item {
+  user-select: none;
+  transform-origin: center center;
+}
+.ws-item:hover {
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+}
+.ws-item.ui-draggable-dragging {
+  z-index: 9999;
+  opacity: 0.8;
+}
+.print-zone {
+  position: absolute;
+  border: 2px dashed #007cba;
+  background: rgba(0, 124, 186, 0.1);
+  cursor: move;
+  box-sizing: border-box;
+  min-width: 20px;
+  min-height: 20px;
+}
+.print-zone:hover {
+  border-color: #005a87;
+  background: rgba(0, 124, 186, 0.2);
+}
+.print-zone.active {
+  border-color: #ff6b35;
+  background: rgba(255, 107, 53, 0.1);
+}
+.print-zone.ui-draggable-dragging {
+  z-index: 9999;
+  opacity: 0.7;
+}
+.ui-resizable-handle {
+  background: #007cba;
+  border: 1px solid #005a87;
+}
+.ui-resizable-handle:hover {
+  background: #005a87;
+}
+.mockup-canvas * {
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
