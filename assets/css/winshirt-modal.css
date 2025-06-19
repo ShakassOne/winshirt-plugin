@@ -37,7 +37,7 @@
   transition: transform 0.3s, opacity 0.3s;
 }
 .ws-modal.open .ws-modal-content {
-  transform: scale(1);
+  transform: none;
   opacity: 1;
 }
 
