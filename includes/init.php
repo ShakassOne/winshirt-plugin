@@ -12,6 +12,7 @@ add_action('wp_enqueue_scripts', function () {
 
         wp_enqueue_style('winshirt-lottery-selected', WINSHIRT_URL . 'assets/css/winshirt-lottery-selected.css', [], '1.0');
         wp_enqueue_script('winshirt-lottery-selected', WINSHIRT_URL . 'assets/js/winshirt-lottery-selected.js', ['jquery'], '1.0', true);
+        wp_enqueue_script('winshirt-lottery-enforce', WINSHIRT_URL . 'assets/js/winshirt-lottery-enforce.js', ['jquery'], '1.0', true);
     }
 });
 

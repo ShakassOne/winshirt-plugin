@@ -172,3 +172,5 @@
   .loterie-badge { left: 10px; top: 8px; font-size: 0.75rem; }
   .loterie-remove { top: 6px; right: 6px; width: 22px; height: 22px; font-size: 1.02rem; }
 }
+
+.winshirt-lottery-warning{color:#b91c1c;margin-top:.5em;font-size:.95rem;}
