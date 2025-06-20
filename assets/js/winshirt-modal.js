@@ -482,23 +482,28 @@ function openModal(){
       containment: cont,
       start: function(e, ui){
         var $t = $(this);
-        $t.data('startX', parseFloat($t.attr('data-x') || 0));
-        $t.data('startY', parseFloat($t.attr('data-y') || 0));
-        // Do not reset left/top here to avoid jump
+        $t.data('dragStartX', parseFloat($t.attr('data-x')) || 0);
+        $t.data('dragStartY', parseFloat($t.attr('data-y')) || 0);
+        ui.position.left = 0;
+        ui.position.top = 0;
       },
       drag: function(e, ui){
         var $t = $(this);
-        var newX = $t.data('startX') + ui.position.left;
-        var newY = $t.data('startY') + ui.position.top;
-        $t.attr('data-x', newX).attr('data-y', newY);
+        var newX = $t.data('dragStartX') + ui.position.left;
+        var newY = $t.data('dragStartY') + ui.position.top;
+        $t.attr('data-x', newX);
+        $t.attr('data-y', newY);
         updateItemTransform($t);
+        ui.position.left = 0;
+        ui.position.top = 0;
         updateDebug($t);
       },
       stop: function(e, ui){
         var $t = $(this);
-        var finalX = $t.data('startX') + ui.position.left;
-        var finalY = $t.data('startY') + ui.position.top;
-        $t.attr('data-x', finalX).attr('data-y', finalY);
+        var finalX = $t.data('dragStartX') + ui.position.left;
+        var finalY = $t.data('dragStartY') + ui.position.top;
+        $t.attr('data-x', finalX);
+        $t.attr('data-y', finalY);
         $t.css({left:0, top:0});
         updateItemTransform($t);
         updateDebug($t);
@@ -507,12 +512,31 @@ function openModal(){
       }
     });
     $item.resizable({ handles:'ne, se, sw, nw', containment:cont })
-      .on('resize', function(){
-        updateDebug($item);
-        saveState();
-      })
-      .on('resizestop', function(){
+      .on('resizestart', function(e, ui){
         var $t = $(this);
+        $t.data('resizeStartX', parseFloat($t.attr('data-x')) || 0);
+        $t.data('resizeStartY', parseFloat($t.attr('data-y')) || 0);
+        ui.position.left = 0;
+        ui.position.top = 0;
+      })
+      .on('resize', function(e, ui){
+        var $t = $(this);
+        var newX = $t.data('resizeStartX') + ui.position.left;
+        var newY = $t.data('resizeStartY') + ui.position.top;
+        $t.attr('data-x', newX);
+        $t.attr('data-y', newY);
+        updateItemTransform($t);
+        ui.position.left = 0;
+        ui.position.top = 0;
+        updateDebug($t);
+      })
+      .on('resizestop', function(e, ui){
+        var $t = $(this);
+        var finalX = $t.data('resizeStartX') + ui.position.left;
+        var finalY = $t.data('resizeStartY') + ui.position.top;
+        $t.attr('data-x', finalX);
+        $t.attr('data-y', finalY);
+        $t.css({left:0, top:0});
         clearTimeout($t.data('rt'));
         $t.data('rt', setTimeout(function(){
           updateFormatUIFromItem($t);
