@@ -218,7 +218,7 @@
   object-fit: contain;
 }
 .ws-canvas {
-  position: absolute;
+  position: relative;
   inset: 0;
 }
 .ws-item {
@@ -228,6 +228,8 @@
   border-radius: .25rem;
   cursor: move;
   transition: none;
+  box-sizing: border-box;
+  pointer-events: auto;
 }
 .ws-item .ui-resizable-handle {
   width: 8px;
@@ -347,8 +349,10 @@
 }
 .ws-print-zone {
   position: absolute;
+  z-index: 2;
   border: 1px dashed rgba(255,255,255,0.7);
   pointer-events: none;
+  overflow: hidden !important;
   display: none;
 }
 #ws-print-zones {
