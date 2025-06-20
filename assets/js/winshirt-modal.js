@@ -283,14 +283,9 @@ jQuery(function($){
   }
 
   function updateItemTransform($it){
-    var sc = parseFloat($it.attr('data-scale') || 1);
-    var rot = parseInt($it.attr('data-rotation') || 0,10);
-    var x  = parseFloat($it.attr('data-x') || 0);
-    var y  = parseFloat($it.attr('data-y') || 0);
-    $it.css({
-      'transform':'translate('+x+'px,'+y+'px) rotate('+rot+'deg) scale('+sc+')',
-      'transform-origin':'center center'
-    });
+    var x = parseFloat($it.attr('data-x')||0);
+    var y = parseFloat($it.attr('data-y')||0);
+    $it.css({transform:'translate('+x+'px,'+y+'px)'});
   }
 
   function applyTextStyles($it){
@@ -448,123 +443,120 @@ function openModal(){
   });
 
   function addItem(type, content){
+    // Supprime l'image existante si besoin
     if(type === 'image') $canvas.children('.ws-item[data-type="image"]').remove();
+
     var $item = $('<div class="ws-item" />')
       .attr('data-type', type)
       .attr('data-side', state.side)
-      .attr('data-scale', '1')
-      .attr('data-rotation', '0')
-      .attr('data-x', '0')
-      .attr('data-y', '0')
-      .css({left:0, top:0});
+      .attr('data-scale','1')
+      .attr('data-rotation','0')
+      .attr('data-x','0').attr('data-y','0')
+      .css({width:120, height:120, left:0, top:0});
 
-    var cont = getContainment();
-    var $cont = $(cont);
-    var cw = $cont.width();
-    var ch = $cont.height();
-    if(!cw || !ch){
-      cw = $canvas.width();
-      ch = $canvas.height();
-    }
-
-    var size;
     if(type === 'image'){
-      $item.append('<img src="'+content+'" alt="" />');
-      size = Math.min(cw, ch) * 0.5;
+      $item.append('<img src="'+content+'" alt="" style="width:100%;height:100%;pointer-events:none;"/>');
     } else {
       $item.append('<span class="ws-text">'+content+'</span>');
-      size = Math.min(cw, ch) * 0.3;
       var col = $('#ws-color-picker').val() || '#000000';
       $item.attr('data-color', col);
       $item.find('.ws-text').css('color', col);
     }
-    if(!size){ size = 100; }
-    $item.css({width:size, height:size});
 
+    $item.append('<div class="ws-zone-resize"></div>');
     $item.append('<button class="ws-remove" title="Supprimer">×</button>');
     $canvas.append($item);
 
-    var cpos = $cont.position();
-    if(!cw || !ch){
-      cw = $canvas.width();
-      ch = $canvas.height();
-      cpos = {left:0, top:0};
+    // Centre dans la zone d'impression
+    var $zone = $(getContainment());
+    var zoneOffset = $zone.offset();
+    var zoneW = $zone.width();
+    var zoneH = $zone.height();
+    var itemW = $item.width();
+    var itemH = $item.height();
+    $item.attr('data-x', (zoneW - itemW)/2).attr('data-y', (zoneH - itemH)/2);
+    $item.css({left:0, top:0});
+    updateItemTransform($item);
+
+    // --- DRAG & DROP ---
+    var isDragging = false, dragStart = {};
+    $item.on('mousedown touchstart', function(e){
+      if($(e.target).is('.ws-remove, .ws-zone-resize')) return;
+      isDragging = true;
+      var oe = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
+      dragStart.x = oe.clientX;
+      dragStart.y = oe.clientY;
+      dragStart.itemX = parseFloat($item.attr('data-x'));
+      dragStart.itemY = parseFloat($item.attr('data-y'));
+      $(window).on('mousemove touchmove', dragMove);
+      $(window).on('mouseup touchend', dragEnd);
+      $item.addClass('ws-selected');
+    });
+
+    function dragMove(e){
+      if(!isDragging) return;
+      var oe = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
+      var dx = oe.clientX - dragStart.x;
+      var dy = oe.clientY - dragStart.y;
+      var zoneW = $zone.width(), zoneH = $zone.height();
+      var itemW = $item.width(), itemH = $item.height();
+      var newX = Math.min(Math.max(0, dragStart.itemX + dx), zoneW - itemW);
+      var newY = Math.min(Math.max(0, dragStart.itemY + dy), zoneH - itemH);
+      $item.attr('data-x', newX).attr('data-y', newY);
+      updateItemTransform($item);
     }
-    var left = cpos.left + (cw - $item.width())/2;
-    var top  = cpos.top  + (ch - $item.height())/2;
-    $item.attr('data-x', left).attr('data-y', top);
-    updateItemTransform($item);
+    function dragEnd(e){
+      if(!isDragging) return;
+      isDragging = false;
+      $(window).off('mousemove touchmove', dragMove);
+      $(window).off('mouseup touchend', dragEnd);
+      saveState();
+    }
 
-    var dragStartX = 0, dragStartY = 0;
-    $item.draggable({
-      containment: cont,
-      scroll:false,
-      start: function(e, ui){
-        var $t = $(this);
-        dragStartX = parseFloat($t.attr('data-x')) || 0;
-        dragStartY = parseFloat($t.attr('data-y')) || 0;
-      },
-      drag: function(e, ui){
-        var $t = $(this);
-        var dx = ui.position.left - ui.originalPosition.left;
-        var dy = ui.position.top  - ui.originalPosition.top;
-        $t.attr('data-x', dragStartX + dx);
-        $t.attr('data-y', dragStartY + dy);
-        updateItemTransform($t);
-        updateDebug($t);
-      },
-      stop: function(e, ui){
-        var $t = $(this);
-        var dx = ui.position.left - ui.originalPosition.left;
-        var dy = ui.position.top  - ui.originalPosition.top;
-        $t.attr('data-x', dragStartX + dx);
-        $t.attr('data-y', dragStartY + dy);
-        $t.css({left:0, top:0});
-        updateItemTransform($t);
-        updateDebug($t);
-        showTooltip('Taille estimée : '+detectFormat($t));
+    // --- RESIZE ---
+    $item.find('.ws-zone-resize').on('mousedown touchstart', function(e){
+      e.stopPropagation();
+      var oe = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
+      var resizeStart = {
+        x: oe.clientX,
+        y: oe.clientY,
+        w: $item.width(),
+        h: $item.height()
+      };
+      $(window).on('mousemove touchmove', resizeMove);
+      $(window).on('mouseup touchend', resizeEnd);
+      function resizeMove(e2){
+        var oe2 = (e2.type === 'touchmove') ? e2.originalEvent.touches[0] : e2;
+        var dx = oe2.clientX - resizeStart.x;
+        var dy = oe2.clientY - resizeStart.y;
+        var newW = Math.max(32, resizeStart.w + dx);
+        var newH = Math.max(32, resizeStart.h + dy);
+        newW = Math.min(newW, $zone.width() - parseFloat($item.attr('data-x')));
+        newH = Math.min(newH, $zone.height() - parseFloat($item.attr('data-y')));
+        $item.css({width: newW, height: newH});
+        updateItemTransform($item);
+      }
+      function resizeEnd(){
+        $(window).off('mousemove touchmove', resizeMove);
+        $(window).off('mouseup touchend', resizeEnd);
         saveState();
       }
     });
 
-    $item.resizable({
-      handles: 'ne, se, sw, nw',
-      containment: cont,
-      scroll:false,
-      start: function(e, ui){
-        var $t = $(this);
-        dragStartX = parseFloat($t.attr('data-x')) || 0;
-        dragStartY = parseFloat($t.attr('data-y')) || 0;
-      },
-      resize: function(e, ui){
-        var $t = $(this);
-        var dx = ui.position.left - ui.originalPosition.left;
-        var dy = ui.position.top  - ui.originalPosition.top;
-        $t.attr('data-x', dragStartX + dx);
-        $t.attr('data-y', dragStartY + dy);
-        updateItemTransform($t);
-        updateDebug($t);
-      },
-      stop: function(e, ui){
-        var $t = $(this);
-        var dx = ui.position.left - ui.originalPosition.left;
-        var dy = ui.position.top  - ui.originalPosition.top;
-        $t.attr('data-x', dragStartX + dx);
-        $t.attr('data-y', dragStartY + dy);
-        $t.css({left:0, top:0});
-        clearTimeout($t.data('rt'));
-        $t.data('rt', setTimeout(function(){
-          updateFormatUIFromItem($t);
-        },100));
-        updateItemTransform($t);
-        updateDebug($t);
-        showTooltip('Taille estimée : '+detectFormat($t));
-        saveState();
-      }
+    // --- SUPPRESSION ---
+    $item.find('.ws-remove').on('click', function(e){
+      e.preventDefault();
+      $item.remove();
+      saveState();
+    });
+
+    // --- SELECTION ---
+    $item.on('mousedown touchstart', function(e){
+      $('.ws-item').removeClass('ws-selected');
+      $item.addClass('ws-selected');
     });
 
     updateItemTransform($item);
-    updateFormatUIFromItem($item);
     saveState();
     return $item;
   }
