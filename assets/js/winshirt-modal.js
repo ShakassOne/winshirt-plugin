@@ -449,63 +449,76 @@ function openModal(){
 
   function addItem(type, content){
     if(type === 'image') $canvas.children('.ws-item[data-type="image"]').remove();
-    var $item = $('<div class="ws-item" />').attr('data-type', type).attr('data-side', state.side).attr('data-scale','1').attr('data-rotation','0').attr('data-x','0').attr('data-y','0').css({left:0,top:0});
+    var $item = $('<div class="ws-item" />')
+      .attr('data-type', type)
+      .attr('data-side', state.side)
+      .attr('data-scale', '1')
+      .attr('data-rotation', '0')
+      .attr('data-x', '0')
+      .attr('data-y', '0')
+      .css({left:0, top:0});
+
+    var cont = getContainment();
+    var $cont = $(cont);
+    var cw = $cont.width();
+    var ch = $cont.height();
+    if(!cw || !ch){
+      cw = $canvas.width();
+      ch = $canvas.height();
+    }
+
+    var size;
     if(type === 'image'){
       $item.append('<img src="'+content+'" alt="" />');
-      var cont = getContainment();
-      var cw = $(cont).width();
-      var ch = $(cont).height();
-      if(!cw || !ch){
-        cw = $canvas.width();
-        ch = $canvas.height();
-      }
-      var size = Math.min(cw, ch) * 0.5;
-      if(!size){ size = 100; }
-      $item.css({width:size,height:size});
+      size = Math.min(cw, ch) * 0.5;
     } else {
       $item.append('<span class="ws-text">'+content+'</span>');
-      var cont = getContainment();
-      var cw = $(cont).width();
-      var ch = $(cont).height();
-      if(!cw || !ch){
-        cw = $canvas.width();
-        ch = $canvas.height();
-      }
-      var size = Math.min(cw, ch) * 0.3;
-      if(!size){ size = 100; }
-      $item.css({width:size,height:size});
+      size = Math.min(cw, ch) * 0.3;
       var col = $('#ws-color-picker').val() || '#000000';
       $item.attr('data-color', col);
       $item.find('.ws-text').css('color', col);
     }
+    if(!size){ size = 100; }
+    $item.css({width:size, height:size});
+
     $item.append('<button class="ws-remove" title="Supprimer">×</button>');
     $canvas.append($item);
-    applyClip();
-    var cont = getContainment();
-    var $cont = $(cont);
+
     var cpos = $cont.position();
-    var cw = $cont.width();
-    var ch = $cont.height();
     if(!cw || !ch){
       cw = $canvas.width();
       ch = $canvas.height();
       cpos = {left:0, top:0};
     }
     var left = cpos.left + (cw - $item.width())/2;
-    var top  = cpos.top + (ch - $item.height())/2;
+    var top  = cpos.top  + (ch - $item.height())/2;
     $item.attr('data-x', left).attr('data-y', top);
     updateItemTransform($item);
+
+    var dragStartX = 0, dragStartY = 0;
     $item.draggable({
       containment: cont,
-      start: function(e, ui){},
+      scroll:false,
+      start: function(e, ui){
+        var $t = $(this);
+        dragStartX = parseFloat($t.attr('data-x')) || 0;
+        dragStartY = parseFloat($t.attr('data-y')) || 0;
+      },
       drag: function(e, ui){
-        updateDebug($(this));
+        var $t = $(this);
+        var dx = ui.position.left - ui.originalPosition.left;
+        var dy = ui.position.top  - ui.originalPosition.top;
+        $t.attr('data-x', dragStartX + dx);
+        $t.attr('data-y', dragStartY + dy);
+        updateItemTransform($t);
+        updateDebug($t);
       },
       stop: function(e, ui){
         var $t = $(this);
-        var pos = $t.position();
-        $t.attr('data-x', pos.left);
-        $t.attr('data-y', pos.top);
+        var dx = ui.position.left - ui.originalPosition.left;
+        var dy = ui.position.top  - ui.originalPosition.top;
+        $t.attr('data-x', dragStartX + dx);
+        $t.attr('data-y', dragStartY + dy);
         $t.css({left:0, top:0});
         updateItemTransform($t);
         updateDebug($t);
@@ -513,26 +526,43 @@ function openModal(){
         saveState();
       }
     });
-    $item.resizable({ handles:'ne, se, sw, nw', containment:cont })
-      .on('resizestart', function(e, ui){})
-      .on('resize', function(e, ui){
-        updateDebug($(this));
-      })
-      .on('resizestop', function(e, ui){
+
+    $item.resizable({
+      handles: 'ne, se, sw, nw',
+      containment: cont,
+      scroll:false,
+      start: function(e, ui){
         var $t = $(this);
-        var pos = $t.position();
-        $t.attr('data-x', pos.left);
-        $t.attr('data-y', pos.top);
+        dragStartX = parseFloat($t.attr('data-x')) || 0;
+        dragStartY = parseFloat($t.attr('data-y')) || 0;
+      },
+      resize: function(e, ui){
+        var $t = $(this);
+        var dx = ui.position.left - ui.originalPosition.left;
+        var dy = ui.position.top  - ui.originalPosition.top;
+        $t.attr('data-x', dragStartX + dx);
+        $t.attr('data-y', dragStartY + dy);
+        updateItemTransform($t);
+        updateDebug($t);
+      },
+      stop: function(e, ui){
+        var $t = $(this);
+        var dx = ui.position.left - ui.originalPosition.left;
+        var dy = ui.position.top  - ui.originalPosition.top;
+        $t.attr('data-x', dragStartX + dx);
+        $t.attr('data-y', dragStartY + dy);
         $t.css({left:0, top:0});
         clearTimeout($t.data('rt'));
         $t.data('rt', setTimeout(function(){
           updateFormatUIFromItem($t);
-        }, 100));
+        },100));
         updateItemTransform($t);
         updateDebug($t);
         showTooltip('Taille estimée : '+detectFormat($t));
         saveState();
-      });
+      }
+    });
+
     updateItemTransform($item);
     updateFormatUIFromItem($item);
     saveState();
