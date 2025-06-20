@@ -76,6 +76,22 @@ jQuery(function($){
     }
   }
 
+  function debugHiddenElements(){
+    var hidden = [];
+    $modal.find('*').each(function(){
+      var $el = $(this);
+      if(!$el.is(':visible')){
+        var desc = this.tagName.toLowerCase();
+        if(this.id) desc += '#' + this.id;
+        if(this.className) desc += '.' + this.className.trim().replace(/\s+/g,'.');
+        hidden.push(desc);
+      }
+    });
+    if(hidden.length){
+      console.debug('WinShirt hidden elements:', hidden);
+    }
+  }
+
   checkMobile();
   if(localStorage.getItem('wsDebug')==='1'){ $debug.addClass('show'); }
   $(document).on('keydown', function(e){
@@ -309,6 +325,7 @@ function openModal(){
   openTab('gallery');
   if(activeItem){ updateDebug(activeItem); }
   applyClip();
+  debugHiddenElements();
 }
 
   function openTab(tab){
@@ -480,30 +497,15 @@ function openModal(){
     updateItemTransform($item);
     $item.draggable({
       containment: cont,
-      start: function(e, ui){
-        var $t = $(this);
-        $t.data('dragStartX', parseFloat($t.attr('data-x')) || 0);
-        $t.data('dragStartY', parseFloat($t.attr('data-y')) || 0);
-        ui.position.left = 0;
-        ui.position.top = 0;
-      },
+      start: function(e, ui){},
       drag: function(e, ui){
-        var $t = $(this);
-        var newX = $t.data('dragStartX') + ui.position.left;
-        var newY = $t.data('dragStartY') + ui.position.top;
-        $t.attr('data-x', newX);
-        $t.attr('data-y', newY);
-        updateItemTransform($t);
-        ui.position.left = 0;
-        ui.position.top = 0;
-        updateDebug($t);
+        updateDebug($(this));
       },
       stop: function(e, ui){
         var $t = $(this);
-        var finalX = $t.data('dragStartX') + ui.position.left;
-        var finalY = $t.data('dragStartY') + ui.position.top;
-        $t.attr('data-x', finalX);
-        $t.attr('data-y', finalY);
+        var pos = $t.position();
+        $t.attr('data-x', pos.left);
+        $t.attr('data-y', pos.top);
         $t.css({left:0, top:0});
         updateItemTransform($t);
         updateDebug($t);
@@ -512,35 +514,21 @@ function openModal(){
       }
     });
     $item.resizable({ handles:'ne, se, sw, nw', containment:cont })
-      .on('resizestart', function(e, ui){
-        var $t = $(this);
-        $t.data('resizeStartX', parseFloat($t.attr('data-x')) || 0);
-        $t.data('resizeStartY', parseFloat($t.attr('data-y')) || 0);
-        ui.position.left = 0;
-        ui.position.top = 0;
-      })
+      .on('resizestart', function(e, ui){})
       .on('resize', function(e, ui){
-        var $t = $(this);
-        var newX = $t.data('resizeStartX') + ui.position.left;
-        var newY = $t.data('resizeStartY') + ui.position.top;
-        $t.attr('data-x', newX);
-        $t.attr('data-y', newY);
-        updateItemTransform($t);
-        ui.position.left = 0;
-        ui.position.top = 0;
-        updateDebug($t);
+        updateDebug($(this));
       })
       .on('resizestop', function(e, ui){
         var $t = $(this);
-        var finalX = $t.data('resizeStartX') + ui.position.left;
-        var finalY = $t.data('resizeStartY') + ui.position.top;
-        $t.attr('data-x', finalX);
-        $t.attr('data-y', finalY);
+        var pos = $t.position();
+        $t.attr('data-x', pos.left);
+        $t.attr('data-y', pos.top);
         $t.css({left:0, top:0});
         clearTimeout($t.data('rt'));
         $t.data('rt', setTimeout(function(){
           updateFormatUIFromItem($t);
         }, 100));
+        updateItemTransform($t);
         updateDebug($t);
         showTooltip('Taille estimée : '+detectFormat($t));
         saveState();
