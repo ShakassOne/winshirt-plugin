@@ -469,12 +469,13 @@ function openModal(){
 
     // Centre dans la zone d'impression
     var $zone = $(getContainment());
-    var zoneOffset = $zone.offset();
+    var zonePos = $zone.position();
     var zoneW = $zone.width();
     var zoneH = $zone.height();
     var itemW = $item.width();
     var itemH = $item.height();
-    $item.attr('data-x', (zoneW - itemW)/2).attr('data-y', (zoneH - itemH)/2);
+    $item.attr('data-x', zonePos.left + (zoneW - itemW)/2)
+         .attr('data-y', zonePos.top + (zoneH - itemH)/2);
     $item.css({left:0, top:0});
     updateItemTransform($item);
 
@@ -498,10 +499,11 @@ function openModal(){
       var oe = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
       var dx = oe.clientX - dragStart.x;
       var dy = oe.clientY - dragStart.y;
+      var zonePos = $zone.position();
       var zoneW = $zone.width(), zoneH = $zone.height();
       var itemW = $item.width(), itemH = $item.height();
-      var newX = Math.min(Math.max(0, dragStart.itemX + dx), zoneW - itemW);
-      var newY = Math.min(Math.max(0, dragStart.itemY + dy), zoneH - itemH);
+      var newX = Math.min(Math.max(zonePos.left, dragStart.itemX + dx), zonePos.left + zoneW - itemW);
+      var newY = Math.min(Math.max(zonePos.top, dragStart.itemY + dy), zonePos.top + zoneH - itemH);
       $item.attr('data-x', newX).attr('data-y', newY);
       updateItemTransform($item);
     }
@@ -531,8 +533,13 @@ function openModal(){
         var dy = oe2.clientY - resizeStart.y;
         var newW = Math.max(32, resizeStart.w + dx);
         var newH = Math.max(32, resizeStart.h + dy);
-        newW = Math.min(newW, $zone.width() - parseFloat($item.attr('data-x')));
-        newH = Math.min(newH, $zone.height() - parseFloat($item.attr('data-y')));
+        var zonePos = $zone.position();
+        var zoneW = $zone.width();
+        var zoneH = $zone.height();
+        var itemX = parseFloat($item.attr('data-x')) - zonePos.left;
+        var itemY = parseFloat($item.attr('data-y')) - zonePos.top;
+        newW = Math.min(newW, zoneW - itemX);
+        newH = Math.min(newH, zoneH - itemY);
         $item.css({width: newW, height: newH});
         updateItemTransform($item);
       }
