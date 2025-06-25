@@ -285,7 +285,9 @@ jQuery(function($){
   function updateItemTransform($it){
     var x = parseFloat($it.attr('data-x')||0);
     var y = parseFloat($it.attr('data-y')||0);
-    $it.css({transform:'translate('+x+'px,'+y+'px)'});
+    var scale = parseFloat($it.attr('data-scale') || 1);
+    var rot = parseInt($it.attr('data-rotation') || 0, 10);
+    $it.css({transform:'translate('+x+'px,'+y+'px) rotate('+rot+'deg) scale('+scale+')'});
   }
 
   function applyTextStyles($it){
