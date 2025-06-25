@@ -1,4 +1,26 @@
 jQuery(function ($) {
+  function openMedia(target, preview) {
+    var frame = wp.media({
+      title: 'Choisir une image',
+      button: { text: 'Sélectionner' },
+      multiple: false
+    });
+    frame.on('select', function () {
+      var attachment = frame.state().get('selection').first().toJSON();
+      $('#' + target).val(attachment.id);
+      if (preview) {
+        $(preview).html('<img src="' + attachment.sizes.thumbnail.url + '" />');
+      }
+    });
+    frame.open();
+  }
+
+  $(document).on('click', '.winshirt-media-btn', function (e) {
+    e.preventDefault();
+    var target = $(this).data('target');
+    var preview = $(this).data('preview');
+    openMedia(target, preview);
+  });
   $('#add-color').on('click', function (e) {
     e.preventDefault();
     var index = $('#colors-container .color-row').length;

@@ -36,18 +36,14 @@ function winshirt_page_mockups() {
 
         update_post_meta($mockup_id, '_winshirt_category', sanitize_text_field($_POST['category'] ?? ''));
 
-        if (!empty($_FILES['front_image']['tmp_name'])) {
-            $front_id = media_handle_upload('front_image', 0);
-            if (!is_wp_error($front_id)) {
-                update_post_meta($mockup_id, '_winshirt_front_image', $front_id);
-            }
+        $front_id = isset($_POST['front_image_id']) ? absint($_POST['front_image_id']) : 0;
+        if ($front_id) {
+            update_post_meta($mockup_id, '_winshirt_front_image', $front_id);
         }
 
-        if (!empty($_FILES['back_image']['tmp_name'])) {
-            $back_id = media_handle_upload('back_image', 0);
-            if (!is_wp_error($back_id)) {
-                update_post_meta($mockup_id, '_winshirt_back_image', $back_id);
-            }
+        $back_id = isset($_POST['back_image_id']) ? absint($_POST['back_image_id']) : 0;
+        if ($back_id) {
+            update_post_meta($mockup_id, '_winshirt_back_image', $back_id);
         }
 
         // Colors
@@ -63,20 +59,10 @@ function winshirt_page_mockups() {
                     'front' => 0,
                     'back'  => 0,
                 ];
-                if (!empty($_FILES['color_front_' . $idx]['tmp_name'])) {
-                    $fid = media_handle_upload('color_front_' . $idx, 0);
-                    if (!is_wp_error($fid)) {
-                        $c['front'] = $fid;
-                    }
-                } elseif (!empty($cdata['front'])) {
+                if (!empty($cdata['front'])) {
                     $c['front'] = absint($cdata['front']);
                 }
-                if (!empty($_FILES['color_back_' . $idx]['tmp_name'])) {
-                    $bid = media_handle_upload('color_back_' . $idx, 0);
-                    if (!is_wp_error($bid)) {
-                        $c['back'] = $bid;
-                    }
-                } elseif (!empty($cdata['back'])) {
+                if (!empty($cdata['back'])) {
                     $c['back'] = absint($cdata['back']);
                 }
                 if ($c['name']) {
