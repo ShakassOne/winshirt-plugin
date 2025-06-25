@@ -106,7 +106,10 @@ jQuery(function($){
     var items = [];
     $canvas.children('.ws-item').each(function(){
       var $it = $(this);
-      var pos = $it.position();
+      var pos = {
+        left: parseFloat($it.attr('data-x') || 0),
+        top:  parseFloat($it.attr('data-y') || 0)
+      };
       items.push({
         type: $it.data('type'),
         side: $it.data('side'),
@@ -142,11 +145,14 @@ jQuery(function($){
         $new.attr('data-side', it.side || 'front');
         $new.attr('data-scale', it.scale || 1);
         $new.attr('data-rotation', it.rotation || 0);
+        var posX = parseFloat(it.position.x) * $canvas.width();
+        var posY = parseFloat(it.position.y) * $canvas.height();
+        $new.attr('data-x', posX).attr('data-y', posY);
         $new.css({
           width: parseFloat(it.width) * $canvas.width(),
           height: parseFloat(it.height) * $canvas.height(),
-          left: parseFloat(it.position.x) * $canvas.width(),
-          top: parseFloat(it.position.y) * $canvas.height()
+          left:0,
+          top:0
         });
         if(it.color){ $new.attr('data-color', it.color); $new.find('.ws-text').css('color', it.color); }
         updateItemTransform($new);
