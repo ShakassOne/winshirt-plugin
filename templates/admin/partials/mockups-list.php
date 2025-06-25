@@ -52,15 +52,19 @@
         <tr>
             <th><?php esc_html_e('Image recto', 'winshirt'); ?></th>
             <td>
-                <input type="file" name="front_image" />
-                <?php $front = $editing->ID ? get_post_meta($editing->ID, '_winshirt_front_image', true) : ''; if ($front) echo wp_get_attachment_image($front, 'thumbnail'); ?>
+                <?php $front = $editing->ID ? get_post_meta($editing->ID, '_winshirt_front_image', true) : ''; ?>
+                <input type="hidden" id="front_image_id" name="front_image_id" value="<?php echo esc_attr($front); ?>" />
+                <button type="button" class="button winshirt-media-btn" data-target="front_image_id" data-preview="#front_image_preview"><?php echo $front ? esc_html__('Modifier', 'winshirt') : esc_html__('Choisir', 'winshirt'); ?></button>
+                <span id="front_image_preview"><?php if ($front) echo wp_get_attachment_image($front, 'thumbnail'); ?></span>
             </td>
         </tr>
         <tr>
             <th><?php esc_html_e('Image verso', 'winshirt'); ?></th>
             <td>
-                <input type="file" name="back_image" />
-                <?php $back = $editing->ID ? get_post_meta($editing->ID, '_winshirt_back_image', true) : ''; if ($back) echo wp_get_attachment_image($back, 'thumbnail'); ?>
+                <?php $back = $editing->ID ? get_post_meta($editing->ID, '_winshirt_back_image', true) : ''; ?>
+                <input type="hidden" id="back_image_id" name="back_image_id" value="<?php echo esc_attr($back); ?>" />
+                <button type="button" class="button winshirt-media-btn" data-target="back_image_id" data-preview="#back_image_preview"><?php echo $back ? esc_html__('Modifier', 'winshirt') : esc_html__('Choisir', 'winshirt'); ?></button>
+                <span id="back_image_preview"><?php if ($back) echo wp_get_attachment_image($back, 'thumbnail'); ?></span>
             </td>
         </tr>
     </table>
@@ -73,12 +77,18 @@
         foreach ($colors as $c) : ?>
             <div class="color-row">
                 <button class="remove-color button">&times;</button>
-                <input type="hidden" name="colors[<?php echo $index; ?>][front]" value="<?php echo esc_attr($c['front']); ?>" />
-                <input type="hidden" name="colors[<?php echo $index; ?>][back]" value="<?php echo esc_attr($c['back']); ?>" />
+                <input type="hidden" id="color_front_<?php echo $index; ?>" name="colors[<?php echo $index; ?>][front]" value="<?php echo esc_attr($c['front']); ?>" />
+                <input type="hidden" id="color_back_<?php echo $index; ?>" name="colors[<?php echo $index; ?>][back]" value="<?php echo esc_attr($c['back']); ?>" />
                 <label><?php esc_html_e('Nom', 'winshirt'); ?> <input type="text" name="colors[<?php echo $index; ?>][name]" value="<?php echo esc_attr($c['name']); ?>" /></label>
                 <label><?php esc_html_e('Code', 'winshirt'); ?> <input type="color" name="colors[<?php echo $index; ?>][code]" value="<?php echo esc_attr($c['code']); ?>" /></label>
-                <label><?php esc_html_e('Image recto', 'winshirt'); ?> <input type="file" name="color_front_<?php echo $index; ?>" /><?php if ($c['front']) echo wp_get_attachment_image($c['front'], 'thumbnail'); ?></label>
-                <label><?php esc_html_e('Image verso', 'winshirt'); ?> <input type="file" name="color_back_<?php echo $index; ?>" /><?php if ($c['back']) echo wp_get_attachment_image($c['back'], 'thumbnail'); ?></label>
+                <label><?php esc_html_e('Image recto', 'winshirt'); ?>
+                    <button type="button" class="button winshirt-media-btn" data-target="color_front_<?php echo $index; ?>" data-preview="#color_front_preview_<?php echo $index; ?>"><?php echo $c['front'] ? esc_html__('Modifier', 'winshirt') : esc_html__('Choisir', 'winshirt'); ?></button>
+                    <span id="color_front_preview_<?php echo $index; ?>"><?php if ($c['front']) echo wp_get_attachment_image($c['front'], 'thumbnail'); ?></span>
+                </label>
+                <label><?php esc_html_e('Image verso', 'winshirt'); ?>
+                    <button type="button" class="button winshirt-media-btn" data-target="color_back_<?php echo $index; ?>" data-preview="#color_back_preview_<?php echo $index; ?>"><?php echo $c['back'] ? esc_html__('Modifier', 'winshirt') : esc_html__('Choisir', 'winshirt'); ?></button>
+                    <span id="color_back_preview_<?php echo $index; ?>"><?php if ($c['back']) echo wp_get_attachment_image($c['back'], 'thumbnail'); ?></span>
+                </label>
             </div>
         <?php $index++; endforeach; ?>
     </div>
@@ -86,12 +96,18 @@
     <script type="text/template" id="color-template">
         <div class="color-row">
             <button class="remove-color button">&times;</button>
-            <input type="hidden" name="colors[%i%][front]" value="" />
-            <input type="hidden" name="colors[%i%][back]" value="" />
+            <input type="hidden" id="color_front_%i%" name="colors[%i%][front]" value="" />
+            <input type="hidden" id="color_back_%i%" name="colors[%i%][back]" value="" />
             <label><?php esc_html_e('Nom', 'winshirt'); ?> <input type="text" name="colors[%i%][name]" value="" /></label>
             <label><?php esc_html_e('Code', 'winshirt'); ?> <input type="color" name="colors[%i%][code]" value="#000000" /></label>
-            <label><?php esc_html_e('Image recto', 'winshirt'); ?> <input type="file" name="color_front_%i%" /></label>
-            <label><?php esc_html_e('Image verso', 'winshirt'); ?> <input type="file" name="color_back_%i%" /></label>
+            <label><?php esc_html_e('Image recto', 'winshirt'); ?>
+                <button type="button" class="button winshirt-media-btn" data-target="color_front_%i%" data-preview="#color_front_preview_%i%">Choisir</button>
+                <span id="color_front_preview_%i%"></span>
+            </label>
+            <label><?php esc_html_e('Image verso', 'winshirt'); ?>
+                <button type="button" class="button winshirt-media-btn" data-target="color_back_%i%" data-preview="#color_back_preview_%i%">Choisir</button>
+                <span id="color_back_preview_%i%"></span>
+            </label>
         </div>
     </script>
     <h3><?php esc_html_e('Zones d\'impression', 'winshirt'); ?></h3>
