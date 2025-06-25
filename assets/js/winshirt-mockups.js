@@ -1,100 +1,81 @@
-jQuery(function($){
-    $('#add-color').on('click', function(e){
-        e.preventDefault();
-        var index = $('#colors-container .color-row').length;
-        var template = $('#color-template').html();
-        template = template.replace(/%i%/g, index);
-        $('#colors-container').append(template);
+jQuery(function ($) {
+  $('#add-color').on('click', function (e) {
+    e.preventDefault();
+    var index = $('#colors-container .color-row').length;
+    var template = $('#color-template').html();
+    template = template.replace(/%i%/g, index);
+    $('#colors-container').append(template);
+  });
+
+  $(document).on('click', '.remove-color', function (e) {
+    e.preventDefault();
+    $(this).closest('.color-row').remove();
+  });
+
+  function initZone($zone) {
+    var idx = $zone.data('index');
+    $zone.draggable({
+      containment: 'parent',
+      stop: function () { syncZone($zone); }
+    }).resizable({
+      handles: 'n,e,s,w,se,sw,ne,nw',
+      containment: 'parent',
+      stop: function () { syncZone($zone); }
     });
+  }
 
-    $(document).on('click', '.remove-color', function(e){
-        e.preventDefault();
-        $(this).closest('.color-row').remove();
-    });
+  function syncZone($zone) {
+    var idx = $zone.data('index');
+    var $row = $('.zone-row[data-index="' + idx + '"]');
+    if (!$row.length) return;
+    var $canvas = $zone.parent();
+    var cw = $canvas.width(), ch = $canvas.height();
+    var pos = $zone.position();
+    $row.find('.zone-top').val(((pos.top / ch) * 100).toFixed(2));
+    $row.find('.zone-left').val(((pos.left / cw) * 100).toFixed(2));
+    $row.find('.zone-width').val((($zone.width() / cw) * 100).toFixed(2));
+    $row.find('.zone-height').val((($zone.height() / ch) * 100).toFixed(2));
+  }
 
-    // Gestion visuelle des zones en admin
-    $('.admin-add-zone').on('click', function(){
-        var $zone = $('<div class="admin-mockup-zone"></div>');
-        var $resize = $('<div class="admin-zone-resize"></div>');
-        var $remove = $('<div class="admin-remove-zone">×</div>');
-        var $price = $('<input type="number" class="admin-zone-price" min="0" step="0.01" placeholder="Prix" />');
-        $zone.append($resize).append($remove).append($price);
-        $zone.css({width:120, height:120, left:60, top:60});
-        $('.admin-mockup-container').append($zone);
+  $('.print-zone').each(function () { initZone($(this)); });
 
-        var isDragging = false, dragStart = {};
-        $zone.on('mousedown touchstart', function(e){
-            if($(e.target).is('.admin-remove-zone, .admin-zone-resize, .admin-zone-price')) return;
-            isDragging = true;
-            var oe = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-            dragStart.x = oe.clientX;
-            dragStart.y = oe.clientY;
-            dragStart.left = parseInt($zone.css('left'),10);
-            dragStart.top = parseInt($zone.css('top'),10);
-            $(window).on('mousemove touchmove', dragMove);
-            $(window).on('mouseup touchend', dragEnd);
-            $zone.addClass('selected');
-        });
-        function dragMove(e){
-            if(!isDragging) return;
-            var oe = (e.type === 'touchmove') ? e.originalEvent.touches[0] : e;
-            var dx = oe.clientX - dragStart.x;
-            var dy = oe.clientY - dragStart.y;
-            var parentW = $zone.parent().width(), parentH = $zone.parent().height();
-            var zoneW = $zone.width(), zoneH = $zone.height();
-            var newLeft = Math.min(Math.max(0, dragStart.left + dx), parentW - zoneW);
-            var newTop  = Math.min(Math.max(0, dragStart.top + dy), parentH - zoneH);
-            $zone.css({left:newLeft, top:newTop});
-        }
-        function dragEnd(e){
-            isDragging = false;
-            $(window).off('mousemove touchmove', dragMove);
-            $(window).off('mouseup touchend', dragEnd);
-        }
+  $('#add-zone').on('click', function (e) {
+    e.preventDefault();
+    var index = $('#zones-container .zone-row').length;
+    var tpl = $('#zone-template').html().replace(/%i%/g, index);
+    $('#zones-container').append(tpl);
+    var $row = $('.zone-row[data-index="' + index + '"]');
+    var side = $row.find('.zone-side').val();
+    var fmt = $row.find('.zone-format').val();
+    var $canvas = side === 'back' ? $('#mockup-canvas-back') : $('#mockup-canvas-front');
+    var $zone = $('<div class="print-zone" data-index="' + index + '" data-side="' + side + '" data-format="' + fmt + '">' + fmt + '</div>')
+      .css({ top: '10%', left: '10%', width: '20%', height: '20%' });
+    $canvas.append($zone);
+    syncZone($zone);
+    initZone($zone);
+  });
 
-        // RESIZE
-        $resize.on('mousedown touchstart', function(e){
-            e.stopPropagation();
-            var oe = (e.type === 'touchstart') ? e.originalEvent.touches[0] : e;
-            var resizeStart = {
-                x: oe.clientX,
-                y: oe.clientY,
-                w: $zone.width(),
-                h: $zone.height()
-            };
-            $(window).on('mousemove touchmove', resizeMove);
-            $(window).on('mouseup touchend', resizeEnd);
-            function resizeMove(e2){
-                var oe2 = (e2.type === 'touchmove') ? e2.originalEvent.touches[0] : e2;
-                var dx = oe2.clientX - resizeStart.x;
-                var dy = oe2.clientY - resizeStart.y;
-                var parentW = $zone.parent().width(), parentH = $zone.parent().height();
-                var newW = Math.max(32, resizeStart.w + dx);
-                var newH = Math.max(32, resizeStart.h + dy);
-                newW = Math.min(newW, parentW - parseInt($zone.css('left'),10));
-                newH = Math.min(newH, parentH - parseInt($zone.css('top'),10));
-                $zone.css({width:newW, height:newH});
-            }
-            function resizeEnd(){
-                $(window).off('mousemove touchmove', resizeMove);
-                $(window).off('mouseup touchend', resizeEnd);
-            }
-        });
+  $(document).on('click', '.remove-zone', function (e) {
+    e.preventDefault();
+    var $row = $(this).closest('.zone-row');
+    var idx = $row.data('index');
+    $('.print-zone[data-index="' + idx + '"]').remove();
+    $row.remove();
+  });
 
-        // SUPPR
-        $remove.on('click', function(){
-            $zone.remove();
-        });
+  $(document).on('change', '.zone-side', function () {
+    var $row = $(this).closest('.zone-row');
+    var idx = $row.data('index');
+    var side = $(this).val();
+    var $zone = $('.print-zone[data-index="' + idx + '"]').attr('data-side', side);
+    var $canvas = side === 'back' ? $('#mockup-canvas-back') : $('#mockup-canvas-front');
+    $zone.appendTo($canvas);
+  });
 
-        // SÉLECTION
-        $zone.on('mousedown touchstart', function(e){
-            $('.admin-mockup-zone').removeClass('selected');
-            $zone.addClass('selected');
-        });
-
-        // (Optionnel) : Enregistre chaque changement si besoin
-        $price.on('change', function(){
-            // enregistre le prix pour cette zone si tu veux l'envoyer au back
-        });
-    });
+  $(document).on('change', '.zone-format', function () {
+    var $row = $(this).closest('.zone-row');
+    var idx = $row.data('index');
+    var fmt = $(this).val();
+    $('.print-zone[data-index="' + idx + '"]').attr('data-format', fmt).text(fmt);
+  });
 });
