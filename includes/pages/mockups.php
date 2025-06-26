@@ -53,20 +53,13 @@ function winshirt_page_mockups() {
                 if (isset($cdata['remove']) && $cdata['remove']) {
                     continue;
                 }
-                $c = [
-                    'name' => sanitize_text_field($cdata['name'] ?? ''),
-                    'code' => sanitize_text_field($cdata['code'] ?? ''),
-                    'front' => 0,
-                    'back'  => 0,
-                ];
-                if (!empty($cdata['front'])) {
-                    $c['front'] = absint($cdata['front']);
-                }
-                if (!empty($cdata['back'])) {
-                    $c['back'] = absint($cdata['back']);
-                }
-                if ($c['name']) {
-                    $colors[] = $c;
+                $name = sanitize_text_field($cdata['name'] ?? '');
+                $code = sanitize_text_field($cdata['code'] ?? '');
+                if ($name) {
+                    $colors[] = [
+                        'name' => $name,
+                        'code' => $code,
+                    ];
                 }
             }
         }

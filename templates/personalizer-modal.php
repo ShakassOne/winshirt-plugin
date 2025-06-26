@@ -10,6 +10,7 @@
     <div class="ws-left">
       <div class="ws-preview mockup-fixed">
         <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
+        <div class="ws-color-overlay"></div>
         <div id="ws-canvas" class="ws-canvas"></div>
         <div id="ws-print-zones"></div>
       </div>
