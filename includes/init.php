@@ -223,14 +223,16 @@ function winshirt_render_customize_button() {
 
     $pid            = $product->get_id();
     $enabled        = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
-    $show_button    = get_post_meta( $pid, '_winshirt_show_button', true ) === 'yes';
+    $show_meta      = get_post_meta( $pid, '_winshirt_show_button', true );
+    $show_button    = $show_meta === '' ? true : $show_meta === 'yes';
     $front_id       = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
     $back_id        = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
     $mockups_raw    = get_post_meta( $pid, '_winshirt_mockups', true );
     $has_mockup     = $front_id || $back_id || ! empty( $mockups_raw );
 
     // Display button only if the product is marked as customizable
-    if ( ! $enabled || ! $has_mockup ) {
+    // and the button should be shown
+    if ( ! $enabled || ! $has_mockup || ! $show_button ) {
         return;
     }
 
