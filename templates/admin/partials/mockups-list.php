@@ -77,18 +77,8 @@
         foreach ($colors as $c) : ?>
             <div class="color-row">
                 <button class="remove-color button">&times;</button>
-                <input type="hidden" id="color_front_<?php echo $index; ?>" name="colors[<?php echo $index; ?>][front]" value="<?php echo esc_attr($c['front']); ?>" />
-                <input type="hidden" id="color_back_<?php echo $index; ?>" name="colors[<?php echo $index; ?>][back]" value="<?php echo esc_attr($c['back']); ?>" />
                 <label><?php esc_html_e('Nom', 'winshirt'); ?> <input type="text" name="colors[<?php echo $index; ?>][name]" value="<?php echo esc_attr($c['name']); ?>" /></label>
                 <label><?php esc_html_e('Code', 'winshirt'); ?> <input type="color" name="colors[<?php echo $index; ?>][code]" value="<?php echo esc_attr($c['code']); ?>" /></label>
-                <label><?php esc_html_e('Image recto', 'winshirt'); ?>
-                    <button type="button" class="button winshirt-media-btn" data-target="color_front_<?php echo $index; ?>" data-preview="#color_front_preview_<?php echo $index; ?>"><?php echo $c['front'] ? esc_html__('Modifier', 'winshirt') : esc_html__('Choisir', 'winshirt'); ?></button>
-                    <span id="color_front_preview_<?php echo $index; ?>"><?php if ($c['front']) echo wp_get_attachment_image($c['front'], 'thumbnail'); ?></span>
-                </label>
-                <label><?php esc_html_e('Image verso', 'winshirt'); ?>
-                    <button type="button" class="button winshirt-media-btn" data-target="color_back_<?php echo $index; ?>" data-preview="#color_back_preview_<?php echo $index; ?>"><?php echo $c['back'] ? esc_html__('Modifier', 'winshirt') : esc_html__('Choisir', 'winshirt'); ?></button>
-                    <span id="color_back_preview_<?php echo $index; ?>"><?php if ($c['back']) echo wp_get_attachment_image($c['back'], 'thumbnail'); ?></span>
-                </label>
             </div>
         <?php $index++; endforeach; ?>
     </div>
@@ -96,18 +86,8 @@
     <script type="text/template" id="color-template">
         <div class="color-row">
             <button class="remove-color button">&times;</button>
-            <input type="hidden" id="color_front_%i%" name="colors[%i%][front]" value="" />
-            <input type="hidden" id="color_back_%i%" name="colors[%i%][back]" value="" />
             <label><?php esc_html_e('Nom', 'winshirt'); ?> <input type="text" name="colors[%i%][name]" value="" /></label>
             <label><?php esc_html_e('Code', 'winshirt'); ?> <input type="color" name="colors[%i%][code]" value="#000000" /></label>
-            <label><?php esc_html_e('Image recto', 'winshirt'); ?>
-                <button type="button" class="button winshirt-media-btn" data-target="color_front_%i%" data-preview="#color_front_preview_%i%">Choisir</button>
-                <span id="color_front_preview_%i%"></span>
-            </label>
-            <label><?php esc_html_e('Image verso', 'winshirt'); ?>
-                <button type="button" class="button winshirt-media-btn" data-target="color_back_%i%" data-preview="#color_back_preview_%i%">Choisir</button>
-                <span id="color_back_preview_%i%"></span>
-            </label>
         </div>
     </script>
     <h3><?php esc_html_e('Zones d\'impression', 'winshirt'); ?></h3>

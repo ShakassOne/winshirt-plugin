@@ -217,6 +217,13 @@
   max-height: 100%;
   object-fit: contain;
 }
+.ws-color-overlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
+}
 .ws-canvas {
   position: absolute;
   inset: 0;
@@ -330,6 +337,18 @@
 .ws-color-btn.active {
   outline: 2px solid #fff;
   opacity: 1;
+}
+.ws-product-colors {
+  display: flex;
+  gap: .25rem;
+  margin-bottom: .5rem;
+}
+.ws-product-color-overlay {
+  position: absolute;
+  inset: 0;
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 1;
 }
 .ws-format-buttons {
   display: flex;

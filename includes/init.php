@@ -242,10 +242,8 @@ function winshirt_render_customize_button() {
     $colors      = [];
     foreach ( $colors_meta as $c ) {
         $colors[] = [
-            'name'  => $c['name'] ?? '',
-            'code'  => $c['code'] ?? '',
-            'front' => ! empty( $c['front'] ) ? wp_get_attachment_image_url( $c['front'], 'full' ) : '',
-            'back'  => ! empty( $c['back'] ) ? wp_get_attachment_image_url( $c['back'], 'full' ) : '',
+            'name' => $c['name'] ?? '',
+            'code' => $c['code'] ?? '',
         ];
     }
 
@@ -307,6 +305,48 @@ function winshirt_render_customize_button() {
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
+
+function winshirt_render_color_picker() {
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+    $pid       = $product->get_id();
+    $front_id  = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
+    if ( ! $front_id ) {
+        return;
+    }
+    $colors = get_post_meta( $front_id, '_winshirt_colors', true );
+    $colors = is_array( $colors ) ? $colors : [];
+    if ( ! $colors ) {
+        return;
+    }
+    echo '<div class="ws-product-colors">';
+    foreach ( $colors as $c ) {
+        $code = esc_attr( $c['code'] ?? '' );
+        echo '<button class="ws-color-btn" data-color="' . $code . '" style="background-color:' . $code . '"></button>';
+    }
+    echo '</div>';
+    ?>
+    <script type="text/javascript">
+    jQuery(function($){
+        var $imgWrap = $('.woocommerce-product-gallery__image').eq(0);
+        if(!$imgWrap.length) return;
+        if(!$imgWrap.find('.ws-product-color-overlay').length){
+            $imgWrap.css('position','relative');
+            $('<div class="ws-product-color-overlay"></div>').appendTo($imgWrap);
+        }
+        $('.ws-product-colors').on('click', '.ws-color-btn', function(){
+            $('.ws-product-colors .ws-color-btn').removeClass('active');
+            $(this).addClass('active');
+            var col = $(this).data('color') || 'transparent';
+            $imgWrap.find('.ws-product-color-overlay').css('background-color', col);
+        });
+    });
+    </script>
+    <?php
+}
+add_action( 'woocommerce_single_product_summary', 'winshirt_render_color_picker', 34 );
 
 function winshirt_render_lottery_selector() {
     static $rendered = false;

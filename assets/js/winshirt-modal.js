@@ -3,7 +3,7 @@ jQuery(function($){
   if(!$modal.length) return;
   $('body').append($modal);
 
-  var state = {side:'front'};
+  var state = {side:'front', color:null};
   var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
   var initialFront = $modal.data('default-front');
@@ -124,6 +124,7 @@ jQuery(function($){
     });
     var data = {
       items: items,
+      color: state.color,
       defaultFront: $modal.data('default-front') || initialFront,
       defaultBack: $modal.data('default-back') || initialBack,
       side: state.side
@@ -138,6 +139,10 @@ jQuery(function($){
     $canvas.empty();
     if(raw.defaultFront){ $modal.data('default-front', raw.defaultFront); }
     if(raw.defaultBack){ $modal.data('default-back', raw.defaultBack); }
+    if(raw.color){
+      $('.ws-color-overlay').css('background-color', raw.color);
+      state.color = raw.color;
+    }
     switchSide(raw.side || 'front');
     if(Array.isArray(raw.items)){
       raw.items.forEach(function(it){
@@ -205,8 +210,8 @@ jQuery(function($){
     if(!col) return;
     $colorsWrap.find('.ws-color-btn').removeClass('active');
     $(this).addClass('active');
-    if(col.front){ $modal.data('default-front', col.front); if(state.side==='front') $previewImg.attr('src', col.front); }
-    if(col.back){ $modal.data('default-back', col.back); if(state.side==='back') $previewImg.attr('src', col.back); }
+    $('.ws-color-overlay').css('background-color', col.code || '#ffffff');
+    state.color = col.code || null;
     saveState();
   });
 
@@ -321,6 +326,7 @@ jQuery(function($){
 function openModal(){
   checkMobile();
   loadState();
+  if(state.color){ $('.ws-color-overlay').css('background-color', state.color); }
   $modal.removeClass('hidden').addClass('open');
   if (!$modal.hasClass('ws-mobile')) {
     setTimeout(function(){ $modal.find('.ws-right').addClass('show'); }, 10);
@@ -376,6 +382,8 @@ function openModal(){
     $modal.data('default-back', initialBack);
     $previewImg.attr('src', state.side === 'back' ? initialBack : initialFront);
     $colorsWrap.find('.ws-color-btn').removeClass('active');
+    $('.ws-color-overlay').css('background-color', 'transparent');
+    state.color = null;
     selectItem(null);
     saveState();
   });
