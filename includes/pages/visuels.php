@@ -71,7 +71,7 @@ function winshirt_page_designs() {
                 echo '<div class="updated"><p>' . esc_html__('Visuel ajouté.', 'winshirt') . '</p></div>';
             }
         } else {
-            echo '<div class="error"><p>' . esc_html__('Erreur lors de l\'upload.', 'winshirt') . '</p></div>';
+            echo '<div class="woocommerce-error"><p>' . esc_html__('Erreur lors de l\'upload.', 'winshirt') . '</p></div>';
         }
     }
 

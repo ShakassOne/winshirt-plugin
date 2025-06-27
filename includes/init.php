@@ -272,7 +272,7 @@ function winshirt_render_customize_button() {
         }
     }
 
-    echo '<button id="winshirt-open-modal" class="button single_add_to_cart_button winshirt-theme-inherit">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
+    echo '<button id="winshirt-open-modal" class="single_add_to_cart_button button alt winshirt-theme-inherit">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
     $default_front = $front_url;
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );

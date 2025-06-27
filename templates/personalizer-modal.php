@@ -27,7 +27,7 @@
         <button id="winshirt-close-modal" class="ws-close ws-ml-auto winshirt-theme-inherit">Fermer ✖️</button>
       </div>
 
-      <select id="ws-tab-select" class="ws-tab-select winshirt-theme-inherit">
+      <select id="ws-tab-select" class="ws-tab-select select winshirt-theme-inherit">
         <option value="gallery">Galerie</option>
         <option value="text">Texte</option>
         <option value="ai">IA</option>
@@ -45,8 +45,8 @@
 
       <button class="ws-accordion-header winshirt-theme-inherit" data-tab="text">🔤 Texte</button>
       <div class="ws-tab-content hidden" id="ws-tab-text">
-        <input type="text" id="ws-text-content" class="ws-input winshirt-theme-inherit" placeholder="Votre texte..." />
-        <select id="ws-font-select" class="ws-select winshirt-theme-inherit">
+        <input type="text" id="ws-text-content" class="ws-input input-text winshirt-theme-inherit" placeholder="Votre texte..." />
+        <select id="ws-font-select" class="ws-select select winshirt-theme-inherit">
           <?php
           $fonts = [
             'Arial',
