@@ -1,5 +1,6 @@
 jQuery(function($){
-  var $button  = $('.single_add_to_cart_button');
+  // Target only the WooCommerce "Add to cart" button inside the form
+  var $button  = $('form.cart .single_add_to_cart_button');
   var $selects = $('.winshirt-lottery-select');
   var $custom  = $('#winshirt-custom-data');
 
