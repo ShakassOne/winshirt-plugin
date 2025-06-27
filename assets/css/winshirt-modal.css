@@ -349,6 +349,7 @@
   mix-blend-mode: multiply;
   pointer-events: none;
   z-index: 1;
+  background-color: transparent;
 }
 .ws-format-buttons {
   display: flex;

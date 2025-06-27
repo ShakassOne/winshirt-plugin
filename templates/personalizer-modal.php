@@ -3,7 +3,8 @@
   data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>"
   data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>'
   data-zones='<?php echo esc_attr( $ws_zones ?? '[]' ); ?>'
-  data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'>
+  data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'
+  data-product-id="<?php echo esc_attr( $pid ); ?>">
   
   <div class="ws-modal-content">
 
