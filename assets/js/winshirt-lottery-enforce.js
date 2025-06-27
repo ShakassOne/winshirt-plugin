@@ -1,12 +1,19 @@
 jQuery(function($){
+  var $button  = $('.single_add_to_cart_button');
   var $selects = $('.winshirt-lottery-select');
-  var $button = $('.single_add_to_cart_button');
-  if(!$selects.length || !$button.length){
+  var $custom  = $('#winshirt-custom-data');
+
+  if(!$button.length){
     return;
   }
 
-  var warningText = 'Aucune loterie sélectionnée : vous serez automatiquement inscrit(e) à la loterie la plus proche du tirage.';
-  var $warning = $('<p class="winshirt-lottery-warning"></p>').text(warningText);
+  var requiresLottery = $selects.length > 0;
+  var requiresCustom  = $custom.length > 0;
+  if(!requiresLottery && !requiresCustom){
+    return;
+  }
+
+  var $warning = $('<p class="winshirt-lottery-warning winshirt-theme-inherit"></p>');
   $warning.insertAfter($button.first());
 
   function anySelected(){
@@ -18,62 +25,32 @@ jQuery(function($){
     return ok;
   }
 
+  function customValid(){
+    return !requiresCustom || ($custom.val() && $custom.val().length > 2);
+  }
+
   function updateState(){
-    if(anySelected()){
+    var okLottery = !requiresLottery || anySelected();
+    var okCustom  = customValid();
+
+    if(okLottery && okCustom){
       $button.prop('disabled', false);
       $warning.hide();
     }else{
       $button.prop('disabled', true);
+      var parts = [];
+      if(requiresLottery && !okLottery){ parts.push('une loterie'); }
+      if(requiresCustom && !okCustom){ parts.push('votre personnalisation'); }
+      $warning.text('Veuillez sélectionner '+parts.join(' et ')+' avant d\u2019ajouter au panier.');
       $warning.show();
     }
   }
 
-  function parseData($opt){
-    var data = $opt.data('info');
-    if(!data) return {};
-    if(typeof data === 'string'){
-      try{ data = JSON.parse(data); }catch(e){ data = {}; }
-    }
-    return data || {};
-  }
-
-  function getBestLottery(){
-    var best = null;
-    var bestRatio = -1;
-    var $options = $selects.eq(0).find('option');
-    $options.each(function(){
-      var $opt = $(this);
-      var val = $opt.val();
-      if(!val || val === '0') return;
-      var data = parseData($opt);
-      var goal = parseInt(data.goal || 0, 10);
-      var count = parseInt(data.participants || 0, 10);
-      if(goal > 0 && count >= goal) return;
-      var ratio = goal > 0 ? count / goal : 0;
-      if(ratio > bestRatio){
-        bestRatio = ratio;
-        best = val;
-      }
-    });
-    return best;
-  }
-
   $selects.on('change', updateState);
-  updateState();
-
-  var submitting = false;
-  $('form.cart').on('submit', function(e){
-    if(submitting || anySelected()) return;
-    e.preventDefault();
-    var best = getBestLottery();
-    if(best){
-      $selects.each(function(){
-        if(!$(this).val()){
-          $(this).val(best).trigger('change');
-        }
-      });
-      submitting = true;
-      setTimeout(() => { $(this).trigger('submit'); }, 0);
-    }
+  $custom.on('change', updateState);
+  $('#winshirt-validate').on('click', function(){
+    setTimeout(updateState, 100);
   });
+
+  updateState();
 });
