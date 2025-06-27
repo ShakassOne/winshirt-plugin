@@ -128,3 +128,7 @@
 .lottery-progress-bar.animate-progress {
   animation: progress-fill 1s forwards;
 }
+
+.winshirt-lottery-select {
+  margin-bottom: 10px;
+}

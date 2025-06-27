@@ -337,6 +337,10 @@ function openModal(){
   debugHiddenElements();
 }
 
+  window.openWinShirtModal = function(productId){
+    openModal();
+  };
+
   function openTab(tab){
     if($modal.hasClass('ws-mobile')){
       var $c = $('#ws-tab-'+tab);

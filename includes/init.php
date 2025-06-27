@@ -269,7 +269,7 @@ function winshirt_render_customize_button() {
         }
     }
 
-    echo '<button id="winshirt-open-modal" class="button">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
+    echo '<button id="winshirt-open-modal" class="button single_add_to_cart_button">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
     $default_front = $front_url;
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );
@@ -332,9 +332,19 @@ function winshirt_render_color_picker() {
     jQuery(function($){
         var $imgWrap = $('.woocommerce-product-gallery__image').eq(0);
         if(!$imgWrap.length) return;
+        var imgSrc = $imgWrap.find('img').attr('src') || '';
         if(!$imgWrap.find('.ws-product-color-overlay').length){
             $imgWrap.css('position','relative');
-            $('<div class="ws-product-color-overlay"></div>').appendTo($imgWrap);
+            $('<div class="ws-product-color-overlay"></div>').css({
+                '-webkit-mask-image':'url('+imgSrc+')',
+                'mask-image':'url('+imgSrc+')',
+                '-webkit-mask-size':'contain',
+                'mask-size':'contain',
+                '-webkit-mask-repeat':'no-repeat',
+                'mask-repeat':'no-repeat',
+                '-webkit-mask-position':'center',
+                'mask-position':'center'
+            }).appendTo($imgWrap);
         }
         $('.ws-product-colors').on('click', '.ws-color-btn', function(){
             $('.ws-product-colors .ws-color-btn').removeClass('active');
@@ -377,9 +387,9 @@ function winshirt_render_lottery_selector() {
 
     echo '<div class="winshirt-lottery-selects">';
     for ( $i = 1; $i <= $tickets; $i++ ) {
-        echo '<div class="winshirt-lottery-select">';
+        echo '<div class="form-row form-row-wide winshirt-lottery-select">';
         echo '<label for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Ticket n°', 'winshirt' ) . $i . '</label> ';
-        echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select" name="winshirt_lotteries[]">';
+        echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select select" name="winshirt_lotteries[]">';
         echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
         foreach ( $lotteries as $lottery ) {
             $max       = absint( get_post_meta( $lottery->ID, 'max_participants', true ) );
