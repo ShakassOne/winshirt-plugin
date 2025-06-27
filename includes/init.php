@@ -313,6 +313,10 @@ function winshirt_render_color_picker() {
         return;
     }
     $pid       = $product->get_id();
+    $enabled   = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
+    if ( ! $enabled ) {
+        return;
+    }
     $front_id  = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
     if ( ! $front_id ) {
         return;
@@ -332,9 +336,8 @@ function winshirt_render_color_picker() {
             $('<div class="ws-product-color-overlay winshirt-theme-inherit"></div>').css({
                 '-webkit-mask-image':'url('+imgSrc+')',
                 'mask-image':'url('+imgSrc+')',
-                '-webkit-mask-size':'100% 100%',
-                'mask-size':'100% 100%',
-                'background-size':'100% 100%',
+                '-webkit-mask-size':'contain',
+                'mask-size':'contain',
                 '-webkit-mask-repeat':'no-repeat',
                 'mask-repeat':'no-repeat',
                 '-webkit-mask-position':'center',
