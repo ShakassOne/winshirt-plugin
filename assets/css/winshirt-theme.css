@@ -1,0 +1,11 @@
+.winshirt-theme-inherit {
+  font-family: inherit;
+  color: inherit;
+  transition: all .3s ease;
+}
+
+.winshirt-lottery-selects {
+  margin-bottom: 1rem;
+}
+
+

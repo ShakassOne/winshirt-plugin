@@ -6,6 +6,7 @@ add_action('wp_enqueue_scripts', function () {
     if (is_product()) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
+        wp_enqueue_style('winshirt-theme', WINSHIRT_URL . 'assets/css/winshirt-theme.css', [], '1.0');
 
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
@@ -269,7 +270,7 @@ function winshirt_render_customize_button() {
         }
     }
 
-    echo '<button id="winshirt-open-modal" class="button single_add_to_cart_button">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
+    echo '<button id="winshirt-open-modal" class="button single_add_to_cart_button winshirt-theme-inherit">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
     $default_front = $front_url;
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );
@@ -316,42 +317,37 @@ function winshirt_render_color_picker() {
     if ( ! $front_id ) {
         return;
     }
-    $colors = get_post_meta( $front_id, '_winshirt_colors', true );
-    $colors = is_array( $colors ) ? $colors : [];
-    if ( ! $colors ) {
+    $img_url = get_the_post_thumbnail_url( $front_id, 'full' );
+    if ( ! $img_url ) {
         return;
     }
-    echo '<div class="ws-product-colors">';
-    foreach ( $colors as $c ) {
-        $code = esc_attr( $c['code'] ?? '' );
-        echo '<button class="ws-color-btn" data-color="' . $code . '" style="background-color:' . $code . '"></button>';
-    }
-    echo '</div>';
     ?>
     <script type="text/javascript">
     jQuery(function($){
         var $imgWrap = $('.woocommerce-product-gallery__image').eq(0);
         if(!$imgWrap.length) return;
-        var imgSrc = $imgWrap.find('img').attr('src') || '';
+        var imgSrc = $imgWrap.find('img').attr('src') || <?php echo wp_json_encode( $img_url ); ?>;
         if(!$imgWrap.find('.ws-product-color-overlay').length){
             $imgWrap.css('position','relative');
-            $('<div class="ws-product-color-overlay"></div>').css({
+            $('<div class="ws-product-color-overlay winshirt-theme-inherit"></div>').css({
                 '-webkit-mask-image':'url('+imgSrc+')',
                 'mask-image':'url('+imgSrc+')',
-                '-webkit-mask-size':'contain',
-                'mask-size':'contain',
+                '-webkit-mask-size':'100% 100%',
+                'mask-size':'100% 100%',
+                'background-size':'100% 100%',
                 '-webkit-mask-repeat':'no-repeat',
                 'mask-repeat':'no-repeat',
                 '-webkit-mask-position':'center',
                 'mask-position':'center'
             }).appendTo($imgWrap);
         }
-        $('.ws-product-colors').on('click', '.ws-color-btn', function(){
-            $('.ws-product-colors .ws-color-btn').removeClass('active');
-            $(this).addClass('active');
-            var col = $(this).data('color') || 'transparent';
-            $imgWrap.find('.ws-product-color-overlay').css('background-color', col);
-        });
+        var stored = localStorage.getItem('winshirt_custom');
+        if(stored){
+            try{ stored = JSON.parse(stored); }catch(e){ stored = null; }
+            if(stored && stored.color){
+                $imgWrap.find('.ws-product-color-overlay').css('background-color', stored.color);
+            }
+        }
     });
     </script>
     <?php
@@ -385,11 +381,11 @@ function winshirt_render_lottery_selector() {
         return;
     }
 
-    echo '<div class="winshirt-lottery-selects">';
+    echo '<div class="winshirt-lottery-selects winshirt-theme-inherit">';
     for ( $i = 1; $i <= $tickets; $i++ ) {
-        echo '<div class="form-row form-row-wide winshirt-lottery-select">';
-        echo '<label for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Ticket n°', 'winshirt' ) . $i . '</label> ';
-        echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select select" name="winshirt_lotteries[]">';
+        echo '<div class="form-row form-row-wide winshirt-lottery-select winshirt-theme-inherit">';
+        echo '<label class="winshirt-theme-inherit" for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Ticket n°', 'winshirt' ) . $i . '</label> ';
+        echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select select winshirt-theme-inherit" name="winshirt_lotteries[]">';
         echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
         foreach ( $lotteries as $lottery ) {
             $max       = absint( get_post_meta( $lottery->ID, 'max_participants', true ) );

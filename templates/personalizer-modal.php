@@ -1,4 +1,4 @@
-<div id="winshirt-customizer-modal" class="ws-modal hidden"
+<div id="winshirt-customizer-modal" class="ws-modal hidden winshirt-theme-inherit"
   data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>"
   data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>"
   data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>'
@@ -6,47 +6,47 @@
   data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'
   data-product-id="<?php echo esc_attr( $pid ); ?>">
   
-  <div class="ws-modal-content">
+  <div class="ws-modal-content winshirt-theme-inherit">
 
-    <div class="ws-left">
-      <div class="ws-preview mockup-fixed">
+    <div class="ws-left winshirt-theme-inherit">
+      <div class="ws-preview mockup-fixed winshirt-theme-inherit">
         <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
-        <div class="ws-color-overlay"></div>
+        <div class="ws-color-overlay winshirt-theme-inherit"></div>
         <div id="ws-canvas" class="ws-canvas"></div>
         <div id="ws-print-zones"></div>
       </div>
     </div>
 
-    <div class="ws-right">
-      <div class="ws-tabs-header">
-        <button class="ws-tab-button active" data-tab="gallery">🖼 Galerie</button>
-        <button class="ws-tab-button" data-tab="text">🔤 Texte</button>
-        <button class="ws-tab-button" data-tab="ai">🤖 IA</button>
-        <button class="ws-tab-button" data-tab="svg">✒️ SVG</button>
-        <button id="ws-reset-visual" class="ws-reset">Réinitialiser ↺</button>
-        <button id="winshirt-close-modal" class="ws-close ws-ml-auto">Fermer ✖️</button>
+    <div class="ws-right winshirt-theme-inherit">
+      <div class="ws-tabs-header winshirt-theme-inherit">
+        <button class="ws-tab-button active winshirt-theme-inherit" data-tab="gallery">🖼 Galerie</button>
+        <button class="ws-tab-button winshirt-theme-inherit" data-tab="text">🔤 Texte</button>
+        <button class="ws-tab-button winshirt-theme-inherit" data-tab="ai">🤖 IA</button>
+        <button class="ws-tab-button winshirt-theme-inherit" data-tab="svg">✒️ SVG</button>
+        <button id="ws-reset-visual" class="ws-reset winshirt-theme-inherit">Réinitialiser ↺</button>
+        <button id="winshirt-close-modal" class="ws-close ws-ml-auto winshirt-theme-inherit">Fermer ✖️</button>
       </div>
 
-      <select id="ws-tab-select" class="ws-tab-select">
+      <select id="ws-tab-select" class="ws-tab-select winshirt-theme-inherit">
         <option value="gallery">Galerie</option>
         <option value="text">Texte</option>
         <option value="ai">IA</option>
         <option value="svg">SVG</option>
       </select>
 
-      <button class="ws-accordion-header" data-tab="gallery">🖼 Galerie</button>
+      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="gallery">🖼 Galerie</button>
       <div class="ws-tab-content" id="ws-tab-gallery">
         <p>Choisissez un design dans la galerie.</p>
-        <div class="ws-gallery-cats"></div>
-        <div class="ws-gallery"></div>
-        <button class="ws-upload-btn">Uploader un visuel</button>
-        <input type="file" id="ws-upload-input" accept="image/*" class="hidden" />
+        <div class="ws-gallery-cats winshirt-theme-inherit"></div>
+        <div class="ws-gallery winshirt-theme-inherit"></div>
+        <button class="ws-upload-btn winshirt-theme-inherit">Uploader un visuel</button>
+        <input type="file" id="ws-upload-input" accept="image/*" class="hidden winshirt-theme-inherit" />
       </div>
 
-      <button class="ws-accordion-header" data-tab="text">🔤 Texte</button>
+      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="text">🔤 Texte</button>
       <div class="ws-tab-content hidden" id="ws-tab-text">
-        <input type="text" id="ws-text-content" class="ws-input" placeholder="Votre texte..." />
-        <select id="ws-font-select" class="ws-select">
+        <input type="text" id="ws-text-content" class="ws-input winshirt-theme-inherit" placeholder="Votre texte..." />
+        <select id="ws-font-select" class="ws-select winshirt-theme-inherit">
           <?php
           $fonts = [
             'Arial',
@@ -67,67 +67,67 @@
             </option>
           <?php endforeach; ?>
         </select>
-        <div class="ws-formatting">
-          <button type="button" id="ws-bold-btn">B</button>
-          <button type="button" id="ws-italic-btn">I</button>
-          <button type="button" id="ws-underline-btn">U</button>
-          <input type="color" id="ws-color-picker" value="#000000" />
+        <div class="ws-formatting winshirt-theme-inherit">
+          <button type="button" id="ws-bold-btn" class="winshirt-theme-inherit">B</button>
+          <button type="button" id="ws-italic-btn" class="winshirt-theme-inherit">I</button>
+          <button type="button" id="ws-underline-btn" class="winshirt-theme-inherit">U</button>
+          <input type="color" id="ws-color-picker" class="winshirt-theme-inherit" value="#000000" />
         </div>
-        <label><?php esc_html_e('Taille', 'winshirt'); ?> 
-          <input type="range" id="ws-scale-range" min="0.5" max="2" step="0.1" value="1">
+        <label class="winshirt-theme-inherit"><?php esc_html_e('Taille', 'winshirt'); ?>
+          <input type="range" id="ws-scale-range" class="winshirt-theme-inherit" min="0.5" max="2" step="0.1" value="1">
         </label>
-        <label><?php esc_html_e('Rotation', 'winshirt'); ?> 
-          <input type="range" id="ws-rotate-range" min="0" max="360" step="1" value="0">
+        <label class="winshirt-theme-inherit"><?php esc_html_e('Rotation', 'winshirt'); ?>
+          <input type="range" id="ws-rotate-range" class="winshirt-theme-inherit" min="0" max="360" step="1" value="0">
         </label>
-        <button class="ws-upload-btn" id="ws-add-text">Ajouter</button>
+        <button class="ws-upload-btn winshirt-theme-inherit" id="ws-add-text">Ajouter</button>
       </div>
 
-      <button class="ws-accordion-header" data-tab="ai">🤖 IA</button>
+      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="ai">🤖 IA</button>
       <div class="ws-tab-content hidden" id="ws-tab-ai">
         <p>Générez une image grâce à l’IA (bientôt disponible).</p>
       </div>
 
-      <button class="ws-accordion-header" data-tab="svg">✒️ SVG</button>
+      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="svg">✒️ SVG</button>
       <div class="ws-tab-content hidden" id="ws-tab-svg">
         <p>Bibliothèque d’icônes vectorielles (SVG).</p>
       </div>
 
 
-      <div class="ws-sidebar hidden">
+      <div class="ws-sidebar hidden winshirt-theme-inherit">
         <h3><?php esc_html_e( 'Édition', 'winshirt' ); ?></h3>
-        <label><?php esc_html_e( 'Taille', 'winshirt' ); ?>
-          <input type="range" id="ws-prop-scale" min="0.5" max="2" step="0.1" value="1">
+        <label class="winshirt-theme-inherit"><?php esc_html_e( 'Taille', 'winshirt' ); ?>
+          <input type="range" id="ws-prop-scale" class="winshirt-theme-inherit" min="0.5" max="2" step="0.1" value="1">
         </label>
-        <label><?php esc_html_e( 'Rotation', 'winshirt' ); ?>
-          <input type="range" id="ws-prop-rotate" min="0" max="360" step="1" value="0">
+        <label class="winshirt-theme-inherit"><?php esc_html_e( 'Rotation', 'winshirt' ); ?>
+          <input type="range" id="ws-prop-rotate" class="winshirt-theme-inherit" min="0" max="360" step="1" value="0">
         </label>
-        <label class="ws-color-field">
+        <label class="ws-color-field winshirt-theme-inherit">
           <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
-          <input type="color" id="ws-prop-color" value="#000000">
+          <input type="color" id="ws-prop-color" class="winshirt-theme-inherit" value="#000000">
         </label>
-        <button id="ws-prop-delete" class="ws-delete" type="button">
+        <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button">
           <?php esc_html_e( 'Supprimer', 'winshirt' ); ?>
         </button>
       </div>
 
-      <div class="ws-colors"></div>
+      <div class="ws-colors winshirt-theme-inherit"></div>
       <input type="hidden" id="winshirt-custom-data" value="" />
 
-        <div class="ws-actions">
-          <div class="ws-format-buttons">
-            <button class="ws-format-btn" data-format="A3">A3</button>
-            <button class="ws-format-btn" data-format="A4">A4</button>
-            <button class="ws-format-btn" data-format="A5">A5</button>
-            <button class="ws-format-btn" data-format="A6">A6</button>
-            <button class="ws-format-btn" data-format="A7">A7</button>
+        <div class="ws-actions winshirt-theme-inherit">
+          <div class="ws-format-buttons winshirt-theme-inherit">
+            <button class="ws-format-btn winshirt-theme-inherit" data-format="A3">A3</button>
+            <button class="ws-format-btn winshirt-theme-inherit" data-format="A4">A4</button>
+            <button class="ws-format-btn winshirt-theme-inherit" data-format="A5">A5</button>
+            <button class="ws-format-btn winshirt-theme-inherit" data-format="A6">A6</button>
+            <button class="ws-format-btn winshirt-theme-inherit" data-format="A7">A7</button>
             <span id="ws-current-format" class="ws-format-label"></span>
           </div>
-          <div class="ws-toggle">
-            <button id="winshirt-front-btn" class="ws-side-btn active">Recto</button>
-            <button id="winshirt-back-btn" class="ws-side-btn">Verso</button>
+          <div class="ws-toggle winshirt-theme-inherit">
+            <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit">Recto</button>
+            <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit">Verso</button>
           </div>
           <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
-          <button id="winshirt-validate" class="ws-validate">Valider la personnalisation</button>
+          <button id="winshirt-validate" class="ws-validate winshirt-theme-inherit">Valider la personnalisation</button>
         </div>
 
     </div>

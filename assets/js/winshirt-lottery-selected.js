@@ -40,11 +40,11 @@ jQuery(function($){
       var percent = lot.data.goal ? Math.min(100, Math.round((lot.data.participants / lot.data.goal) * 100)) : 0;
       var badge   = lot.data.featured ? '<span class="loterie-badge">BEST</span>' : (lot.data.active ? '<span class="loterie-badge">NOUVEAU</span>' : '');
       var price   = lot.data.value ? '<span class="loterie-price">'+lot.data.value+'€</span>' : '';
-      var html    = '<div class="loterie-card" data-index="'+cardIndex+'" data-lottery="'+lot.id+'">'+
+      var html    = '<div class="loterie-card winshirt-theme-inherit" data-index="'+cardIndex+'" data-lottery="'+lot.id+'">'+
         badge+
-        '<button type="button" class="loterie-remove" aria-label="Retirer">&times;</button>'+
-        (lot.data.image ? '<img class="loterie-img" src="'+lot.data.image+'" alt="" />' : '')+
-        '<div class="loterie-info">'+
+        '<button type="button" class="loterie-remove winshirt-theme-inherit" aria-label="Retirer">&times;</button>'+
+        (lot.data.image ? '<img class="loterie-img winshirt-theme-inherit" src="'+lot.data.image+'" alt="" />' : '')+
+        '<div class="loterie-info winshirt-theme-inherit">'+
           '<span class="loterie-title">'+(lot.data.name || lot.text)+'</span>'+
           '<div class="loterie-meta">'+
             price+
