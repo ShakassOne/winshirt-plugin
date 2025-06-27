@@ -307,7 +307,8 @@ function winshirt_render_customize_button() {
     $ws_gallery = wp_json_encode( $gallery );
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
-add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 35 );
+// Place the customization button above the size/variation selection
+add_action( 'woocommerce_before_add_to_cart_form', 'winshirt_render_customize_button', 5 );
 
 function winshirt_render_color_picker() {
     global $product;
