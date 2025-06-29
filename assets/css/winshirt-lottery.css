@@ -132,3 +132,18 @@
 .winshirt-lottery-select {
   margin-bottom: 1rem;
 }
+
+/* Style lottery dropdowns similar to product variations */
+.winshirt-lottery-select select {
+  padding: .5em .8em;
+  height: 45px;
+  border-radius: 6pt;
+  border: none;
+  color: var(--color-contrast-higher);
+  background-color: var(--color-bg);
+  outline: 1px solid var(--color-contrast-low);
+  position: relative;
+  border-right: solid .8rem transparent;
+  -webkit-transition: outline 150ms var(--ease-in-out);
+  transition: outline 150ms var(--ease-in-out);
+}
