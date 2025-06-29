@@ -654,3 +654,17 @@
   .ws-right, .admin-mockup-controls { width: 100vw; }
   .ws-modal-content, .admin-mockup-workspace { width: 100vw !important; }
 }
+
+/* --- IA Tab --- */
+.ws-ai-form { display:flex; gap:.5rem; }
+.ws-ai-gallery {
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(80px,1fr));
+  gap:.5rem;
+  margin-top:1rem;
+}
+.ws-ai-thumb-wrap { position:relative; }
+.ws-ai-thumb { width:100%; height:80px; object-fit:cover; border-radius:.375rem; cursor:pointer; }
+.ws-ai-del { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:#fff; border-radius:3px; padding:2px; font-size:12px; display:none; cursor:pointer; }
+.ws-ai-thumb-wrap:hover .ws-ai-del { display:block; }
+.ws-ai-label { position:absolute; bottom:2px; left:2px; background:rgba(0,0,0,0.6); color:#fff; font-size:10px; padding:2px 3px; border-radius:3px; }
