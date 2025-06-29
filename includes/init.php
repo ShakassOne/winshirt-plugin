@@ -198,6 +198,12 @@ add_action('admin_init', function () {
     register_setting('winshirt_options', 'winshirt_ftp_host');
     register_setting('winshirt_options', 'winshirt_ftp_user');
     register_setting('winshirt_options', 'winshirt_ftp_pass');
+    // Register AI settings
+    register_setting('winshirt_options', 'winshirt_ia_api_key');
+    register_setting('winshirt_options', 'winshirt_ia_model');
+    register_setting('winshirt_options', 'winshirt_ia_output_format');
+    register_setting('winshirt_options', 'winshirt_ia_generation_limit');
+    register_setting('winshirt_options', 'winshirt_ia_image_folder');
 });
 
 // Enqueue assets on WinShirt admin pages
@@ -567,3 +573,30 @@ add_action('init', function () {
         'supports'    => ['title', 'thumbnail'],
     ]);
 });
+
+// AJAX callback to test AI API key validity
+function winshirt_test_ia_key() {
+    $key = sanitize_text_field($_POST['key'] ?? '');
+    if (!$key) {
+        wp_send_json_error(['message' => 'API key missing']);
+    }
+
+    $response = wp_remote_get('https://api.openai.com/v1/models', [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $key,
+        ],
+        'timeout' => 10,
+    ]);
+
+    if (is_wp_error($response)) {
+        wp_send_json_error(['message' => $response->get_error_message()]);
+    }
+
+    $code = wp_remote_retrieve_response_code($response);
+    if ($code >= 200 && $code < 300) {
+        wp_send_json_success(['message' => 'Valid key']);
+    }
+
+    wp_send_json_error(['message' => 'Invalid key']);
+}
+add_action('wp_ajax_winshirt_test_ia_key', 'winshirt_test_ia_key');
