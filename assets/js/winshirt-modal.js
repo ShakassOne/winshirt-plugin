@@ -281,15 +281,19 @@ jQuery(function($){
     saveState();
   });
 
+  $zonesWrap.empty();
+  $zoneButtons.empty();
   zones.forEach(function(z, idx){
     var $z = $('<div class="ws-print-zone" />')
       .attr('data-side', z.side || 'front')
       .attr('data-index', idx)
-      .css({top:z.top+'%',left:z.left+'%',width:z.width+'%',height:z.height+'%'});
-    var $lab = $('<span class="ws-zone-label" />').text(z.name || '');
+      .css({top:z.top+'%', left:z.left+'%', width:z.width+'%', height:z.height+'%'});
+    var $lab = $('<div class="ws-zone-label" />').text(z.name || '');
     $z.append($lab);
     $zonesWrap.append($z);
-    var $btn = $('<button class="ws-zone-btn" />').text(z.name || ('Zone '+(idx+1))).attr('data-index', idx);
+    var $btn = $('<button class="ws-zone-btn" />')
+      .text(z.name || ('Zone '+(idx+1)))
+      .attr('data-index', idx);
     $zoneButtons.append($btn);
   });
   $zoneButtons.on('click', '.ws-zone-btn', function(){
