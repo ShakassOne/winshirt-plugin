@@ -315,7 +315,12 @@
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  margin-top: 20px;
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 0;
+  z-index: 5;
 }
 .ws-zone-btn {
   background: rgba(255,255,255,0.1);
@@ -419,7 +424,7 @@
 }
 
 @media(max-width:768px){
-  .ws-zone-buttons { justify-content:flex-start; }
+  .ws-zone-buttons { justify-content:center; }
 }
 #ws-print-zones {
   position: absolute;

@@ -14,8 +14,8 @@
         <div class="ws-color-overlay winshirt-theme-inherit"></div>
         <div id="ws-canvas" class="ws-canvas"></div>
         <div id="ws-print-zones"></div>
+        <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
       </div>
-      <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
       <div class="ws-context-actions winshirt-theme-inherit">
         <button id="ws-remove-bg" class="ws-remove-bg winshirt-theme-inherit hidden" type="button" title="Supprimer le fond">🧼 Supprimer le fond</button>
         <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button" title="Supprimer l'élément">🗑️ Supprimer</button>

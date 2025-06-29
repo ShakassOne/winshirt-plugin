@@ -88,11 +88,12 @@ jQuery(function($){
   function checkMobile(){
     if(window.innerWidth <= 768){
       $modal.addClass('ws-mobile winshirt-personnalisation-mobile');
-      if($zoneButtons.parent()[0] !== $right[0]){ $zoneButtons.appendTo($right); }
     } else {
       $modal.removeClass('ws-mobile winshirt-personnalisation-mobile');
       $modal.find('.ws-right').removeClass('show');
-      if($zoneButtons.parent()[0] !== $left[0]){ $zoneButtons.appendTo($left); }
+    }
+    if($zoneButtons.parent()[0] !== $modal.find('.ws-preview')[0]){
+      $zoneButtons.appendTo($modal.find('.ws-preview'));
     }
   }
 
