@@ -3,7 +3,7 @@ jQuery(function($){
   if(!$modal.length) return;
   $('body').append($modal);
 
-  var state = {side:'front', color:null};
+  var state = {side:'front', color:null, zone:0};
   var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
   var initialFront = $modal.data('default-front');
@@ -21,6 +21,9 @@ jQuery(function($){
   var $formatBtns = $formatWrap.find('.ws-format-btn');
   var $formatLabel = $('#ws-current-format');
   var $zonesWrap = $('#ws-print-zones');
+  var $zoneButtons = $('#ws-zone-buttons');
+  var $left = $modal.find('.ws-left');
+  var $right = $modal.find('.ws-right');
   var $tabSelect = $('#ws-tab-select');
   var $debug = $('#ws-debug');
   function loadFont(f){
@@ -72,7 +75,7 @@ jQuery(function($){
   }
 
   function applyClip(){
-    var $z = $modal.find('.ws-print-zone[data-side="'+state.side+'"]').eq(0);
+    var $z = $modal.find('.ws-print-zone[data-index="'+state.zone+'"]');
     if($z.length){
       var pos = $z.position();
       var w = $z.parent().width();
@@ -87,9 +90,11 @@ jQuery(function($){
   function checkMobile(){
     if(window.innerWidth <= 768){
       $modal.addClass('ws-mobile');
+      if($zoneButtons.parent()[0] !== $right[0]){ $zoneButtons.appendTo($right); }
     } else {
       $modal.removeClass('ws-mobile');
       $modal.find('.ws-right').removeClass('show');
+      if($zoneButtons.parent()[0] !== $left[0]){ $zoneButtons.appendTo($left); }
     }
   }
 
@@ -281,17 +286,24 @@ jQuery(function($){
       .attr('data-side', z.side || 'front')
       .attr('data-index', idx)
       .css({top:z.top+'%',left:z.left+'%',width:z.width+'%',height:z.height+'%'});
+    var $lab = $('<span class="ws-zone-label" />').text(z.name || '');
+    $z.append($lab);
     $zonesWrap.append($z);
+    var $btn = $('<button class="ws-zone-btn" />').text(z.name || ('Zone '+(idx+1))).attr('data-index', idx);
+    $zoneButtons.append($btn);
   });
+  $zoneButtons.on('click', '.ws-zone-btn', function(){
+    selectZone(parseInt($(this).data('index'),10));
+  });
+  var firstZone = zones.findIndex(function(z){ return z.side === state.side; });
+  if(firstZone < 0) firstZone = 0;
+  selectZone(firstZone);
   applyClip();
 
   function getContainment(){
-    var $zones = $modal.find('.ws-print-zone[data-side="'+state.side+'"]');
-    if($zones.length){
-      var $z = $zones.eq(0);
-      if($z.width()>0 && $z.height()>0){
-        return $z;
-      }
+    var $z = $modal.find('.ws-print-zone[data-index="'+state.zone+'"]');
+    if($z.length && $z.width()>0 && $z.height()>0){
+      return $z;
     }
     return '.ws-preview';
   }
@@ -311,6 +323,16 @@ jQuery(function($){
       if(h >= base * ratio){ fmt = f; break; }
     }
     return fmt;
+  }
+
+  function selectZone(index){
+    state.zone = index;
+    $zoneButtons.find('.ws-zone-btn').removeClass('active');
+    $zoneButtons.find('.ws-zone-btn[data-index="'+index+'"]').addClass('active');
+    $modal.find('.ws-print-zone').removeClass('active').hide();
+    var $z = $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
+    applyClip();
+    if(activeItem){ updateDebug(activeItem); }
   }
 
   function updateFormatUIFromItem($it){
@@ -786,14 +808,14 @@ function openModal(){
       $('#winshirt-front-btn').removeClass('active');
       $previewImg.attr('src', $modal.data('default-back'));
       $canvas.children('.ws-item').hide().filter('[data-side="back"]').show();
-      $modal.find('.ws-print-zone').hide().filter('[data-side="back"]').show();
     } else {
       $('#winshirt-front-btn').addClass('active');
       $('#winshirt-back-btn').removeClass('active');
       $previewImg.attr('src', $modal.data('default-front'));
       $canvas.children('.ws-item').hide().filter('[data-side="front"]').show();
-      $modal.find('.ws-print-zone').hide().filter('[data-side="front"]').show();
     }
+    var next = zones.findIndex(function(z){ return z.side === side; });
+    if(next >= 0) selectZone(next);
     if(activeItem){ updateFormatUIFromItem(activeItem); }
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
