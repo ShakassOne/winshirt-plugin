@@ -110,6 +110,9 @@
           <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
           <input type="color" id="ws-prop-color" class="winshirt-theme-inherit" value="#000000">
         </label>
+        <button id="ws-remove-bg" class="ws-delete winshirt-theme-inherit hidden" type="button">🧼
+          <?php esc_html_e( 'Supprimer le fond', 'winshirt' ); ?>
+        </button>
         <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button">
           <?php esc_html_e( 'Supprimer', 'winshirt' ); ?>
         </button>
