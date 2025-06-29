@@ -245,8 +245,11 @@ function winshirt_render_customize_button() {
         return;
     }
 
-    $front_url  = $front_id ? get_the_post_thumbnail_url( $front_id, 'full' ) : '';
-    $back_url   = $back_id ? get_the_post_thumbnail_url( $back_id, 'full' ) : '';
+    $front_img_id = $front_id ? get_post_meta( $front_id, '_winshirt_front_image', true ) : 0;
+    $back_img_id  = $back_id ? get_post_meta( $back_id, '_winshirt_back_image', true ) : 0;
+
+    $front_url  = $front_img_id ? wp_get_attachment_image_url( $front_img_id, 'full' ) : '';
+    $back_url   = $back_img_id ? wp_get_attachment_image_url( $back_img_id, 'full' ) : '';
 
     // Retrieve available colors from the default mockup
     $colors_meta = $front_id ? get_post_meta( $front_id, '_winshirt_colors', true ) : [];
@@ -282,7 +285,7 @@ function winshirt_render_customize_button() {
     }
 
     // Bouton d\xE9clenchant la personnalisation sur la fiche produit
-    echo '<button id="btn-personnaliser" class="single_add_to_cart_button button alt winshirt-theme-inherit btn-orange">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
+    echo '<div class="winshirt-personnaliser-btn"><button id="btn-personnaliser" class="button alt winshirt-theme-inherit btn-orange">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
     $default_front = $front_url;
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );
