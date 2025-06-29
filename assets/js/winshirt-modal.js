@@ -13,6 +13,7 @@ jQuery(function($){
   var $rotateInput = $('#ws-prop-rotate');
   var $colorInput = $('#ws-prop-color');
   var $deleteBtn = $('#ws-prop-delete');
+  var $removeBgBtn = $('#ws-remove-bg');
   var colors = $modal.data('colors') || [];
   var zones  = $modal.data('zones') || [];
   var $colorsWrap = $modal.find('.ws-colors');
@@ -676,8 +677,14 @@ function openModal(){
       if(activeItem.data('type') === 'text'){
         $colorInput.val(activeItem.attr('data-color') || '#000000');
         $colorInput.closest('label').show();
+        $removeBgBtn.addClass('hidden');
       } else {
         $colorInput.closest('label').hide();
+        if(activeItem.data('type') === 'image'){
+          $removeBgBtn.removeClass('hidden');
+        } else {
+          $removeBgBtn.addClass('hidden');
+        }
       }
       updateFormatUIFromItem(activeItem);
       updateDebug(activeItem);
@@ -686,6 +693,7 @@ function openModal(){
       $sidebar.removeClass('show');
       $formatBtns.removeClass('active');
       $formatLabel.text('');
+      $removeBgBtn.addClass('hidden');
     }
   }
 
@@ -720,6 +728,44 @@ function openModal(){
       $debug.text('');
       saveState();
     }
+  });
+
+  function removeBackground(url, cb){
+    var img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = function(){
+      var c = document.createElement('canvas');
+      c.width = img.width;
+      c.height = img.height;
+      var ctx = c.getContext('2d');
+      ctx.drawImage(img,0,0);
+      var imageData = ctx.getImageData(0,0,c.width,c.height);
+      var d = imageData.data;
+      var w = c.width, h = c.height;
+      var r=0,g=0,b=0,count=0;
+      for(var x=0;x<w;x++){ var i=(0*w+x)*4; r+=d[i]; g+=d[i+1]; b+=d[i+2]; count++; }
+      for(var x=0;x<w;x++){ var i=((h-1)*w+x)*4; r+=d[i]; g+=d[i+1]; b+=d[i+2]; count++; }
+      for(var y=1;y<h-1;y++){ var i=(y*w)*4; r+=d[i]; g+=d[i+1]; b+=d[i+2]; count++; }
+      for(var y=1;y<h-1;y++){ var i=(y*w+(w-1))*4; r+=d[i]; g+=d[i+1]; b+=d[i+2]; count++; }
+      var r0=Math.round(r/count), g0=Math.round(g/count), b0=Math.round(b/count);
+      var tol=60;
+      for(var i=0;i<d.length;i+=4){
+        var diff=Math.abs(d[i]-r0)+Math.abs(d[i+1]-g0)+Math.abs(d[i+2]-b0);
+        if(diff<tol){ d[i+3]=0; }
+      }
+      ctx.putImageData(imageData,0,0);
+      cb(c.toDataURL('image/png'));
+    };
+    img.src=url;
+  }
+
+  $removeBgBtn.on('click', function(){
+    if(!activeItem || activeItem.data('type')!=='image') return;
+    var src = activeItem.find('img').attr('src');
+    removeBackground(src, function(newUrl){
+      activeItem.find('img').attr('src', newUrl);
+      saveState();
+    });
   });
 
   $('#ws-reset-btn').on('click', function(e){

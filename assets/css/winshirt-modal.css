@@ -502,6 +502,17 @@
 .ws-delete:hover {
   background: #dc2626;
 }
+.ws-remove-bg {
+  background: #6b7280;
+  color: #fff;
+  border: none;
+  padding: .25rem .75rem;
+  border-radius: .25rem;
+  cursor: pointer;
+}
+.ws-remove-bg:hover {
+  background: #4b5563;
+}
 .ws-size-note {
   display: block;
   margin-top: .25rem;
