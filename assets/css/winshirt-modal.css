@@ -312,9 +312,12 @@
 
 .ws-zone-buttons {
   display: flex;
-  gap: .5rem;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-top: .5rem;
+  gap: 8px;
+  margin-top: 20px;
+  position: relative;
+  bottom: 0;
 }
 .ws-zone-btn {
   background: rgba(255,255,255,0.1);
@@ -327,6 +330,9 @@
 .ws-zone-btn.active,
 .ws-zone-btn:hover {
   background: rgba(255,255,255,0.3);
+}
+.ws-zone-btn.selected {
+  border: 2px solid #fff;
 }
 .ws-validate {
   background: #22c55e;
