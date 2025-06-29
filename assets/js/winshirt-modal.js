@@ -327,10 +327,10 @@ jQuery(function($){
 
   function selectZone(index){
     state.zone = index;
-    $zoneButtons.find('.ws-zone-btn').removeClass('active');
-    $zoneButtons.find('.ws-zone-btn[data-index="'+index+'"]').addClass('active');
+    $zoneButtons.find('.ws-zone-btn').removeClass('active selected');
+    $zoneButtons.find('.ws-zone-btn[data-index="'+index+'"]').addClass('active selected');
     $modal.find('.ws-print-zone').removeClass('active').hide();
-    var $z = $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
+    $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
   }
