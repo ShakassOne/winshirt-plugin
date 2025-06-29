@@ -1,6 +1,35 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+/**
+ * Insert an AI generated image into the WordPress media library.
+ *
+ * @param string $path     Full path to the image file on disk.
+ * @param string $filename File name of the image.
+ * @param int    $parent   Optional parent post ID.
+ * @return int|WP_Error Attachment ID on success.
+ */
+function winshirt_ai_insert_attachment( $path, $filename, $parent = 0 ) {
+    require_once ABSPATH . 'wp-admin/includes/file.php';
+    require_once ABSPATH . 'wp-admin/includes/image.php';
+
+    $filetype = wp_check_filetype( $filename, null );
+    $attachment = [
+        'post_mime_type' => $filetype['type'],
+        'post_title'     => sanitize_file_name( $filename ),
+        'post_content'   => '',
+        'post_status'    => 'inherit',
+    ];
+
+    $attach_id  = wp_insert_attachment( $attachment, $path, $parent );
+    if ( ! is_wp_error( $attach_id ) ) {
+        $attach_data = wp_generate_attachment_metadata( $attach_id, $path );
+        wp_update_attachment_metadata( $attach_id, $attach_data );
+    }
+
+    return $attach_id;
+}
+
 function winshirt_ia_generate() {
     $prompt = isset( $_POST['prompt'] ) ? sanitize_text_field( wp_unslash( $_POST['prompt'] ) ) : '';
     if ( ! $prompt ) {
@@ -26,7 +55,10 @@ function winshirt_ia_generate() {
     }
     imagepng($img, $path);
     imagedestroy($img);
-    $url = trailingslashit( $upload['baseurl'] ) . 'winshirt/ia/' . $filename;
+
+    $attach_id = winshirt_ai_insert_attachment( $path, $filename );
+    $url       = is_wp_error( $attach_id ) ? trailingslashit( $upload['baseurl'] ) . 'winshirt/ia/' . $filename : wp_get_attachment_url( $attach_id );
+
     wp_send_json_success( [ 'url' => $url ] );
 }
 add_action( 'wp_ajax_winshirt_ai_generate', 'winshirt_ia_generate' );
@@ -85,7 +117,8 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
 
     file_put_contents( $path, wp_remote_retrieve_body( $img_data ) );
 
-    $url = trailingslashit( $upload['baseurl'] ) . 'winshirt/ia/' . $filename;
+    $attach_id = winshirt_ai_insert_attachment( $path, $filename );
+    $url       = is_wp_error( $attach_id ) ? trailingslashit( $upload['baseurl'] ) . 'winshirt/ia/' . $filename : wp_get_attachment_url( $attach_id );
 
     return new WP_REST_Response( [ 'imageUrl' => $url ], 200 );
 }
