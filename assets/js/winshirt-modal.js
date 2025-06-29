@@ -17,9 +17,7 @@ jQuery(function($){
   var colors = $modal.data('colors') || [];
   var zones  = $modal.data('zones') || [];
   var $colorsWrap = $modal.find('.ws-colors');
-  var $formatWrap = $modal.find('.ws-format-buttons');
-  var $formatBtns = $formatWrap.find('.ws-format-btn');
-  var $formatLabel = $('#ws-current-format');
+  var $formatSelect = $('#ws-format-select');
   var $zonesWrap = $('#ws-print-zones');
   var $zoneButtons = $('#ws-zone-buttons');
   var $left = $modal.find('.ws-left');
@@ -346,21 +344,11 @@ jQuery(function($){
       var d = Math.abs(ratio - formatHeights[f]);
       if(d < closest.diff){ closest = {fmt:f, diff:d}; }
     });
-    $formatBtns.removeClass('active');
-    $formatBtns.filter('[data-format="'+closest.fmt+'"]').addClass('active');
-    if($formatLabel.length){
-      if(closest.diff < 0.02){
-        $formatLabel.text('Format actuel : '+closest.fmt);
-      } else {
-        $formatLabel.text('Personnalisé (≈ '+closest.fmt+')');
-      }
-    }
+    if($formatSelect.length){ $formatSelect.val(closest.fmt); }
   }
 
   function updateFormatUI(fmt){
-    $formatBtns.removeClass('active');
-    $formatBtns.filter('[data-format="'+fmt+'"]').addClass('active');
-    if($formatLabel.length){ $formatLabel.text('Format actuel : '+fmt); }
+    if($formatSelect.length){ $formatSelect.val(fmt); }
   }
 
   function applyFormat($it, fmt){
@@ -490,6 +478,12 @@ function openModal(){
   $('.ws-accordion-header').on('click', function(){
     openTab($(this).data('tab'));
   });
+  $('.ws-tool-btn[data-tab]').on('click', function(){
+    openTab($(this).data('tab'));
+  });
+  $('#ws-upload-tool').on('click', function(){
+    $('#ws-upload-trigger').trigger('click');
+  });
   $tabSelect.on('change', function(){
     openTab($(this).val());
   });
@@ -547,12 +541,11 @@ function openModal(){
       saveState();
     }
   });
-
-  $formatWrap.on('click', '.ws-format-btn', function(){
+  $formatSelect.on('change', function(){
     if(!activeItem) return;
-    var fmt = $(this).data('format');
-    applyFormat(activeItem, fmt);
+    applyFormat(activeItem, $(this).val());
   });
+
 
   function addItem(type, content){
     // Supprime l'image existante si besoin
@@ -717,8 +710,7 @@ function openModal(){
       $sidebar.addClass('show');
     } else {
       $sidebar.removeClass('show');
-      $formatBtns.removeClass('active');
-      $formatLabel.text('');
+      if($formatSelect.length){ $formatSelect.val('A3'); }
       $removeBgBtn.addClass('hidden');
     }
   }
