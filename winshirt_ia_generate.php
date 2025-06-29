@@ -31,3 +31,69 @@ function winshirt_ia_generate() {
 }
 add_action( 'wp_ajax_winshirt_ai_generate', 'winshirt_ia_generate' );
 add_action( 'wp_ajax_nopriv_winshirt_ai_generate', 'winshirt_ia_generate' );
+
+function winshirt_rest_generate_image( WP_REST_Request $request ) {
+    $prompt = sanitize_text_field( $request->get_param( 'prompt' ) );
+    if ( ! $prompt ) {
+        return new WP_REST_Response( [ 'message' => 'missing_prompt' ], 400 );
+    }
+
+    $key    = get_option( 'winshirt_ia_api_key' );
+    $model  = get_option( 'winshirt_ia_model', 'dall-e-3' );
+    $format = get_option( 'winshirt_ia_output_format', '1024x1024' );
+
+    if ( ! $key ) {
+        return new WP_REST_Response( [ 'message' => 'missing_api_key' ], 400 );
+    }
+
+    $response = wp_remote_post( 'https://api.openai.com/v1/images/generations', [
+        'headers' => [
+            'Authorization' => 'Bearer ' . $key,
+            'Content-Type'  => 'application/json',
+        ],
+        'body'    => wp_json_encode( [
+            'model'  => $model,
+            'prompt' => $prompt,
+            'n'      => 1,
+            'size'   => $format,
+        ] ),
+        'timeout' => 60,
+    ] );
+
+    if ( is_wp_error( $response ) ) {
+        return new WP_REST_Response( [ 'message' => $response->get_error_message() ], 500 );
+    }
+
+    $body = json_decode( wp_remote_retrieve_body( $response ), true );
+    if ( empty( $body['data'][0]['url'] ) ) {
+        return new WP_REST_Response( [ 'message' => 'generation_failed' ], 500 );
+    }
+
+    $source = $body['data'][0]['url'];
+    $upload = wp_upload_dir();
+    $dir    = trailingslashit( $upload['basedir'] ) . 'winshirt/ia/';
+    if ( ! file_exists( $dir ) ) {
+        wp_mkdir_p( $dir );
+    }
+    $filename = 'ia_' . md5( $prompt . microtime() ) . '.png';
+    $path     = $dir . $filename;
+
+    $img_data = wp_remote_get( $source );
+    if ( is_wp_error( $img_data ) ) {
+        return new WP_REST_Response( [ 'message' => $img_data->get_error_message() ], 500 );
+    }
+
+    file_put_contents( $path, wp_remote_retrieve_body( $img_data ) );
+
+    $url = trailingslashit( $upload['baseurl'] ) . 'winshirt/ia/' . $filename;
+
+    return new WP_REST_Response( [ 'imageUrl' => $url ], 200 );
+}
+
+add_action( 'rest_api_init', function() {
+    register_rest_route( 'winshirt/v1', '/generate-image', [
+        'methods'             => WP_REST_Server::CREATABLE,
+        'callback'            => 'winshirt_rest_generate_image',
+        'permission_callback' => '__return_true',
+    ] );
+} );

@@ -234,19 +234,29 @@ jQuery(function($){
     saveAiImages();
     renderAiGallery();
   });
-  $('#ws-ai-generate').on('click', function(){
+  $('#ws-ai-generate').on('click', function(e){
+    e.preventDefault();
     var prompt = $('#ws-ai-prompt').val().trim();
     if(!prompt) return;
     $('#ws-ai-loading').show();
-    $.post(winshirtAjax.url, {action:'winshirt_ai_generate', prompt:prompt}, function(res){
+    fetch('/wp-json/winshirt/v1/generate-image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ prompt: prompt })
+    }).then(function(r){return r.json();}).then(function(data){
       $('#ws-ai-loading').hide();
-      if(res.success && res.data.url){
-        aiImages.unshift(res.data.url);
+      if(data && data.imageUrl){
+        aiImages.unshift(data.imageUrl);
         saveAiImages();
         renderAiGallery();
       }else{
-        alert(res.data || 'Erreur');
+        alert('Erreur de génération IA');
       }
+    }).catch(function(){
+      $('#ws-ai-loading').hide();
+      alert('Erreur de génération IA');
     });
   });
 
@@ -457,7 +467,10 @@ function openModal(){
     openTab($(this).val());
   });
 
-  $('.ws-upload-btn').on('click', function(){ $('#ws-upload-input').trigger('click'); });
+  $('#ws-upload-trigger').on('click', function(e){
+    e.preventDefault();
+    $('#ws-upload-input').trigger('click');
+  });
   $('#ws-upload-input').on('change', function(){
     var file = this.files[0];
     if(!file) return;
