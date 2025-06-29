@@ -15,6 +15,7 @@
         <div id="ws-canvas" class="ws-canvas"></div>
         <div id="ws-print-zones"></div>
       </div>
+      <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
     </div>
 
     <div class="ws-right winshirt-theme-inherit">

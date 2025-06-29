@@ -309,6 +309,25 @@
 .ws-side-btn:hover {
   background: rgba(255,255,255,0.2);
 }
+
+.ws-zone-buttons {
+  display: flex;
+  gap: .5rem;
+  justify-content: center;
+  margin-top: .5rem;
+}
+.ws-zone-btn {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  color: #fff;
+  cursor: pointer;
+}
+.ws-zone-btn.active,
+.ws-zone-btn:hover {
+  background: rgba(255,255,255,0.3);
+}
 .ws-validate {
   background: #22c55e;
   padding: .5rem 1.5rem;
@@ -372,10 +391,33 @@
 .ws-print-zone {
   position: absolute;
   z-index: 2;
-  border: 1px dashed rgba(255,255,255,0.7);
+  border: 2px dashed rgba(255,255,255,0.6);
   pointer-events: none;
   overflow: hidden !important;
   display: none;
+  background: none;
+}
+.ws-print-zone.active {
+  border-color: #fff;
+}
+.ws-zone-label {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  background: rgba(0,0,0,0.6);
+  color: #fff;
+  font-size: 11px;
+  padding: 0 4px;
+  border-radius: 3px;
+  pointer-events: none;
+  display: none;
+}
+.ws-print-zone.active .ws-zone-label {
+  display: block;
+}
+
+@media(max-width:768px){
+  .ws-zone-buttons { justify-content:flex-start; }
 }
 #ws-print-zones {
   position: absolute;
@@ -597,8 +639,8 @@
 .ws-print-zone, .admin-mockup-zone {
   overflow: hidden !important;
   position: absolute !important;
-  border: 2px dashed #52a3ff;
-  background: rgba(82,163,255,0.07);
+  border: 2px dashed rgba(255,255,255,0.6);
+  background: none;
   z-index: 10;
   cursor: move;
   box-sizing: border-box;
