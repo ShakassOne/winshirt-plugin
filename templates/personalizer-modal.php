@@ -133,7 +133,7 @@
 
         <div class="ws-actions winshirt-theme-inherit">
           <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
-          <button id="winshirt-validate" class="ws-validate winshirt-theme-inherit">Valider la personnalisation</button>
+          <button id="btn-valider-personnalisation" class="ws-validate winshirt-theme-inherit">Valider la personnalisation</button>
         </div>
 
     </div>

@@ -281,7 +281,8 @@ function winshirt_render_customize_button() {
         }
     }
 
-    echo '<button id="winshirt-open-modal" class="single_add_to_cart_button button alt winshirt-theme-inherit">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
+    // Bouton d\xE9clenchant la personnalisation sur la fiche produit
+    echo '<button id="btn-personnaliser" class="single_add_to_cart_button button alt winshirt-theme-inherit btn-orange">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>';
     $default_front = $front_url;
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );
@@ -316,8 +317,8 @@ function winshirt_render_customize_button() {
     $ws_gallery = wp_json_encode( $gallery );
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
-// Place the customization button inside the cart form before the "Add to cart" button
-add_action( 'woocommerce_before_add_to_cart_button', 'winshirt_render_customize_button', 5 );
+// Affiche le bouton juste sous le prix, avant les billets de loterie
+add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 15 );
 
 function winshirt_render_color_picker() {
     global $product;
