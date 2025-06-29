@@ -17,15 +17,17 @@
       </div>
       <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
       <div class="ws-context-actions winshirt-theme-inherit">
-        <button id="ws-remove-bg" class="ws-delete winshirt-theme-inherit hidden" type="button">🧼</button>
-        <select id="ws-format-select" class="ws-format-select winshirt-theme-inherit">
-          <option value="A3">A3</option>
-          <option value="A4">A4</option>
-          <option value="A5">A5</option>
-          <option value="A6">A6</option>
-          <option value="A7">A7</option>
-        </select>
-        <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button">🗑</button>
+        <button id="ws-remove-bg" class="ws-remove-bg winshirt-theme-inherit hidden" type="button" title="Supprimer le fond">🧼 Supprimer le fond</button>
+        <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button" title="Supprimer l'élément">🗑️ Supprimer</button>
+        <label class="ws-format-label">📐
+          <select id="ws-format-select" class="ws-format-select winshirt-theme-inherit">
+            <option value="A3">A3</option>
+            <option value="A4">A4</option>
+            <option value="A5">A5</option>
+            <option value="A6">A6</option>
+            <option value="A7">A7</option>
+          </select>
+        </label>
         <div class="ws-toggle winshirt-theme-inherit">
           <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit">Recto</button>
           <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit">Verso</button>
@@ -116,14 +118,13 @@
 
       <div class="ws-sidebar hidden winshirt-theme-inherit">
         <h3><?php esc_html_e( 'Édition', 'winshirt' ); ?></h3>
-        <label class="winshirt-theme-inherit"><?php esc_html_e( 'Taille', 'winshirt' ); ?>
+        <label class="winshirt-theme-inherit">📐 <?php esc_html_e( 'Taille', 'winshirt' ); ?>
           <input type="range" id="ws-prop-scale" class="winshirt-theme-inherit" min="0.5" max="2" step="0.1" value="1">
         </label>
-        <label class="winshirt-theme-inherit"><?php esc_html_e( 'Rotation', 'winshirt' ); ?>
+        <label class="winshirt-theme-inherit">↻ <?php esc_html_e( 'Rotation', 'winshirt' ); ?>
           <input type="range" id="ws-prop-rotate" class="winshirt-theme-inherit" min="0" max="360" step="1" value="0">
         </label>
-        <label class="ws-color-field winshirt-theme-inherit">
-          <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
+        <label class="ws-color-field winshirt-theme-inherit">🎨 <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
           <input type="color" id="ws-prop-color" class="winshirt-theme-inherit" value="#000000">
         </label>
       </div>
