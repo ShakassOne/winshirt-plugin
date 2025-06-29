@@ -39,7 +39,7 @@
         <p>Choisissez un design dans la galerie.</p>
         <div class="ws-gallery-cats winshirt-theme-inherit"></div>
         <div class="ws-gallery winshirt-theme-inherit"></div>
-        <button class="ws-upload-btn winshirt-theme-inherit">Uploader un visuel</button>
+        <button id="ws-upload-trigger" class="ws-upload-btn winshirt-theme-inherit">Uploader un visuel</button>
         <input type="file" id="ws-upload-input" accept="image/*" class="hidden winshirt-theme-inherit" />
       </div>
 
