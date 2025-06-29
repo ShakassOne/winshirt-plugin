@@ -84,7 +84,12 @@
 
       <button class="ws-accordion-header winshirt-theme-inherit" data-tab="ai">🤖 IA</button>
       <div class="ws-tab-content hidden" id="ws-tab-ai">
-        <p>Générez une image grâce à l’IA (bientôt disponible).</p>
+        <div class="ws-ai-form winshirt-theme-inherit">
+          <input type="text" id="ws-ai-prompt" class="ws-input input-text winshirt-theme-inherit" placeholder="Décris le visuel que tu veux créer" />
+          <button type="button" id="ws-ai-generate" class="ws-upload-btn winshirt-theme-inherit">Générer</button>
+          <div id="ws-ai-loading" style="display:none;margin-top:.5rem;">Chargement...</div>
+        </div>
+        <div id="ws-ai-gallery" class="ws-ai-gallery winshirt-theme-inherit"></div>
       </div>
 
       <button class="ws-accordion-header winshirt-theme-inherit" data-tab="svg">✒️ SVG</button>

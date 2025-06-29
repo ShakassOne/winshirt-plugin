@@ -39,6 +39,22 @@ jQuery(function($){
   var formatOrder = ['A3','A4','A5','A6','A7'];
   var activeItem = null;
   var activeTab  = 'gallery';
+  function saveAiImages(){ localStorage.setItem('ws_ai_images', JSON.stringify(aiImages)); }
+  function loadAiImages(){
+    try{ aiImages = JSON.parse(localStorage.getItem('ws_ai_images')) || []; }
+    catch(e){ aiImages = []; }
+  }
+  function renderAiGallery(){
+    $aiGallery.empty();
+    aiImages.forEach(function(url,idx){
+      var $w = $('<div class="ws-ai-thumb-wrap" />');
+      var $img = $('<img class="ws-ai-thumb ws-gallery-thumb" />').attr('src',url);
+      var $del = $('<span class="ws-ai-del">🗑️</span>');
+      var $lab = $('<span class="ws-ai-label">IA</span>');
+      $w.append($img,$del,$lab);
+      $aiGallery.append($w);
+    });
+  }
 
   function showTooltip(text){
     if(!$debug.length) return;
@@ -168,6 +184,8 @@ jQuery(function($){
   var gallery = $modal.data('gallery') || [];
   var $gallery = $modal.find('.ws-gallery');
   var $cats   = $modal.find('.ws-gallery-cats');
+  var $aiGallery = $('#ws-ai-gallery');
+  var aiImages = [];
   var cats = [];
   gallery.forEach(function(g){
     var cat = g.category || g.type || '';
@@ -198,6 +216,38 @@ jQuery(function($){
 
   $gallery.on('click', '.ws-gallery-thumb', function(){
     addItem('image', $(this).attr('src'));
+  });
+
+  function initAi(){
+    loadAiImages();
+    renderAiGallery();
+  }
+  initAi();
+
+  $aiGallery.on('click', '.ws-ai-thumb', function(){
+    addItem('image', $(this).attr('src'));
+  });
+  $aiGallery.on('click', '.ws-ai-del', function(e){
+    e.stopPropagation();
+    var idx = $(this).parent().index();
+    aiImages.splice(idx,1);
+    saveAiImages();
+    renderAiGallery();
+  });
+  $('#ws-ai-generate').on('click', function(){
+    var prompt = $('#ws-ai-prompt').val().trim();
+    if(!prompt) return;
+    $('#ws-ai-loading').show();
+    $.post(winshirtAjax.url, {action:'winshirt_ai_generate', prompt:prompt}, function(res){
+      $('#ws-ai-loading').hide();
+      if(res.success && res.data.url){
+        aiImages.unshift(res.data.url);
+        saveAiImages();
+        renderAiGallery();
+      }else{
+        alert(res.data || 'Erreur');
+      }
+    });
   });
 
   colors.forEach(function(c,idx){
@@ -326,6 +376,8 @@ jQuery(function($){
 function openModal(){
   checkMobile();
   loadState();
+  loadAiImages();
+  renderAiGallery();
   if(state.color){ $('.ws-color-overlay').css('background-color', state.color); }
   $modal.removeClass('hidden').addClass('open');
   if (!$modal.hasClass('ws-mobile')) {
