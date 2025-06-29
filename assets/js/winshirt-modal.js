@@ -87,10 +87,10 @@ jQuery(function($){
 
   function checkMobile(){
     if(window.innerWidth <= 768){
-      $modal.addClass('ws-mobile');
+      $modal.addClass('ws-mobile winshirt-personnalisation-mobile');
       if($zoneButtons.parent()[0] !== $right[0]){ $zoneButtons.appendTo($right); }
     } else {
-      $modal.removeClass('ws-mobile');
+      $modal.removeClass('ws-mobile winshirt-personnalisation-mobile');
       $modal.find('.ws-right').removeClass('show');
       if($zoneButtons.parent()[0] !== $left[0]){ $zoneButtons.appendTo($left); }
     }
@@ -455,7 +455,8 @@ function openModal(){
     }, 300);
   }
 
-  $('#winshirt-open-modal').on('click', function(e){ e.preventDefault(); openModal(); });
+  // Ouvre la modale depuis le bouton de personnalisation
+  $('#btn-personnaliser').on('click', function(e){ e.preventDefault(); openModal(); });
   $('#winshirt-close-modal').on('click', closeModal);
   $('#ws-reset-visual').on('click', function(){
     $canvas.children('.ws-item[data-type="image"]').remove();
@@ -820,7 +821,8 @@ function openModal(){
   $('#winshirt-front-btn').on('click', function(){ switchSide('front'); });
   $('#winshirt-back-btn').on('click', function(){ switchSide('back'); });
 
-  $('#winshirt-validate').on('click', function(){
+  // Validation finale : enregistre puis ferme la modale
+  $('#btn-valider-personnalisation').on('click', function(){
     var items = [];
     $canvas.children('.ws-item').each(function(){
       var $it = $(this);

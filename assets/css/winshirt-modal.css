@@ -766,3 +766,21 @@
 @media(min-width:769px){
   .ws-tools { display:none; }
 }
+
+/* Responsive mobile refinements */
+.winshirt-personnalisation-mobile {
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+}
+.winshirt-personnalisation-mobile button {
+  min-width:40px;
+  min-height:40px;
+  border-radius:.5rem;
+  box-shadow:0 2px 4px rgba(0,0,0,0.2);
+  backdrop-filter:blur(4px);
+}
+#btn-valider-personnalisation {
+  position:sticky;
+  bottom:0;
+}
