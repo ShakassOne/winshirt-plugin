@@ -16,6 +16,21 @@
         <div id="ws-print-zones"></div>
       </div>
       <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
+      <div class="ws-context-actions winshirt-theme-inherit">
+        <button id="ws-remove-bg" class="ws-delete winshirt-theme-inherit hidden" type="button">🧼</button>
+        <select id="ws-format-select" class="ws-format-select winshirt-theme-inherit">
+          <option value="A3">A3</option>
+          <option value="A4">A4</option>
+          <option value="A5">A5</option>
+          <option value="A6">A6</option>
+          <option value="A7">A7</option>
+        </select>
+        <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button">🗑</button>
+        <div class="ws-toggle winshirt-theme-inherit">
+          <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit">Recto</button>
+          <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit">Verso</button>
+        </div>
+      </div>
     </div>
 
     <div class="ws-right winshirt-theme-inherit">
@@ -111,35 +126,24 @@
           <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
           <input type="color" id="ws-prop-color" class="winshirt-theme-inherit" value="#000000">
         </label>
-        <button id="ws-remove-bg" class="ws-delete winshirt-theme-inherit hidden" type="button">🧼
-          <?php esc_html_e( 'Supprimer le fond', 'winshirt' ); ?>
-        </button>
-        <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button">
-          <?php esc_html_e( 'Supprimer', 'winshirt' ); ?>
-        </button>
       </div>
 
       <div class="ws-colors winshirt-theme-inherit"></div>
       <input type="hidden" id="winshirt-custom-data" value="" />
 
         <div class="ws-actions winshirt-theme-inherit">
-          <div class="ws-format-buttons winshirt-theme-inherit">
-            <button class="ws-format-btn winshirt-theme-inherit" data-format="A3">A3</button>
-            <button class="ws-format-btn winshirt-theme-inherit" data-format="A4">A4</button>
-            <button class="ws-format-btn winshirt-theme-inherit" data-format="A5">A5</button>
-            <button class="ws-format-btn winshirt-theme-inherit" data-format="A6">A6</button>
-            <button class="ws-format-btn winshirt-theme-inherit" data-format="A7">A7</button>
-            <span id="ws-current-format" class="ws-format-label"></span>
-          </div>
-          <div class="ws-toggle winshirt-theme-inherit">
-            <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit">Recto</button>
-            <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit">Verso</button>
-          </div>
           <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
           <button id="winshirt-validate" class="ws-validate winshirt-theme-inherit">Valider la personnalisation</button>
         </div>
 
     </div>
-    <div id="ws-debug" class="ws-debug"></div>
+  <div id="ws-debug" class="ws-debug"></div>
+  <div class="ws-tools winshirt-theme-inherit">
+    <button class="ws-tool-btn" data-tab="gallery">📷</button>
+    <button class="ws-tool-btn" id="ws-upload-tool">⬆</button>
+    <button class="ws-tool-btn" data-tab="ai">🤖</button>
+    <button class="ws-tool-btn" data-tab="text">✏</button>
+    <button class="ws-tool-btn" data-tab="svg">📄</button>
   </div>
+</div>
 </div>

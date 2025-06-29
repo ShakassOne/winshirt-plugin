@@ -724,3 +724,45 @@
 .ws-ai-del { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.6); color:#fff; border-radius:3px; padding:2px; font-size:12px; display:none; cursor:pointer; }
 .ws-ai-thumb-wrap:hover .ws-ai-del { display:block; }
 .ws-ai-label { position:absolute; bottom:2px; left:2px; background:rgba(0,0,0,0.6); color:#fff; font-size:10px; padding:2px 3px; border-radius:3px; }
+
+/* --- Mobile refonte --- */
+.ws-context-actions {
+  display:flex;
+  flex-wrap:wrap;
+  gap:.5rem;
+  justify-content:center;
+  margin-top:.5rem;
+}
+.ws-format-select {
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  color:#fff;
+  padding:.25rem .5rem;
+  border-radius:.25rem;
+}
+.ws-tools {
+  position:fixed;
+  left:0; right:0; bottom:0;
+  display:flex;
+  justify-content:space-around;
+  gap:.25rem;
+  padding:.5rem;
+  background:rgba(0,0,0,0.7);
+  backdrop-filter:blur(8px);
+  z-index:10001;
+}
+.ws-tool-btn {
+  flex:1;
+  padding:.5rem 0;
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  border-radius:.5rem;
+  color:#fff;
+  font-size:1.25rem;
+}
+.ws-tool-btn:hover {
+  background:rgba(255,255,255,0.3);
+}
+@media(min-width:769px){
+  .ws-tools { display:none; }
+}
