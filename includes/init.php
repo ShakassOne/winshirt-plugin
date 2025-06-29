@@ -307,8 +307,8 @@ function winshirt_render_customize_button() {
     $ws_gallery = wp_json_encode( $gallery );
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
-// Place the customization button above the size/variation selection
-add_action( 'woocommerce_before_add_to_cart_form', 'winshirt_render_customize_button', 5 );
+// Place the customization button inside the cart form before the "Add to cart" button
+add_action( 'woocommerce_before_add_to_cart_button', 'winshirt_render_customize_button', 5 );
 
 function winshirt_render_color_picker() {
     global $product;
@@ -390,7 +390,7 @@ function winshirt_render_lottery_selector() {
     echo '<div class="winshirt-lottery-selects winshirt-theme-inherit">';
     for ( $i = 1; $i <= $tickets; $i++ ) {
         echo '<div class="form-row form-row-wide winshirt-lottery-select winshirt-theme-inherit">';
-        echo '<label class="winshirt-theme-inherit" for="winshirt-lottery-select-' . $i . '">' . esc_html__( 'Ticket n°', 'winshirt' ) . $i . '</label> ';
+        echo '<label class="winshirt-theme-inherit winshirt-lottery-label" for="winshirt-lottery-select-' . $i . '"><strong>' . esc_html__( 'Ticket n°', 'winshirt' ) . $i . ':</strong></label><br />';
         echo '<select id="winshirt-lottery-select-' . $i . '" class="winshirt-lottery-select select winshirt-theme-inherit" name="winshirt_lotteries[]">';
         echo '<option value="">' . esc_html__( '-- Sélectionner --', 'winshirt' ) . '</option>';
         foreach ( $lotteries as $lottery ) {

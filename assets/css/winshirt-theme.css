@@ -12,3 +12,23 @@
 }
 
 
+.winshirt-lottery-label {
+  font-weight: 700;
+  display: block;
+}
+
+.winshirt-lottery-tooltip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  background: rgba(40,70,120,0.95);
+  color: #fff;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  box-shadow: 0 2px 14px rgba(20,40,100,0.18);
+  white-space: nowrap;
+  display: none;
+  z-index: 9;
+}
