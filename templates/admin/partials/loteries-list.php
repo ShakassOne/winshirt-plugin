@@ -106,8 +106,12 @@
             <td><textarea name="prizes" id="lottery-prizes" rows="3" class="large-text"><?php echo esc_textarea(get_post_meta($editing->ID ?? 0, '_winshirt_lottery_prizes', true)); ?></textarea></td>
         </tr>
         <tr>
-            <th scope="row"><label for="lottery-product">Produit WooCommerce (ID)</label></th>
-            <td><input type="number" name="product" id="lottery-product" value="<?php echo esc_attr(get_post_meta($editing->ID ?? 0, '_winshirt_lottery_product', true)); ?>" /></td>
+            <th scope="row"><label for="lottery-product">Produits associés (IDs, séparés par virgule)</label></th>
+            <td>
+                <input type="text" name="product" id="lottery-product"
+                    value="<?php echo esc_attr(get_post_meta($editing->ID ?? 0, '_winshirt_lottery_product', true)); ?>"
+                    placeholder="Ex : 101, 102" style="width: 100%;" />
+            </td>
         </tr>
         <tr>
             <th scope="row"><label for="lottery-max">Participants max</label></th>
