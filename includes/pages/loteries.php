@@ -39,7 +39,8 @@ function winshirt_page_lotteries() {
         update_post_meta($lottery_id, '_winshirt_lottery_start', sanitize_text_field($_POST['start'] ?? ''));
         update_post_meta($lottery_id, '_winshirt_lottery_end', sanitize_text_field($_POST['end'] ?? ''));
         update_post_meta($lottery_id, '_winshirt_lottery_prizes', sanitize_textarea_field($_POST['prizes'] ?? ''));
-        update_post_meta($lottery_id, '_winshirt_lottery_product', absint($_POST['product'] ?? 0));
+        // Save related product IDs as a sanitized text string
+        update_post_meta($lottery_id, '_winshirt_lottery_product', sanitize_text_field($_POST['product'] ?? ''));
         update_post_meta($lottery_id, '_winshirt_lottery_active', isset($_POST['active']) ? 'yes' : 'no');
         update_post_meta($lottery_id, '_winshirt_lottery_draw', in_array($_POST['draw'] ?? 'manual', ['manual','auto'], true) ? $_POST['draw'] : 'manual');
         update_post_meta($lottery_id, 'max_participants', absint($_POST['max_participants'] ?? 0));

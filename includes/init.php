@@ -572,6 +572,75 @@ add_action( 'woocommerce_payment_complete', 'winshirt_register_lottery_participa
 add_action( 'woocommerce_order_status_processing', 'winshirt_register_lottery_participant' );
 add_action( 'woocommerce_order_status_completed', 'winshirt_register_lottery_participant' );
 
+// Increment participants for lotteries linked directly via product IDs
+add_action( 'woocommerce_order_status_completed', 'winshirt_increment_lottery_participants' );
+
+/**
+ * Increase lottery participant count based on products defined
+ * in the "Produits associés" field of each lottery.
+ */
+function winshirt_increment_lottery_participants( $order_id ) {
+    $order = wc_get_order( $order_id );
+    if ( ! $order ) {
+        return;
+    }
+
+    $loteries = get_posts([
+        'post_type'      => 'winshirt_lottery',
+        'posts_per_page' => -1,
+        'meta_query'     => [
+            [ 'key' => '_winshirt_lottery_product', 'compare' => 'EXISTS' ],
+        ],
+    ]);
+
+    foreach ( $order->get_items() as $item ) {
+        $pid = $item->get_product_id();
+        $qty = $item->get_quantity();
+
+        foreach ( $loteries as $lottery ) {
+            $linked = get_post_meta( $lottery->ID, '_winshirt_lottery_product', true );
+            if ( ! $linked ) {
+                continue;
+            }
+
+            $ids = array_map( 'absint', explode( ',', $linked ) );
+            if ( in_array( $pid, $ids, true ) ) {
+                $count = absint( get_post_meta( $lottery->ID, 'participants_count', true ) );
+                update_post_meta( $lottery->ID, 'participants_count', $count + $qty );
+            }
+        }
+    }
+}
+
+// Display related lottery info under each product line in emails and thankyou page
+add_filter( 'woocommerce_order_item_meta_end', 'winshirt_display_lottery_in_email', 10, 4 );
+
+/**
+ * Append a message about the associated lottery below the order item.
+ */
+function winshirt_display_lottery_in_email( $item_id, $item, $order, $plain_text ) {
+    $product_id = $item->get_product_id();
+
+    $loteries = get_posts([
+        'post_type'      => 'winshirt_lottery',
+        'posts_per_page' => -1,
+        'meta_query'     => [
+            [ 'key' => '_winshirt_lottery_product', 'compare' => 'EXISTS' ],
+        ],
+    ]);
+
+    foreach ( $loteries as $lottery ) {
+        $ids = array_map( 'absint', explode( ',', get_post_meta( $lottery->ID, '_winshirt_lottery_product', true ) ) );
+        if ( in_array( $product_id, $ids, true ) ) {
+            $title = get_the_title( $lottery->ID );
+            $date  = get_post_meta( $lottery->ID, '_winshirt_lottery_end', true );
+            $msg   = "🎁 Ce produit vous inscrit automatiquement à la loterie : *{$title}* – Tirage le {$date}";
+
+            echo $plain_text ? $msg . "\n" : "<p>{$msg}</p>";
+        }
+    }
+}
+
 // Register custom post type for mockups
 add_action('init', function () {
     register_post_type('winshirt_mockup', [
