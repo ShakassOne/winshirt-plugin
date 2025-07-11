@@ -24,6 +24,14 @@ jQuery(function($){
   var $right = $modal.find('.ws-right');
   var $tabSelect = $('#ws-tab-select');
   var $debug = $('#ws-debug');
+  var $prodField = $('#winshirt-production-image-field');
+  var $customField = $('#winshirt-custom-data-field');
+  var $prodLocal = $('#winshirt-production-image');
+
+  if($prodField.length){
+    var prevImg = localStorage.getItem('winshirt_production_image');
+    if(prevImg){ $prodField.val(prevImg); if($prodLocal.length){$prodLocal.val(prevImg);} }
+  }
   function loadFont(f){
     var id = 'ws-font-'+f.replace(/\s+/g,'-').toLowerCase();
     if(!document.getElementById(id)){
@@ -63,6 +71,50 @@ jQuery(function($){
     $debug.text(text).addClass('show');
     clearTimeout($debug.data('to'));
     $debug.data('to', setTimeout(function(){ $debug.removeClass('show'); }, 800));
+  }
+
+  function uploadMockup(){
+    if(!window.html2canvas) return;
+    html2canvas($modal.find('.ws-preview')[0], {backgroundColor:null,scale:1}).then(function(canvas){
+      canvas.toBlob(function(blob){
+        if(!blob) return;
+        var fd = new FormData();
+        fd.append('image', blob, 'mockup.png');
+        fetch(winshirtAjax.rest+'upload-mockup', {
+          method:'POST',
+          credentials:'same-origin',
+          headers:{'X-WP-Nonce':winshirtAjax.nonce},
+          body:fd
+        }).then(function(r){return r.json();}).then(function(res){
+          if(res && res.url){
+            localStorage.setItem('winshirt_mockup', res.url);
+          }
+        });
+      }, 'image/png');
+    });
+  }
+
+  function captureProduction(){
+    if(!window.html2canvas) return;
+    html2canvas($modal.find('.ws-preview')[0], {backgroundColor:null,scale:2}).then(function(canvas){
+      canvas.toBlob(function(blob){
+        if(!blob) return;
+        var fd = new FormData();
+        fd.append('image', blob, 'production.png');
+        fetch(winshirtAjax.rest+'upload-production-image', {
+          method:'POST',
+          credentials:'same-origin',
+          headers:{'X-WP-Nonce':winshirtAjax.nonce},
+          body:fd
+        }).then(function(r){return r.json();}).then(function(res){
+          if(res && res.url){
+            $prodField.val(res.url);
+            if($prodLocal.length){$prodLocal.val(res.url);} 
+            localStorage.setItem('winshirt_production_image', res.url);
+          }
+        });
+      }, 'image/png');
+    });
   }
 
   function updateDebug($it){
@@ -151,6 +203,7 @@ jQuery(function($){
       side: state.side
     };
     localStorage.setItem('winshirt_custom', JSON.stringify(data));
+    uploadMockup();
   }
 
   function loadState(){
@@ -243,6 +296,12 @@ jQuery(function($){
     e.preventDefault();
     var prompt = $('#ws-ai-prompt').val().trim();
     if(!prompt) return;
+    var limit = 3;
+    var count = parseInt(localStorage.getItem('ws_ai_count')||'0',10);
+    if(count >= limit){
+      alert('Limite de generation atteinte');
+      return;
+    }
     $('#ws-ai-loading').show();
     fetch('/wp-json/winshirt/v1/generate-image', {
       method: 'POST',
@@ -255,6 +314,7 @@ jQuery(function($){
       if(data && data.imageUrl){
         aiImages.unshift(data.imageUrl);
         saveAiImages();
+        localStorage.setItem('ws_ai_count', count+1);
         renderAiGallery();
       }else{
         alert('Erreur de génération IA');
@@ -840,9 +900,13 @@ function openModal(){
         content: $it.data('type') === 'text' ? $it.find('.ws-text').text() : $it.find('img').attr('src')
       });
     });
-    $('#winshirt-custom-data').val(JSON.stringify(items));
+    var json = JSON.stringify(items);
+    $('#winshirt-custom-data').val(json);
+    if($customField.length){ $customField.val(json); }
     console.log('WinShirt data', JSON.stringify(items));
     saveState();
+    captureProduction();
+    if(window.dataLayer){ dataLayer.push({event:'customize_completed', product_id:$modal.data('product-id')}); }
     closeModal();
   });
 

@@ -131,6 +131,7 @@
 
       <div class="ws-colors winshirt-theme-inherit"></div>
       <input type="hidden" id="winshirt-custom-data" value="" />
+      <input type="hidden" id="winshirt-production-image" value="" />
 
         <div class="ws-actions winshirt-theme-inherit">
           <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>

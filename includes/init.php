@@ -9,9 +9,12 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('winshirt-theme', WINSHIRT_URL . 'assets/css/winshirt-theme.css', [], '1.0');
 
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
-        wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch'], '1.0', true);
+        wp_enqueue_script('html2canvas', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', [], '1.4.1', true);
+        wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch', 'html2canvas'], '1.0', true);
         wp_localize_script('winshirt-modal', 'winshirtAjax', [
-            'url' => admin_url('admin-ajax.php'),
+            'url'  => admin_url('admin-ajax.php'),
+            'rest' => esc_url_raw(rest_url('winshirt/v1/')),
+            'nonce'=> wp_create_nonce('wp_rest'),
         ]);
 
         wp_enqueue_style('winshirt-lottery-selected', WINSHIRT_URL . 'assets/css/winshirt-lottery-selected.css', [], '1.0');
@@ -677,3 +680,77 @@ function winshirt_test_ia_key() {
     wp_send_json_error(['message' => 'Invalid key']);
 }
 add_action('wp_ajax_winshirt_test_ia_key', 'winshirt_test_ia_key');
+
+/**
+ * Hidden fields in add to cart form to store customization and production image URLs.
+ */
+function winshirt_cart_hidden_fields(){
+    echo '<input type="hidden" name="winshirt_custom_data" id="winshirt-custom-data-field" />';
+    echo '<input type="hidden" name="winshirt_production_image" id="winshirt-production-image-field" />';
+}
+add_action('woocommerce_before_add_to_cart_button','winshirt_cart_hidden_fields');
+
+/**
+ * Add custom data and production image to cart item data.
+ */
+function winshirt_add_cart_item_custom( $cart_item_data, $product_id ){
+    if( isset( $_POST['winshirt_custom_data'] ) ){
+        $cart_item_data['winshirt_custom_data'] = wp_unslash( $_POST['winshirt_custom_data'] );
+    }
+    if( isset( $_POST['winshirt_production_image'] ) ){
+        $cart_item_data['winshirt_production_image'] = esc_url_raw( $_POST['winshirt_production_image'] );
+    }
+    return $cart_item_data;
+}
+add_filter( 'woocommerce_add_cart_item_data', 'winshirt_add_cart_item_custom', 20, 2 );
+
+/**
+ * Save production image URL to order item meta and rename file with order ID.
+ */
+function winshirt_save_order_item_custom( $item, $cart_item_key, $values, $order ){
+    if( ! empty( $values['winshirt_custom_data'] ) ){
+        $item->add_meta_data( 'winshirt_custom_data', $values['winshirt_custom_data'] );
+    }
+
+    if( ! empty( $values['winshirt_production_image'] ) ){
+        $url      = $values['winshirt_production_image'];
+        $upload   = wp_upload_dir();
+        $baseurl  = trailingslashit( $upload['baseurl'] ) . 'winshirt-productions/';
+        $basedir  = trailingslashit( $upload['basedir'] ) . 'winshirt-productions/';
+        $path     = str_replace( $baseurl, $basedir, $url );
+        if( file_exists( $path ) ){
+            $ext       = pathinfo( $path, PATHINFO_EXTENSION );
+            $new_name  = 'prod_' . $order->get_id() . '_' . time() . '.' . $ext;
+            $new_path  = $basedir . $new_name;
+            rename( $path, $new_path );
+            $url = $baseurl . $new_name;
+        }
+        $item->add_meta_data( 'winshirt_production_image', $url );
+    }
+}
+add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_order_item_custom', 20, 4 );
+
+/**
+ * Push purchase event to Google DataLayer on thank you page.
+ */
+function winshirt_push_purchase_datalayer( $order_id ){
+    $order = wc_get_order( $order_id );
+    if( ! $order ) return;
+    $items = [];
+    foreach( $order->get_items() as $item ){
+        $items[] = [
+            'id'    => $item->get_product_id(),
+            'name'  => $item->get_name(),
+            'price' => $order->get_item_total( $item, false ),
+            'qty'   => $item->get_quantity(),
+        ];
+    }
+    $data = [
+        'event'    => 'purchase',
+        'order_id' => $order->get_id(),
+        'revenue'  => $order->get_total(),
+        'items'    => $items,
+    ];
+    echo '<script>window.dataLayer=window.dataLayer||[];dataLayer.push(' . wp_json_encode( $data ) . ');</script>';
+}
+add_action( 'woocommerce_thankyou', 'winshirt_push_purchase_datalayer' );
