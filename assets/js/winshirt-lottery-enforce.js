@@ -3,6 +3,7 @@ jQuery(function($){
   var $button  = $form.find('.single_add_to_cart_button');
   var $selects = $('.winshirt-lottery-select');
   var $custom  = $('#winshirt-custom-data');
+  var productId = parseInt($form.find('input[name="add-to-cart"]').val()||0,10);
 
   if(!$button.length){
     return;
@@ -43,6 +44,8 @@ jQuery(function($){
              .fadeIn(120);
       clearTimeout(timeout);
       timeout = setTimeout(function(){ $tooltip.fadeOut(200); }, 4000);
+    } else {
+      if(window.dataLayer){ dataLayer.push({event:'add_to_cart', product_id:productId, customization:$custom.val()}); }
     }
   });
 });

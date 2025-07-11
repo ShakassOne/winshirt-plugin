@@ -70,6 +70,13 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
         return new WP_REST_Response( [ 'message' => 'missing_prompt' ], 400 );
     }
 
+    $user_id = get_current_user_id();
+    $limit   = intval( get_option( 'winshirt_ia_generation_limit', 3 ) );
+    $count   = intval( get_user_meta( $user_id, '_winshirt_ai_count', true ) );
+    if ( $limit > 0 && $count >= $limit ) {
+        return new WP_REST_Response( [ 'message' => 'limit_reached' ], 403 );
+    }
+
     $key    = get_option( 'winshirt_ia_api_key' );
     $model  = get_option( 'winshirt_ia_model', 'dall-e-3' );
     $format = get_option( 'winshirt_ia_output_format', '1024x1024' );
@@ -120,6 +127,20 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
     $attach_id = winshirt_ai_insert_attachment( $path, $filename );
     $url       = is_wp_error( $attach_id ) ? trailingslashit( $upload['baseurl'] ) . 'winshirt/ia/' . $filename : wp_get_attachment_url( $attach_id );
 
+    // Insert as visual post for admin validation
+    $visual_id = wp_insert_post([
+        'post_type'   => 'winshirt_visual',
+        'post_title'  => $prompt,
+        'post_status' => 'publish',
+    ]);
+    if ( $visual_id ) {
+        set_post_thumbnail( $visual_id, $attach_id );
+        update_post_meta( $visual_id, '_winshirt_visual_type', 'IA' );
+        update_post_meta( $visual_id, '_winshirt_visual_validated', 'no' );
+        update_post_meta( $visual_id, '_winshirt_ai_prompt', $prompt );
+        update_user_meta( $user_id, '_winshirt_ai_count', $count + 1 );
+    }
+
     return new WP_REST_Response( [ 'imageUrl' => $url ], 200 );
 }
 
@@ -127,6 +148,6 @@ add_action( 'rest_api_init', function() {
     register_rest_route( 'winshirt/v1', '/generate-image', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_generate_image',
-        'permission_callback' => '__return_true',
+        'permission_callback' => function(){ return is_user_logged_in(); },
     ] );
 } );

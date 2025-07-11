@@ -19,6 +19,7 @@ require_once WINSHIRT_PATH . 'includes/pages/loteries.php';
 require_once WINSHIRT_PATH . 'includes/pages/commandes.php';
 require_once WINSHIRT_PATH . 'includes/pages/configuration.php';
 require_once WINSHIRT_PATH . 'winshirt_ia_generate.php';
+require_once WINSHIRT_PATH . 'includes/rest.php';
 
 // Register uninstall hook
 register_uninstall_hook(__FILE__, 'winshirt_plugin_uninstall');
