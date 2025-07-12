@@ -658,6 +658,34 @@ function winshirt_display_lottery_in_email( $item_id, $item, $order, $plain_text
     }
 }
 
+add_action( 'woocommerce_email_order_meta', 'winshirt_email_custom_images', 15, 4 );
+/**
+ * Show generated mockup images in order emails.
+ */
+function winshirt_email_custom_images( $order, $sent_to_admin, $plain_text, $email ) {
+    foreach ( $order->get_items() as $item ) {
+        $front = $item->get_meta( 'winshirt_front_hd' );
+        $back  = $item->get_meta( 'winshirt_back_hd' );
+        if ( ! $front && ! $back ) {
+            continue;
+        }
+        if ( $plain_text ) {
+            if ( $front ) echo "Recto : $front\n";
+            if ( $back )  echo "Verso : $back\n";
+        } else {
+            echo '<h3>Prévisualisation de votre design</h3>';
+            echo '<p>Voici les visuels générés automatiquement à partir de votre personnalisation :</p>';
+            if ( $front ) {
+                echo '<img src="' . esc_url( $front ) . '" alt="Mockup Recto" style="max-width:100%; height:auto; border:1px solid #ccc;" />';
+            }
+            if ( $back ) {
+                echo '<img src="' . esc_url( $back ) . '" alt="Mockup Verso" style="max-width:100%; height:auto; border:1px solid #ccc;" />';
+            }
+        }
+        break;
+    }
+}
+
 // Register custom post type for mockups
 add_action('init', function () {
     register_post_type('winshirt_mockup', [
@@ -701,6 +729,8 @@ add_action('wp_ajax_winshirt_test_ia_key', 'winshirt_test_ia_key');
 function winshirt_cart_hidden_fields(){
     echo '<input type="hidden" name="winshirt_custom_data" id="winshirt-custom-data-field" />';
     echo '<input type="hidden" name="winshirt_production_image" id="winshirt-production-image-field" />';
+    echo '<input type="hidden" name="winshirt_front_image" id="winshirt-front-image-field" />';
+    echo '<input type="hidden" name="winshirt_back_image" id="winshirt-back-image-field" />';
 }
 add_action('woocommerce_before_add_to_cart_button','winshirt_cart_hidden_fields');
 
@@ -713,6 +743,12 @@ function winshirt_add_cart_item_custom( $cart_item_data, $product_id ){
     }
     if( isset( $_POST['winshirt_production_image'] ) ){
         $cart_item_data['winshirt_production_image'] = esc_url_raw( $_POST['winshirt_production_image'] );
+    }
+    if( isset( $_POST['winshirt_front_image'] ) ){
+        $cart_item_data['winshirt_front_image'] = esc_url_raw( $_POST['winshirt_front_image'] );
+    }
+    if( isset( $_POST['winshirt_back_image'] ) ){
+        $cart_item_data['winshirt_back_image'] = esc_url_raw( $_POST['winshirt_back_image'] );
     }
     return $cart_item_data;
 }
@@ -741,6 +777,41 @@ function winshirt_save_order_item_custom( $item, $cart_item_key, $values, $order
         }
         $item->add_meta_data( 'winshirt_production_image', $url );
     }
+
+    $upload = wp_upload_dir();
+    $tmpurl  = trailingslashit( $upload['baseurl'] ) . 'winshirt-customs/tmp/';
+    $tmpdir  = trailingslashit( $upload['basedir'] ) . 'winshirt-customs/tmp/';
+    $finaldir = trailingslashit( $upload['basedir'] ) . 'winshirt/customs/' . $order->get_id() . '/';
+    $finalurl = trailingslashit( $upload['baseurl'] ) . 'winshirt/customs/' . $order->get_id() . '/';
+    if ( ! file_exists( $finaldir ) ) {
+        wp_mkdir_p( $finaldir );
+    }
+
+    if( ! empty( $values['winshirt_front_image'] ) ){
+        $url = $values['winshirt_front_image'];
+        $path = str_replace( $tmpurl, $tmpdir, $url );
+        if( file_exists( $path ) ){
+            $ext = pathinfo( $path, PATHINFO_EXTENSION );
+            $new_path = $finaldir . 'recto.' . $ext;
+            rename( $path, $new_path );
+            $url = $finalurl . 'recto.' . $ext;
+        }
+        $item->add_meta_data( 'winshirt_front_hd', $url );
+        $item->add_meta_data( 'winshirt_front_preview', $url );
+    }
+
+    if( ! empty( $values['winshirt_back_image'] ) ){
+        $url = $values['winshirt_back_image'];
+        $path = str_replace( $tmpurl, $tmpdir, $url );
+        if( file_exists( $path ) ){
+            $ext = pathinfo( $path, PATHINFO_EXTENSION );
+            $new_path = $finaldir . 'verso.' . $ext;
+            rename( $path, $new_path );
+            $url = $finalurl . 'verso.' . $ext;
+        }
+        $item->add_meta_data( 'winshirt_back_hd', $url );
+        $item->add_meta_data( 'winshirt_back_preview', $url );
+    }
 }
 add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_order_item_custom', 20, 4 );
 
@@ -768,3 +839,48 @@ function winshirt_push_purchase_datalayer( $order_id ){
     echo '<script>window.dataLayer=window.dataLayer||[];dataLayer.push(' . wp_json_encode( $data ) . ');</script>';
 }
 add_action( 'woocommerce_thankyou', 'winshirt_push_purchase_datalayer' );
+
+// ----- Account section for saved customizations -----
+add_action( 'init', 'winshirt_account_endpoint' );
+function winshirt_account_endpoint() {
+    add_rewrite_endpoint( 'mes-personnalisations', EP_ROOT | EP_PAGES );
+}
+
+add_filter( 'query_vars', function( $vars ) {
+    $vars[] = 'mes-personnalisations';
+    return $vars;
+} );
+
+add_filter( 'woocommerce_account_menu_items', function( $items ) {
+    $items['mes-personnalisations'] = __( 'Mes personnalisations', 'winshirt' );
+    return $items;
+} );
+
+add_action( 'woocommerce_account_mes-personnalisations_endpoint', 'winshirt_account_customs_page' );
+function winshirt_account_customs_page() {
+    $orders = wc_get_orders( [
+        'customer_id' => get_current_user_id(),
+        'limit'       => -1,
+    ] );
+    echo '<h3>' . esc_html__( 'Mes personnalisations', 'winshirt' ) . '</h3>';
+    foreach ( $orders as $order ) {
+        foreach ( $order->get_items() as $item ) {
+            $front = $item->get_meta( 'winshirt_front_hd' );
+            $back  = $item->get_meta( 'winshirt_back_hd' );
+            if ( ! $front && ! $back ) {
+                continue;
+            }
+            echo '<div style="margin-bottom:1rem;">';
+            echo '<p>' . esc_html( $item->get_name() . ' #' . $order->get_id() ) . '</p>';
+            if ( $front ) {
+                echo '<img src="' . esc_url( $front ) . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
+                echo '<br/><a href="' . esc_url( $front ) . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
+            }
+            if ( $back ) {
+                echo '<br/><img src="' . esc_url( $back ) . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
+                echo '<br/><a href="' . esc_url( $back ) . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
+            }
+            echo '</div>';
+        }
+    }
+}
