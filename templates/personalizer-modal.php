@@ -16,6 +16,10 @@
         <div id="ws-print-zones"></div>
         <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
       </div>
+      <div class="ws-toggle winshirt-theme-inherit" style="margin-top:.5rem;">
+        <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit">Recto</button>
+        <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit">Verso</button>
+      </div>
       <div class="ws-context-actions winshirt-theme-inherit">
         <button id="ws-remove-bg" class="ws-remove-bg winshirt-theme-inherit hidden" type="button" title="Supprimer le fond">🧼 Supprimer le fond</button>
         <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button" title="Supprimer l'élément">🗑️ Supprimer</button>
@@ -28,10 +32,6 @@
             <option value="A7">A7</option>
           </select>
         </label>
-        <div class="ws-toggle winshirt-theme-inherit">
-          <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit">Recto</button>
-          <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit">Verso</button>
-        </div>
       </div>
     </div>
 

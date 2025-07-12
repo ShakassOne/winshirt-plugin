@@ -668,7 +668,8 @@ function openModal(){
       var dy = oe.clientY - dragStart.y;
       var zonePos = $zone.position();
       var zoneW = $zone.width(), zoneH = $zone.height();
-      var itemW = $item.width(), itemH = $item.height();
+      var scale = parseFloat($item.attr('data-scale') || 1);
+      var itemW = $item.width() * scale, itemH = $item.height() * scale;
       var newX = Math.min(Math.max(zonePos.left, dragStart.itemX + dx), zonePos.left + zoneW - itemW);
       var newY = Math.min(Math.max(zonePos.top, dragStart.itemY + dy), zonePos.top + zoneH - itemH);
       $item.attr('data-x', newX).attr('data-y', newY);
