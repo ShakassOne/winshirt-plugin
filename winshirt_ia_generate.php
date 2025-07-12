@@ -135,7 +135,7 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
     ]);
     if ( $visual_id ) {
         set_post_thumbnail( $visual_id, $attach_id );
-        update_post_meta( $visual_id, '_winshirt_visual_type', 'IA' );
+        update_post_meta( $visual_id, '_winshirt_category', 'IA' );
         update_post_meta( $visual_id, '_winshirt_visual_validated', 'no' );
         update_post_meta( $visual_id, '_winshirt_ai_prompt', $prompt );
         update_user_meta( $user_id, '_winshirt_ai_count', $count + 1 );

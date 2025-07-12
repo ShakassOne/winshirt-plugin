@@ -64,7 +64,8 @@
                     </label>
                 </td>
                 <td>
-                    <select name="linked_lottery" form="winshirt-form-<?php echo esc_attr( $pid ); ?>">
+                    <button type="button" class="toggle-lottery button" data-target="lottery-<?php echo esc_attr( $pid ); ?>"><?php esc_html_e( 'Afficher les loteries', 'winshirt' ); ?></button>
+                    <select id="lottery-<?php echo esc_attr( $pid ); ?>" class="hidden" name="linked_lottery" form="winshirt-form-<?php echo esc_attr( $pid ); ?>">
                         <option value="">-</option>
                         <?php foreach ( $all_lotteries as $l ) : ?>
                             <option value="<?php echo esc_attr( $l->ID ); ?>" <?php selected( $lottery, $l->ID ); ?>><?php echo esc_html( $l->post_title ); ?></option>
@@ -86,3 +87,16 @@
     <?php endif; ?>
     </tbody>
 </table>
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.toggle-lottery').forEach(function(btn){
+        btn.addEventListener('click', function(){
+            var target = btn.getAttribute('data-target');
+            var select = document.getElementById(target);
+            if(select){
+                select.classList.toggle('hidden');
+            }
+        });
+    });
+});
+</script>

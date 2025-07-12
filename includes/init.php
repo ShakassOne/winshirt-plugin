@@ -317,7 +317,7 @@ function winshirt_render_customize_button() {
                 'id'       => $g->ID,
                 'title'    => $g->post_title,
                 'url'      => $url,
-                'category' => get_post_meta( $g->ID, '_winshirt_visual_type', true ),
+                'category' => get_post_meta( $g->ID, '_winshirt_category', true ),
             ];
         }
     }

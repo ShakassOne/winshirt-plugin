@@ -23,9 +23,7 @@ function winshirt_send_to_ftp($file_path) {
 }
 
 function winshirt_page_designs() {
-    $types   = ['Galerie', 'IA', 'Upload', 'SVG'];
     $filters = [
-        'type' => sanitize_text_field($_GET['type'] ?? ''),
         'date' => sanitize_text_field($_GET['date'] ?? ''),
     ];
 
@@ -64,7 +62,7 @@ function winshirt_page_designs() {
             ]);
             if ($post_id) {
                 set_post_thumbnail($post_id, $attachment_id);
-                update_post_meta($post_id, '_winshirt_visual_type', sanitize_text_field($_POST['type'] ?? ''));
+                update_post_meta($post_id, '_winshirt_category', sanitize_text_field($_POST['category'] ?? ''));
                 update_post_meta($post_id, '_winshirt_visual_validated', 'no');
                 $path = get_attached_file($attachment_id);
                 winshirt_send_to_ftp($path);
@@ -82,12 +80,7 @@ function winshirt_page_designs() {
         'order'       => 'DESC',
     ];
 
-    if ($filters['type']) {
-        $query['meta_query'][] = [
-            'key'   => '_winshirt_visual_type',
-            'value' => $filters['type'],
-        ];
-    }
+
 
     if ($filters['date']) {
         $query['date_query'][] = [
