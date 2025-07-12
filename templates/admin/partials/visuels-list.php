@@ -1,17 +1,11 @@
 <?php
 /**
  * Admin visual management interface.
- * Variables: $visuals, $filters, $types
+ * Variables: $visuals, $filters
  */
 ?>
 <form method="get" style="margin-bottom:15px;">
     <input type="hidden" name="page" value="winshirt-designs" />
-    <select name="type">
-        <option value=""><?php esc_html_e('Tous les types', 'winshirt'); ?></option>
-        <?php foreach ($types as $t) : ?>
-            <option value="<?php echo esc_attr($t); ?>" <?php selected($filters['type'], $t); ?>><?php echo esc_html($t); ?></option>
-        <?php endforeach; ?>
-    </select>
     <input type="date" name="date" value="<?php echo esc_attr($filters['date']); ?>" />
     <input type="submit" class="button" value="<?php esc_attr_e('Filtrer', 'winshirt'); ?>" />
 </form>
@@ -24,7 +18,7 @@
                 <th style="width:20px;"><input type="checkbox" id="select-all" /></th>
                 <th><?php esc_html_e('Miniature', 'winshirt'); ?></th>
                 <th><?php esc_html_e('Nom', 'winshirt'); ?></th>
-                <th><?php esc_html_e('Type', 'winshirt'); ?></th>
+                <th><?php esc_html_e('Catégorie', 'winshirt'); ?></th>
                 <th><?php esc_html_e('Date', 'winshirt'); ?></th>
                 <th><?php esc_html_e('Actions', 'winshirt'); ?></th>
             </tr>
@@ -32,14 +26,14 @@
         <tbody>
             <?php if ($visuals) : ?>
                 <?php foreach ($visuals as $visual) :
-                    $type = get_post_meta($visual->ID, '_winshirt_visual_type', true);
+                    $category = get_post_meta($visual->ID, '_winshirt_category', true);
                     $validated = get_post_meta($visual->ID, '_winshirt_visual_validated', true) === 'yes';
                 ?>
                 <tr>
                     <td><input type="checkbox" name="selected[]" value="<?php echo esc_attr($visual->ID); ?>" /></td>
                     <td><?php echo get_the_post_thumbnail($visual->ID, 'thumbnail'); ?></td>
                     <td><?php echo esc_html($visual->post_title); ?></td>
-                    <td><?php echo esc_html($type); ?></td>
+                    <td><?php echo esc_html($category); ?></td>
                     <td><?php echo esc_html(get_the_date('', $visual)); ?></td>
                     <td>
                         <?php if (!$validated) : ?>
@@ -78,12 +72,8 @@
             <td><input type="file" name="file" id="visual-file" required /></td>
         </tr>
         <tr>
-            <th scope="row"><label for="visual-type"><?php esc_html_e('Type', 'winshirt'); ?></label></th>
-            <td>
-                <select name="type" id="visual-type">
-                    <?php foreach ($types as $t) { echo '<option value="' . esc_attr($t) . '">' . esc_html($t) . '</option>'; } ?>
-                </select>
-            </td>
+            <th scope="row"><label for="visual-category"><?php esc_html_e('Catégorie', 'winshirt'); ?></label></th>
+            <td><input type="text" name="category" id="visual-category" /></td>
         </tr>
     </table>
     <p><input type="submit" class="button button-primary" value="<?php esc_attr_e('Uploader', 'winshirt'); ?>" /></p>

@@ -246,7 +246,7 @@ jQuery(function($){
   var aiImages = [];
   var cats = [];
   gallery.forEach(function(g){
-    var cat = g.category || g.type || '';
+    var cat = g.category || '';
     if(cat && cats.indexOf(cat) === -1) cats.push(cat);
     var $img = $('<img class="ws-gallery-thumb" />')
       .attr('src', g.url)
