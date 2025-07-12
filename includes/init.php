@@ -179,6 +179,17 @@ function winshirt_lotteries_shortcode() {
 }
 add_shortcode( 'winshirt_lotteries', 'winshirt_lotteries_shortcode' );
 
+/**
+ * Shortcode to display the customization button and modal.
+ * Usage: [winshirt_customizer]
+ */
+function winshirt_customizer_shortcode() {
+    ob_start();
+    winshirt_render_customize_button();
+    return ob_get_clean();
+}
+add_shortcode( 'winshirt_customizer', 'winshirt_customizer_shortcode' );
+
 // Register custom post type for lotteries
 add_action('init', function () {
     register_post_type('winshirt_lottery', [
@@ -210,6 +221,9 @@ add_action('admin_init', function () {
     register_setting('winshirt_options', 'winshirt_ia_output_format');
     register_setting('winshirt_options', 'winshirt_ia_generation_limit');
     register_setting('winshirt_options', 'winshirt_ia_image_folder');
+    // Register Supabase settings
+    register_setting('winshirt_options', 'winshirt_supabase_url');
+    register_setting('winshirt_options', 'winshirt_supabase_key');
 });
 
 // Enqueue assets on WinShirt admin pages

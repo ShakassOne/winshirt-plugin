@@ -18,6 +18,18 @@
         </tr>
     </table>
 
+    <h2>Paramètres Supabase</h2>
+    <table class="form-table">
+        <tr>
+            <th scope="row"><label for="winshirt-supabase-url">URL Supabase</label></th>
+            <td><input name="winshirt_supabase_url" id="winshirt-supabase-url" type="text" value="<?php echo esc_attr(get_option('winshirt_supabase_url')); ?>" class="regular-text" /></td>
+        </tr>
+        <tr>
+            <th scope="row"><label for="winshirt-supabase-key">Clé publique</label></th>
+            <td><input name="winshirt_supabase_key" id="winshirt-supabase-key" type="text" value="<?php echo esc_attr(get_option('winshirt_supabase_key')); ?>" class="regular-text" /></td>
+        </tr>
+    </table>
+
     <h2>Paramètres IA</h2>
     <table class="form-table">
         <tr>

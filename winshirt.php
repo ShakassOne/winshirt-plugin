@@ -11,15 +11,26 @@ defined('ABSPATH') || exit;
 define('WINSHIRT_PATH', plugin_dir_path(__FILE__));
 define('WINSHIRT_URL', plugin_dir_url(__FILE__));
 
-require_once WINSHIRT_PATH . 'includes/init.php';
-require_once WINSHIRT_PATH . 'includes/pages/mockups.php';
-require_once WINSHIRT_PATH . 'includes/pages/visuels.php';
-require_once WINSHIRT_PATH . 'includes/pages/produits.php';
-require_once WINSHIRT_PATH . 'includes/pages/loteries.php';
-require_once WINSHIRT_PATH . 'includes/pages/commandes.php';
-require_once WINSHIRT_PATH . 'includes/pages/configuration.php';
+/**
+ * Automatically load all PHP files from the given directory.
+ *
+ * @param string $dir Absolute path to directory.
+ */
+function winshirt_load_files( $dir ) {
+    foreach ( glob( trailingslashit( $dir ) . '*.php' ) as $file ) {
+        require_once $file;
+    }
+    foreach ( glob( trailingslashit( $dir ) . '*', GLOB_ONLYDIR ) as $sub ) {
+        winshirt_load_files( $sub );
+    }
+}
+
+winshirt_load_files( WINSHIRT_PATH . 'includes' );
+if ( is_dir( WINSHIRT_PATH . 'admin' ) ) {
+    winshirt_load_files( WINSHIRT_PATH . 'admin' );
+}
+
 require_once WINSHIRT_PATH . 'winshirt_ia_generate.php';
-require_once WINSHIRT_PATH . 'includes/rest.php';
 
 // Register uninstall hook
 register_uninstall_hook(__FILE__, 'winshirt_plugin_uninstall');
