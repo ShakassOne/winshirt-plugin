@@ -381,7 +381,8 @@ jQuery(function($){
     $zonesWrap.append($z);
     var $btn = $('<button class="ws-zone-btn" />')
       .text(z.name || ('Zone '+(idx+1)))
-      .attr('data-index', idx);
+      .attr('data-index', idx)
+      .attr('data-side', z.side || 'front');
     $zoneButtons.append($btn);
   });
   $zoneButtons.on('click', '.ws-zone-btn', function(){
@@ -390,6 +391,7 @@ jQuery(function($){
   var firstZone = zones.findIndex(function(z){ return z.side === state.side; });
   if(firstZone < 0) firstZone = 0;
   selectZone(firstZone);
+  updateZoneButtons();
   applyClip();
 
   function getContainment(){
@@ -425,6 +427,15 @@ jQuery(function($){
     $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
+  }
+
+  function updateZoneButtons(){
+    $zoneButtons.find('.ws-zone-btn').each(function(){
+      var idx = parseInt($(this).data('index'),10);
+      var side = zones[idx] && zones[idx].side ? zones[idx].side : 'front';
+      if(side === state.side){ $(this).show(); }
+      else { $(this).hide(); }
+    });
   }
 
   function updateFormatUIFromItem($it){
@@ -904,6 +915,7 @@ function openModal(){
     }
     var next = zones.findIndex(function(z){ return z.side === side; });
     if(next >= 0) selectZone(next);
+    updateZoneButtons();
     if(activeItem){ updateFormatUIFromItem(activeItem); }
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
