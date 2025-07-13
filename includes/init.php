@@ -403,6 +403,11 @@ function winshirt_render_lottery_selector() {
     }
 
     $pid      = $product->get_id();
+    $linked   = absint( get_post_meta( $pid, 'linked_lottery', true ) );
+    if ( $linked ) {
+        winshirt_render_lottery_info();
+        return;
+    }
     $tickets  = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
     if ( $tickets < 1 ) {
         return;
@@ -459,33 +464,45 @@ function winshirt_render_lottery_info() {
         return;
     }
 
-    $pid      = $product->get_id();
-    $lottery  = absint( get_post_meta( $pid, 'linked_lottery', true ) );
+    $pid     = $product->get_id();
+    $lottery = absint( get_post_meta( $pid, 'linked_lottery', true ) );
     if ( ! $lottery ) {
         return;
     }
 
-    $tickets   = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
-    $max       = absint( get_post_meta( $lottery, 'max_participants', true ) );
-    $count     = absint( get_post_meta( $lottery, 'participants_count', true ) );
-    $img_id    = get_post_meta( $lottery, '_winshirt_lottery_animation', true );
-    $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'thumbnail' ) : '';
-    $draw_date = get_post_meta( $lottery, '_winshirt_lottery_end', true );
-    $percent   = $max > 0 ? min( 100, ( $count / $max ) * 100 ) : 0;
+    $max      = absint( get_post_meta( $lottery, 'max_participants', true ) );
+    $count    = absint( get_post_meta( $lottery, 'participants_count', true ) );
+    $img_id   = get_post_meta( $lottery, '_winshirt_lottery_animation', true );
+    $img_url  = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+    $value    = get_post_meta( $lottery, '_winshirt_lottery_value', true );
+    $featured = get_post_meta( $lottery, '_winshirt_lottery_featured', true ) === 'yes';
+    $active   = get_post_meta( $lottery, '_winshirt_lottery_active', true ) === 'yes';
+    $percent  = $max > 0 ? min( 100, round( ( $count / $max ) * 100 ) ) : 0;
 
-    echo '<div class="lottery-card">';
+    echo '<div class="loteries-container">';
+    echo '<div class="loterie-card winshirt-theme-inherit">';
+    if ( $featured ) {
+        echo '<span class="loterie-badge">BEST</span>';
+    } elseif ( $active ) {
+        echo '<span class="loterie-badge">NOUVEAU</span>';
+    }
     if ( $img_url ) {
-        echo '<img src="' . esc_url( $img_url ) . '" alt="" />';
+        echo '<img class="loterie-img winshirt-theme-inherit" src="' . esc_url( $img_url ) . '" alt="" />';
     }
-    echo '<h3>' . esc_html( get_the_title( $lottery ) ) . '</h3>';
-    if ( $tickets ) {
-        echo '<p>🎟️ +' . esc_html( $tickets ) . ' tickets</p>';
+    echo '<div class="loterie-info winshirt-theme-inherit">';
+    echo '<span class="loterie-title">' . esc_html( get_the_title( $lottery ) ) . '</span>';
+    echo '<div class="loterie-meta">';
+    if ( $value ) {
+        echo '<span class="loterie-price">' . esc_html( $value ) . '€</span>';
     }
-    echo '<p>' . esc_html( $count . ' / ' . $max . ' participants' ) . '</p>';
-    echo '<div class="lottery-progress"><div class="lottery-progress-bar" data-progress="' . esc_attr( $percent ) . '" style="width:' . esc_attr( $percent ) . '%"></div></div>';
-    if ( $draw_date ) {
-        echo '<p style="margin-top:1rem;">📅 ' . esc_html__( 'Tirage le', 'winshirt' ) . ' ' . esc_html( $draw_date ) . '</p>';
-    }
+    echo '<span class="loterie-participants">' . esc_html( $count . ' / ' . $max . ' participants' ) . '</span>';
+    echo '</div>';
+    echo '<div class="loterie-bar-bg">';
+    echo '<div class="loterie-bar" style="width:' . esc_attr( $percent ) . '%"></div>';
+    echo '<div class="loterie-tooltip">' . esc_html( $percent ) . '% rempli (' . esc_html( $count ) . ' sur ' . esc_html( $max ) . ')</div>';
+    echo '</div>';
+    echo '</div>';
+    echo '</div>';
     echo '</div>';
 }
 
