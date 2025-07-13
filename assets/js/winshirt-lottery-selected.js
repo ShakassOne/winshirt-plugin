@@ -8,6 +8,9 @@ jQuery(function($){
   }
   var $container = $containers.first();
   var $selects   = $('.winshirt-lottery-select');
+  if(!$selects.length){
+    return; // nothing to manage if no selectors present
+  }
 
   function getSelectedLotteries(){
     var lots = [];
