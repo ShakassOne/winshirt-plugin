@@ -403,6 +403,11 @@ function winshirt_render_lottery_selector() {
     }
 
     $pid      = $product->get_id();
+    $linked   = absint( get_post_meta( $pid, 'linked_lottery', true ) );
+    if ( $linked ) {
+        winshirt_render_lottery_info();
+        return;
+    }
     $tickets  = absint( get_post_meta( $pid, 'loterie_tickets', true ) );
     if ( $tickets < 1 ) {
         return;
