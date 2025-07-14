@@ -169,13 +169,24 @@ jQuery(function($){
   function checkMobile(){
     if(window.innerWidth <= 768){
       $modal.addClass('ws-mobile winshirt-personnalisation-mobile');
+      updatePreviewHeight();
     } else {
       $modal.removeClass('ws-mobile winshirt-personnalisation-mobile');
       $modal.find('.ws-right').removeClass('show');
+      $modal.find('.ws-preview').css('max-height','');
     }
     if($zoneButtons.parent()[0] !== $modal.find('.ws-preview')[0]){
       $zoneButtons.appendTo($modal.find('.ws-preview'));
     }
+  }
+
+  function updatePreviewHeight(){
+    if(!$modal.hasClass('ws-mobile')) return;
+    var toolsH = $modal.find('.ws-tools').outerHeight() || 0;
+    var toggleH = $modal.find('.ws-toggle').outerHeight() || 0;
+    var offset = toolsH + toggleH + 32; // padding/margins
+    var max = window.innerHeight - offset;
+    $modal.find('.ws-preview').css('max-height', max + 'px');
   }
 
   function debugHiddenElements(){
@@ -503,6 +514,7 @@ jQuery(function($){
 
 function openModal(){
   checkMobile();
+  updatePreviewHeight();
   loadState();
   loadAiImages();
   renderAiGallery();
@@ -574,7 +586,10 @@ function openModal(){
   });
   $modal.on('click', function(e){ if($(e.target).is('.ws-modal')) closeModal(); });
   $(document).on('keyup', function(e){ if(e.key === 'Escape') closeModal(); });
-  $(window).on('resize', checkMobile);
+  $(window).on('resize', function(){
+    checkMobile();
+    updatePreviewHeight();
+  });
 
   $('.ws-tab-button').on('click', function(){
     openTab($(this).data('tab'));
