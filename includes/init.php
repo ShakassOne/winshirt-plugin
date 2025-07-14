@@ -23,6 +23,13 @@ add_action('wp_enqueue_scripts', function () {
     }
 });
 
+// Enqueue badge style on shop listings
+add_action('wp_enqueue_scripts', function () {
+    if (is_shop() || is_product_category() || is_product_tag()) {
+        wp_enqueue_style('winshirt-badge', WINSHIRT_URL . 'assets/css/winshirt-badge.css', [], '1.0');
+    }
+});
+
 
 // Enqueue assets when the lottery shortcode is present
 add_action('wp_enqueue_scripts', function(){
@@ -856,6 +863,18 @@ function winshirt_push_purchase_datalayer( $order_id ){
     echo '<script>window.dataLayer=window.dataLayer||[];dataLayer.push(' . wp_json_encode( $data ) . ');</script>';
 }
 add_action( 'woocommerce_thankyou', 'winshirt_push_purchase_datalayer' );
+
+// Display "Personnalisable" badge on product thumbnails in shop
+function winshirt_shop_customizable_badge() {
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+    if ( get_post_meta( $product->get_id(), '_winshirt_enabled', true ) === 'yes' ) {
+        echo '<span class="ws-customizable-badge">' . esc_html__( 'Personnalisable', 'winshirt' ) . '</span>';
+    }
+}
+add_action( 'woocommerce_before_shop_loop_item_title', 'winshirt_shop_customizable_badge', 5 );
 
 // ----- Account section for saved customizations -----
 add_action( 'init', 'winshirt_account_endpoint' );
