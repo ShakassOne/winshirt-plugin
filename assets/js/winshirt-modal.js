@@ -302,6 +302,8 @@ jQuery(function($){
   });
 
   $gallery.on('click', '.ws-gallery-thumb', function(){
+    $gallery.find('.ws-gallery-thumb').removeClass('selected');
+    $(this).addClass('selected');
     addItem('image', $(this).attr('src'));
   });
 
@@ -950,6 +952,13 @@ function openModal(){
     captureAllSides();
     if(window.dataLayer){ dataLayer.push({event:'customize_completed', product_id:$modal.data('product-id')}); }
     closeModal();
+  });
+
+  // Test capture sans fermer la modale
+  $('#btn-test-capture').on('click', function(){
+    captureAllSides().then(function(){
+      alert('Capture enregistrée');
+    });
   });
 
   switchSide('front');

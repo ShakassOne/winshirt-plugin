@@ -20,19 +20,6 @@
         <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit" aria-label="Recto">Recto</button>
         <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit" aria-label="Verso">Verso</button>
       </div>
-      <div class="ws-context-actions ws-section winshirt-theme-inherit">
-        <button id="ws-remove-bg" class="ws-remove-bg winshirt-theme-inherit hidden" type="button" title="Supprimer le fond" aria-label="Supprimer le fond">🧼 Supprimer le fond</button>
-        <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button" title="Supprimer l'élément" aria-label="Supprimer l'élément">🗑️ Supprimer</button>
-        <label class="ws-format-label">📐
-          <select id="ws-format-select" class="ws-format-select winshirt-theme-inherit">
-            <option value="A3">A3</option>
-            <option value="A4">A4</option>
-            <option value="A5">A5</option>
-            <option value="A6">A6</option>
-            <option value="A7">A7</option>
-          </select>
-        </label>
-      </div>
     </div>
 
     <div class="ws-right winshirt-theme-inherit">
@@ -127,6 +114,19 @@
         <label class="ws-color-field winshirt-theme-inherit">🎨 <?php esc_html_e( 'Couleur', 'winshirt' ); ?>
           <input type="color" id="ws-prop-color" class="winshirt-theme-inherit" value="#000000">
         </label>
+        <div class="ws-context-actions winshirt-theme-inherit">
+          <button id="ws-remove-bg" class="ws-remove-bg winshirt-theme-inherit hidden" type="button" title="Supprimer le fond" aria-label="Supprimer le fond">🧼 Supprimer le fond</button>
+          <button id="ws-prop-delete" class="ws-delete winshirt-theme-inherit" type="button" title="Supprimer l'élément" aria-label="Supprimer l'élément">🗑️ Supprimer</button>
+          <label class="ws-format-label">📐
+            <select id="ws-format-select" class="ws-format-select winshirt-theme-inherit">
+              <option value="A3">A3</option>
+              <option value="A4">A4</option>
+              <option value="A5">A5</option>
+              <option value="A6">A6</option>
+              <option value="A7">A7</option>
+            </select>
+          </label>
+        </div>
       </div>
 
       <div class="ws-colors winshirt-theme-inherit"></div>
@@ -138,6 +138,7 @@
         <div class="ws-actions ws-section winshirt-theme-inherit">
           <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
           <button id="btn-valider-personnalisation" class="ws-validate winshirt-theme-inherit" aria-label="Valider la personnalisation">Valider la personnalisation</button>
+          <button id="btn-test-capture" class="ws-validate winshirt-theme-inherit" aria-label="Test capture">Test Capture</button>
         </div>
 
     </div>
