@@ -111,8 +111,10 @@
 
 .loterie-badge {
   position: absolute;
-  top: 12px; left: 18px;
-  background: rgba(60,110,230,0.15);
+  transform: rotate(13deg);
+  top: 10px;
+  right: 0px;
+  background: rgba(60, 110, 230, 0.15);
   color: #376af2;
   padding: 3px 14px;
   font-size: 0.89rem;
@@ -121,7 +123,7 @@
   letter-spacing: 0.1em;
   pointer-events: none;
   z-index: 2;
-  box-shadow: 0 2px 7px rgba(100,120,220,0.10);
+  box-shadow: 0 2px 7px rgba(100, 120, 220, 0.10);
   backdrop-filter: blur(2px);
 }
 
@@ -169,7 +171,7 @@
   .loterie-img { width: 52px; height: 52px; border-radius: 1.1rem; }
   .loterie-info { margin-left: 11px; }
   .loterie-title { font-size: 1.04rem; }
-  .loterie-badge { left: 10px; top: 8px; font-size: 0.75rem; }
+  .loterie-badge { right: 0px; top: 8px; font-size: 0.75rem; }
   .loterie-remove { top: 6px; right: 6px; width: 22px; height: 22px; font-size: 1.02rem; }
 }
 
