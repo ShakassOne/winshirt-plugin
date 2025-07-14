@@ -837,3 +837,23 @@
   position:sticky;
   bottom:0;
 }
+
+/* Mobile preview layout */
+.ws-mobile .ws-left {
+  position:relative;
+  top:auto;
+  height:auto;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.ws-mobile .ws-preview {
+  margin-top:0;
+  width:100%;
+  max-height:calc(100dvh - 150px);
+}
+.ws-mobile .ws-toggle {
+  justify-content:center;
+  gap:1rem;
+  margin-top:.5rem;
+}
