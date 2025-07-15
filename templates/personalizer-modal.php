@@ -101,6 +101,9 @@
       <button class="ws-accordion-header winshirt-theme-inherit" data-tab="svg" aria-label="SVG">✒️ SVG</button>
       <div class="ws-tab-content ws-section hidden" id="ws-tab-svg">
         <p>Bibliothèque d’icônes vectorielles (SVG).</p>
+        <button id="ws-svg-upload-trigger" class="ws-upload-btn winshirt-theme-inherit" aria-label="Uploader un SVG">Uploader un SVG</button>
+        <input type="file" id="ws-svg-upload-input" accept=".svg" class="hidden winshirt-theme-inherit" />
+        <input type="color" id="ws-svg-color-picker" class="winshirt-theme-inherit" value="#000000" style="margin-top:.5rem;" />
       </div>
 
 
