@@ -348,6 +348,26 @@ function winshirt_render_customize_button() {
         }
     }
     $ws_gallery = wp_json_encode( $gallery );
+
+    // Retrieve AI generated visuals from all users
+    $ai_posts = get_posts([
+        'post_type'   => 'winshirt_visual',
+        'numberposts' => -1,
+        'orderby'     => 'date',
+        'order'       => 'DESC',
+        'meta_query'  => [
+            [ 'key' => '_winshirt_category', 'value' => 'IA' ],
+        ],
+    ]);
+    $ai_gallery = [];
+    foreach ( $ai_posts as $a ) {
+        $url = get_the_post_thumbnail_url( $a->ID, 'full' );
+        if ( $url ) {
+            $ai_gallery[] = $url;
+        }
+    }
+    $ws_ai_gallery = wp_json_encode( $ai_gallery );
+
     include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 }
 // Affiche le bouton juste sous le prix, avant les billets de loterie

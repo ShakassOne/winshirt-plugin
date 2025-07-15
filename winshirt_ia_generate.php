@@ -148,6 +148,7 @@ add_action( 'rest_api_init', function() {
     register_rest_route( 'winshirt/v1', '/generate-image', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_generate_image',
-        'permission_callback' => function(){ return is_user_logged_in(); },
+        // Allow generation even for non logged-in visitors
+        'permission_callback' => '__return_true',
     ] );
 } );
