@@ -61,19 +61,26 @@ jQuery(function($){
   var formatOrder = ['A3','A4','A5','A6','A7'];
   var activeItem = null;
   var activeTab  = 'gallery';
-  function saveAiImages(){ localStorage.setItem('ws_ai_images', JSON.stringify(aiImages)); }
+  function saveAiImages(){
+    var local = aiImages.filter(function(u){ return serverAiGallery.indexOf(u) === -1; });
+    localStorage.setItem('ws_ai_images', JSON.stringify(local));
+  }
   function loadAiImages(){
-    try{ aiImages = JSON.parse(localStorage.getItem('ws_ai_images')) || []; }
-    catch(e){ aiImages = []; }
+    var stored = [];
+    try{ stored = JSON.parse(localStorage.getItem('ws_ai_images')) || []; }
+    catch(e){ stored = []; }
+    aiImages = serverAiGallery.concat(stored.filter(function(u){ return serverAiGallery.indexOf(u) === -1; }));
   }
   function renderAiGallery(){
     $aiGallery.empty();
-    aiImages.forEach(function(url,idx){
+    aiImages.forEach(function(url){
       var $w = $('<div class="ws-ai-thumb-wrap" />');
       var $img = $('<img class="ws-ai-thumb ws-gallery-thumb" />').attr('src',url);
-      var $del = $('<span class="ws-ai-del">🗑️</span>');
       var $lab = $('<span class="ws-ai-label">IA</span>');
-      $w.append($img,$del,$lab);
+      $w.append($img,$lab);
+      if(serverAiGallery.indexOf(url) === -1){
+        $w.append('<span class="ws-ai-del">🗑️</span>');
+      }
       $aiGallery.append($w);
     });
   }
@@ -283,6 +290,7 @@ jQuery(function($){
   var $gallery = $modal.find('.ws-gallery');
   var $cats   = $modal.find('.ws-gallery-cats');
   var $aiGallery = $('#ws-ai-gallery');
+  var serverAiGallery = $modal.data('ai-gallery') || [];
   var aiImages = [];
   var cats = [];
   gallery.forEach(function(g){
@@ -329,8 +337,8 @@ jQuery(function($){
   });
   $aiGallery.on('click', '.ws-ai-del', function(e){
     e.stopPropagation();
-    var idx = $(this).parent().index();
-    aiImages.splice(idx,1);
+    var url = $(this).siblings('img').attr('src');
+    aiImages = aiImages.filter(function(u){ return u !== url; });
     saveAiImages();
     renderAiGallery();
   });
@@ -354,7 +362,9 @@ jQuery(function($){
     }).then(function(r){return r.json();}).then(function(data){
       $('#ws-ai-loading').hide();
       if(data && data.imageUrl){
-        aiImages.unshift(data.imageUrl);
+        if(aiImages.indexOf(data.imageUrl) === -1){
+          aiImages.unshift(data.imageUrl);
+        }
         saveAiImages();
         localStorage.setItem('ws_ai_count', count+1);
         renderAiGallery();
