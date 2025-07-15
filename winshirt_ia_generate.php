@@ -134,7 +134,9 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
         'post_status' => 'publish',
     ]);
     if ( $visual_id ) {
-        set_post_thumbnail( $visual_id, $attach_id );
+        // Bypass capability checks when assigning thumbnail
+        update_post_meta( $visual_id, '_thumbnail_id', $attach_id );
+        wp_update_post( [ 'ID' => $attach_id, 'post_parent' => $visual_id ] );
         update_post_meta( $visual_id, '_winshirt_category', 'IA' );
         update_post_meta( $visual_id, '_winshirt_visual_validated', 'no' );
         update_post_meta( $visual_id, '_winshirt_ai_prompt', $prompt );
@@ -148,6 +150,7 @@ add_action( 'rest_api_init', function() {
     register_rest_route( 'winshirt/v1', '/generate-image', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_generate_image',
-        'permission_callback' => function(){ return is_user_logged_in(); },
+        // Allow generation even for non logged-in visitors
+        'permission_callback' => '__return_true',
     ] );
 } );

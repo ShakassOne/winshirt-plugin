@@ -4,6 +4,7 @@
   data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>'
   data-zones='<?php echo esc_attr( $ws_zones ?? '[]' ); ?>'
   data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'
+  data-ai-gallery='<?php echo esc_attr( $ws_ai_gallery ?? '[]' ); ?>'
   data-product-id="<?php echo esc_attr( $pid ); ?>">
   
   <div class="ws-modal-content winshirt-theme-inherit">
