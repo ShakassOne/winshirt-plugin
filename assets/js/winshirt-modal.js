@@ -182,8 +182,8 @@ jQuery(function($){
       $modal.find('.ws-right').removeClass('show');
       $modal.find('.ws-preview').css('max-height','');
     }
-    if($zoneButtons.parent()[0] !== $modal.find('.ws-preview')[0]){
-      $zoneButtons.appendTo($modal.find('.ws-preview'));
+    if($zoneButtons.parent()[0] === $modal.find('.ws-preview')[0]){
+      $zoneButtons.insertAfter($modal.find('.ws-preview'));
     }
   }
 
