@@ -239,7 +239,11 @@ jQuery(function($){
         color: $it.attr('data-color') || null,
         width: ($it.width() / $canvas.width()).toFixed(4),
         height: ($it.height() / $canvas.height()).toFixed(4),
-        content: $it.data('type')==='text' ? $it.find('.ws-text').text() : $it.find('img').attr('src')
+        content: (function(){
+          if($it.data('type')==='text') return $it.find('.ws-text').text();
+          if($it.data('type')==='svg') return $it.find('svg')[0].outerHTML;
+          return $it.find('img').attr('src');
+        })()
       });
     });
     var data = {
@@ -280,7 +284,15 @@ jQuery(function($){
           left:0,
           top:0
         });
-        if(it.color){ $new.attr('data-color', it.color); $new.find('.ws-text').css('color', it.color); }
+        if(it.color){
+          $new.attr('data-color', it.color);
+          if(it.type === 'text'){
+            $new.find('.ws-text').css('color', it.color);
+          } else if(it.type === 'svg'){
+            $new.find('svg').css('color', it.color);
+            $new.find('svg path, svg circle, svg rect, svg polygon, svg polyline, svg ellipse').attr('fill', it.color);
+          }
+        }
         updateItemTransform($new);
       });
     }
@@ -630,6 +642,28 @@ function openModal(){
     $(this).val('');
   });
 
+  $('#ws-svg-upload-trigger').on('click', function(e){
+    e.preventDefault();
+    $('#ws-svg-upload-input').trigger('click');
+  });
+  $('#ws-svg-upload-input').on('change', function(){
+    var file = this.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e){ addSvgItem(e.target.result); };
+    reader.readAsText(file);
+    $(this).val('');
+  });
+  $('#ws-svg-color-picker').on('input change', function(){
+    if(activeItem && activeItem.data('type')==='svg'){
+      activeItem.attr('data-color', $(this).val());
+      activeItem.find('svg').css('color', $(this).val());
+      activeItem.find('svg path, svg circle, svg rect, svg polygon, svg polyline, svg ellipse').attr('fill', $(this).val());
+      $colorInput.val($(this).val());
+      saveState();
+    }
+  });
+
   var typingItem = null;
   $('#ws-text-content').on('input', function(){
     var txt = $(this).val();
@@ -690,6 +724,12 @@ function openModal(){
 
     if(type === 'image'){
       $item.append('<img src="'+content+'" alt="" style="width:100%;height:100%;pointer-events:none;"/>');
+    } else if(type === 'svg'){
+      $item.append('<div class="ws-svg-wrap">'+content+'</div>');
+      var col = $('#ws-svg-color-picker').val() || '#000000';
+      $item.attr('data-color', col);
+      $item.find('svg').css('color', col);
+      $item.find('svg path, svg circle, svg rect, svg polygon, svg polyline, svg ellipse').attr('fill', col);
     } else {
       $item.append('<span class="ws-text">'+content+'</span>');
       var col = $('#ws-color-picker').val() || '#000000';
@@ -798,9 +838,29 @@ function openModal(){
       $item.addClass('ws-selected');
     });
 
-    updateItemTransform($item);
-    saveState();
-    return $item;
+  updateItemTransform($item);
+  saveState();
+  return $item;
+  }
+
+  function sanitizeSvg(text){
+    text = text.replace(/<rect[^>]+fill="(white|#fff|#ffffff)"[^>]*>.*?<\/rect>/ig,'');
+    text = text.replace(/style="[^"]*fill[^"]*"/ig,'');
+    text = text.replace(/<path[^>]+>/ig,function(t){
+      t = t.replace(/fill="[^"]*"/ig,'');
+      return t.replace(/<path/,'<path fill="currentColor"');
+    });
+    if(!/viewBox=/i.test(text)){
+      var w=text.match(/width="(\d+)/i); var h=text.match(/height="(\d+)/i);
+      if(w&&h){ text=text.replace(/<svg/i,'<svg viewBox="0 0 '+w[1]+' '+h[1]+'"'); }
+    }
+    return text;
+  }
+
+  function addSvgItem(text){
+    var clean = sanitizeSvg(text);
+    var $it = addItem('svg', clean);
+    selectItem($it);
   }
 
   $(document).on('click', '.ws-remove', function(e){
@@ -823,8 +883,10 @@ function openModal(){
       activeItem.addClass('ws-selected');
       $scaleInput.val(activeItem.attr('data-scale') || 1);
       $rotateInput.val(activeItem.attr('data-rotation') || 0);
-      if(activeItem.data('type') === 'text'){
-        $colorInput.val(activeItem.attr('data-color') || '#000000');
+      if(activeItem.data('type') === 'text' || activeItem.data('type') === 'svg'){
+        var col = activeItem.attr('data-color') || '#000000';
+        $colorInput.val(col);
+        if(activeItem.data('type') === 'svg'){ $('#ws-svg-color-picker').val(col); }
         $colorInput.closest('label').show();
         $removeBgBtn.addClass('hidden');
       } else {
@@ -863,9 +925,18 @@ function openModal(){
     saveState();
   });
   $colorInput.on('input change', function(){
-    if(!activeItem || activeItem.data('type')!=='text') return;
-    activeItem.attr('data-color', $(this).val());
-    activeItem.find('.ws-text').css('color', $(this).val());
+    if(!activeItem) return;
+    if(activeItem.data('type')==='text'){
+      activeItem.attr('data-color', $(this).val());
+      activeItem.find('.ws-text').css('color', $(this).val());
+    } else if(activeItem.data('type')==='svg'){
+      activeItem.attr('data-color', $(this).val());
+      activeItem.find('svg').css('color', $(this).val());
+      activeItem.find('svg path, svg circle, svg rect, svg polygon, svg polyline, svg ellipse').attr('fill', $(this).val());
+      $('#ws-svg-color-picker').val($(this).val());
+    } else {
+      return;
+    }
     saveState();
   });
   $deleteBtn.on('click', function(){
