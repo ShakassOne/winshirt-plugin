@@ -17,6 +17,8 @@ L'onglet "Visuels" permet d'importer ou supprimer des images. Les visuels peuven
 ## Personnalisation de produits
 Un bouton "Personnaliser ce produit" ouvre un modale sur la fiche produit pour choisir un design, saisir du texte ou importer une image. Les sélections sont temporairement sauvegardées via localStorage et sont automatiquement restaurées lors de la réouverture du modale.
 L'onglet IA comporte maintenant une galerie listant les visuels générés par l'ensemble des visiteurs.
+La génération d'images par IA est également ouverte aux utilisateurs non connectés.
+
 
 ## Gestion des loteries
 Une page "Loteries" permet de créer et d'administrer les tirages. Chaque loterie peut être liée à un produit WooCommerce, disposer de dates de début/fin, de lots à gagner et d'une animation personnalisée. Les participants enregistrés et leur nombre sont visibles depuis cette interface.
