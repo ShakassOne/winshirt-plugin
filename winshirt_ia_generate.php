@@ -44,7 +44,8 @@ function winshirt_ia_generate() {
     $path = $dir . $filename;
 
     $img = imagecreatetruecolor(512, 512);
-    $bg  = imagecolorallocate($img, 240, 240, 240);
+    // use a light beige background for easier removal
+    $bg  = imagecolorallocate($img, 240, 228, 206); // #F0E4CE
     imagefilledrectangle($img, 0, 0, 512, 512, $bg);
     $text = wordwrap($prompt, 20, "\n");
     $color = imagecolorallocate($img, 0, 0, 0);
@@ -69,6 +70,9 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
     if ( ! $prompt ) {
         return new WP_REST_Response( [ 'message' => 'missing_prompt' ], 400 );
     }
+
+    // Force a plain background so background removal works reliably
+    $prompt .= ' with a plain solid background color #F0E4CE';
 
     $user_id = get_current_user_id();
     $limit   = intval( get_option( 'winshirt_ia_generation_limit', 3 ) );
@@ -134,7 +138,9 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
         'post_status' => 'publish',
     ]);
     if ( $visual_id ) {
-        set_post_thumbnail( $visual_id, $attach_id );
+        // Bypass capability checks when assigning thumbnail
+        update_post_meta( $visual_id, '_thumbnail_id', $attach_id );
+        wp_update_post( [ 'ID' => $attach_id, 'post_parent' => $visual_id ] );
         update_post_meta( $visual_id, '_winshirt_category', 'IA' );
         update_post_meta( $visual_id, '_winshirt_visual_validated', 'no' );
         update_post_meta( $visual_id, '_winshirt_ai_prompt', $prompt );
@@ -148,6 +154,7 @@ add_action( 'rest_api_init', function() {
     register_rest_route( 'winshirt/v1', '/generate-image', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_generate_image',
-        'permission_callback' => function(){ return is_user_logged_in(); },
+        // Allow generation even for non logged-in visitors
+        'permission_callback' => '__return_true',
     ] );
 } );
