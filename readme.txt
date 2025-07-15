@@ -19,6 +19,7 @@ Un bouton "Personnaliser ce produit" ouvre un modale sur la fiche produit pour c
 L'onglet IA comporte maintenant une galerie listant les visuels générés par l'ensemble des visiteurs.
 La génération d'images par IA est également ouverte aux utilisateurs non connectés.
 
+Les images produites utilisent automatiquement un fond uni beige (#F0E4CE) pour simplifier la suppression d'arrière-plan.
 
 ## Gestion des loteries
 Une page "Loteries" permet de créer et d'administrer les tirages. Chaque loterie peut être liée à un produit WooCommerce, disposer de dates de début/fin, de lots à gagner et d'une animation personnalisée. Les participants enregistrés et leur nombre sont visibles depuis cette interface.

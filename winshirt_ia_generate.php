@@ -44,7 +44,8 @@ function winshirt_ia_generate() {
     $path = $dir . $filename;
 
     $img = imagecreatetruecolor(512, 512);
-    $bg  = imagecolorallocate($img, 240, 240, 240);
+    // use a light beige background for easier removal
+    $bg  = imagecolorallocate($img, 240, 228, 206); // #F0E4CE
     imagefilledrectangle($img, 0, 0, 512, 512, $bg);
     $text = wordwrap($prompt, 20, "\n");
     $color = imagecolorallocate($img, 0, 0, 0);
@@ -69,6 +70,9 @@ function winshirt_rest_generate_image( WP_REST_Request $request ) {
     if ( ! $prompt ) {
         return new WP_REST_Response( [ 'message' => 'missing_prompt' ], 400 );
     }
+
+    // Force a plain background so background removal works reliably
+    $prompt .= ' with a plain solid background color #F0E4CE';
 
     $user_id = get_current_user_id();
     $limit   = intval( get_option( 'winshirt_ia_generation_limit', 3 ) );
