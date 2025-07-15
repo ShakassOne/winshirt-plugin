@@ -10,17 +10,17 @@
   <div class="ws-modal-content winshirt-theme-inherit">
 
     <div class="ws-left winshirt-theme-inherit">
+      <div class="ws-toggle winshirt-theme-inherit" style="margin-bottom:.5rem;">
+        <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit" aria-label="Recto">Recto</button>
+        <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit" aria-label="Verso">Verso</button>
+      </div>
       <div class="ws-preview mockup-fixed ws-section winshirt-theme-inherit">
         <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
         <div class="ws-color-overlay winshirt-theme-inherit"></div>
         <div id="ws-canvas" class="ws-canvas"></div>
         <div id="ws-print-zones"></div>
-        <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
       </div>
-      <div class="ws-toggle winshirt-theme-inherit" style="margin-top:.5rem;">
-        <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit" aria-label="Recto">Recto</button>
-        <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit" aria-label="Verso">Verso</button>
-      </div>
+      <div id="ws-zone-buttons" class="ws-zone-buttons winshirt-theme-inherit"></div>
     </div>
 
     <div class="ws-right winshirt-theme-inherit">
