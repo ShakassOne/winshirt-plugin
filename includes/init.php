@@ -3,7 +3,12 @@
 
 // Enqueue assets on product pages
 add_action('wp_enqueue_scripts', function () {
-    if (is_product()) {
+    global $post;
+    $needs_assets = is_product();
+    if ( ! $needs_assets && isset( $post->post_content ) ) {
+        $needs_assets = has_shortcode( $post->post_content, 'product_page' );
+    }
+    if ( $needs_assets ) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
         wp_enqueue_style('winshirt-theme', WINSHIRT_URL . 'assets/css/winshirt-theme.css', [], '1.0');
