@@ -293,7 +293,7 @@ function winshirt_render_customize_button() {
 
     // Retrieve print zones for front/back sides
     $zones      = [];
-    foreach ( [ $front_id, $back_id ] as $mid ) {
+    foreach ( array_unique( array_filter( [ $front_id, $back_id ] ) ) as $mid ) {
         if ( ! $mid ) {
             continue;
         }
@@ -304,6 +304,7 @@ function winshirt_render_customize_button() {
                     'side'   => $z['side'] ?? 'front',
                     'name'   => $z['name'] ?? '',
                     'format' => $z['format'] ?? 'A4',
+                    'price'  => floatval( $z['price'] ?? 0 ),
                     'top'    => floatval( $z['top'] ?? 0 ),
                     'left'   => floatval( $z['left'] ?? 0 ),
                     'width'  => floatval( $z['width'] ?? 0 ),
@@ -784,6 +785,7 @@ function winshirt_cart_hidden_fields(){
     echo '<input type="hidden" name="winshirt_production_image" id="winshirt-production-image-field" />';
     echo '<input type="hidden" name="winshirt_front_image" id="winshirt-front-image-field" />';
     echo '<input type="hidden" name="winshirt_back_image" id="winshirt-back-image-field" />';
+    echo '<input type="hidden" name="winshirt_extra_price" id="winshirt-extra-price-field" />';
 }
 add_action('woocommerce_before_add_to_cart_button','winshirt_cart_hidden_fields');
 
@@ -802,6 +804,9 @@ function winshirt_add_cart_item_custom( $cart_item_data, $product_id ){
     }
     if( isset( $_POST['winshirt_back_image'] ) ){
         $cart_item_data['winshirt_back_image'] = esc_url_raw( $_POST['winshirt_back_image'] );
+    }
+    if( isset( $_POST['winshirt_extra_price'] ) ){
+        $cart_item_data['winshirt_extra_price'] = floatval( $_POST['winshirt_extra_price'] );
     }
     return $cart_item_data;
 }
@@ -865,8 +870,33 @@ function winshirt_save_order_item_custom( $item, $cart_item_key, $values, $order
         $item->add_meta_data( 'winshirt_back_hd', $url );
         $item->add_meta_data( 'winshirt_back_preview', $url );
     }
+
+    if ( ! empty( $values['winshirt_extra_price'] ) ) {
+        $item->add_meta_data( 'winshirt_extra_price', floatval( $values['winshirt_extra_price'] ) );
+    }
 }
 add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_order_item_custom', 20, 4 );
+
+/**
+ * Apply extra price from customization zones to cart items.
+ */
+function winshirt_apply_extra_price( $cart ) {
+    if ( is_admin() && ! defined( 'DOING_AJAX' ) ) {
+        return;
+    }
+    if ( did_action( 'winshirt_apply_extra_price' ) ) {
+        return;
+    }
+    foreach ( $cart->get_cart() as $cart_item_key => $cart_item ) {
+        if ( ! empty( $cart_item['winshirt_extra_price'] ) ) {
+            $extra = floatval( $cart_item['winshirt_extra_price'] );
+            $price = $cart_item['data']->get_price();
+            $cart_item['data']->set_price( $price + $extra );
+        }
+    }
+    do_action( 'winshirt_apply_extra_price' );
+}
+add_action( 'woocommerce_before_calculate_totals', 'winshirt_apply_extra_price', 20, 1 );
 
 /**
  * Push purchase event to Google DataLayer on thank you page.
