@@ -59,6 +59,10 @@ jQuery(function($){
     if(front){ $imgs.append('<img src="'+front+'" alt="Recto" class="ws-custom-img" />'); }
     if(back){ $imgs.append('<img src="'+back+'" alt="Verso" class="ws-custom-img" />'); }
   }
+
+  $(document).on('click', '#ws-custom-preview img', function(){
+    window.open($(this).attr('src'), '_blank');
+  });
   var $prodLocal = $('#winshirt-production-image');
   var $frontLocal = $('#winshirt-front-image');
   var $backLocal = $('#winshirt-back-image');
@@ -286,6 +290,7 @@ jQuery(function($){
     };
     localStorage.setItem('winshirt_custom', JSON.stringify(data));
     uploadMockup();
+    updateDisplayedPrice();
   }
 
   function loadState(){
