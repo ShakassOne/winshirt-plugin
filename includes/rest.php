@@ -5,9 +5,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
  * Handle upload of production image captured client side.
  */
 function winshirt_rest_upload_production_image( WP_REST_Request $request ) {
-    if ( ! is_user_logged_in() ) {
-        return new WP_REST_Response( [ 'message' => 'forbidden' ], 403 );
-    }
     $nonce = $request->get_header( 'X-WP-Nonce' );
     if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
         return new WP_REST_Response( [ 'message' => 'invalid_nonce' ], 403 );
@@ -44,9 +41,6 @@ function winshirt_rest_upload_production_image( WP_REST_Request $request ) {
  * Upload temporary preview mockup and return URLs of HD and low resolution images.
  */
 function winshirt_rest_upload_mockup( WP_REST_Request $request ) {
-    if ( ! is_user_logged_in() ) {
-        return new WP_REST_Response( [ 'message' => 'forbidden' ], 403 );
-    }
     $nonce = $request->get_header( 'X-WP-Nonce' );
     if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
         return new WP_REST_Response( [ 'message' => 'invalid_nonce' ], 403 );
@@ -93,9 +87,6 @@ function winshirt_rest_upload_mockup( WP_REST_Request $request ) {
  * Upload temporary custom side image (front/back).
  */
 function winshirt_rest_upload_custom_side( WP_REST_Request $request ) {
-    if ( ! is_user_logged_in() ) {
-        return new WP_REST_Response( [ 'message' => 'forbidden' ], 403 );
-    }
     $nonce = $request->get_header( 'X-WP-Nonce' );
     if ( ! wp_verify_nonce( $nonce, 'wp_rest' ) ) {
         return new WP_REST_Response( [ 'message' => 'invalid_nonce' ], 403 );
@@ -137,18 +128,18 @@ add_action( 'rest_api_init', function() {
     register_rest_route( 'winshirt/v1', '/upload-production-image', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_upload_production_image',
-        'permission_callback' => function(){ return is_user_logged_in(); },
+        'permission_callback' => '__return_true',
     ] );
 
     register_rest_route( 'winshirt/v1', '/upload-mockup', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_upload_mockup',
-        'permission_callback' => function(){ return is_user_logged_in(); },
+        'permission_callback' => '__return_true',
     ] );
 
     register_rest_route( 'winshirt/v1', '/upload-custom-side', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_upload_custom_side',
-        'permission_callback' => function(){ return is_user_logged_in(); },
+        'permission_callback' => '__return_true',
     ] );
 });
