@@ -36,3 +36,19 @@
 .winshirt-personnaliser-btn {
   margin-top: 15px;
 }
+
+#ws-custom-preview {
+  margin-top: 1rem;
+  text-align: center;
+}
+#ws-custom-preview .ws-custom-images {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-top: .5rem;
+}
+#ws-custom-preview img {
+  max-width: 45%;
+  height: auto;
+  border: 1px solid #ddd;
+}
