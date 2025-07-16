@@ -51,4 +51,13 @@
   max-width: 45%;
   height: auto;
   border: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.winshirt-cart-custom img,
+.winshirt-order-preview img {
+  max-width: 60px;
+  height: auto;
+  border: 1px solid #ddd;
+  margin-right: 0.25rem;
 }

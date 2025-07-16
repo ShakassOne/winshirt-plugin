@@ -585,6 +585,23 @@ function winshirt_display_cart_item_data( $item_data, $cart_item ) {
 }
 add_filter( 'woocommerce_get_item_data', 'winshirt_display_cart_item_data', 10, 2 );
 
+function winshirt_cart_item_preview( $name, $cart_item, $cart_item_key ) {
+    $front = $cart_item['winshirt_front_image'] ?? '';
+    $back  = $cart_item['winshirt_back_image'] ?? '';
+    if ( $front || $back ) {
+        $html = '';
+        if ( $front ) {
+            $html .= '<img src="' . esc_url( $front ) . '" alt="front" />';
+        }
+        if ( $back ) {
+            $html .= '<img src="' . esc_url( $back ) . '" alt="back" />';
+        }
+        $name .= '<div class="winshirt-cart-custom">' . $html . '</div>';
+    }
+    return $name;
+}
+add_filter( 'woocommerce_cart_item_name', 'winshirt_cart_item_preview', 10, 3 );
+
 function winshirt_save_lottery_order_item_meta( $item, $cart_item_key, $values, $order ) {
     if ( ! empty( $values['winshirt_lotteries'] ) ) {
         $item->update_meta_data( '_winshirt_lotteries', $values['winshirt_lotteries'] );
@@ -685,6 +702,28 @@ function winshirt_increment_lottery_participants( $order_id ) {
 
 // Display related lottery info under each product line in emails and thankyou page
 add_filter( 'woocommerce_order_item_meta_end', 'winshirt_display_lottery_in_email', 10, 4 );
+
+function winshirt_order_item_preview( $item_id, $item, $order, $plain_text ) {
+    $front = $item->get_meta( 'winshirt_front_preview' );
+    $back  = $item->get_meta( 'winshirt_back_preview' );
+    if ( ! $front && ! $back ) {
+        return;
+    }
+    if ( $plain_text ) {
+        if ( $front ) echo "Recto : $front\n";
+        if ( $back )  echo "Verso : $back\n";
+    } else {
+        $html = '';
+        if ( $front ) {
+            $html .= '<img src="' . esc_url( $front ) . '" alt="front" />';
+        }
+        if ( $back ) {
+            $html .= '<img src="' . esc_url( $back ) . '" alt="back" />';
+        }
+        echo '<p class="winshirt-order-preview">' . $html . '</p>';
+    }
+}
+add_action( 'woocommerce_order_item_meta_end', 'winshirt_order_item_preview', 5, 4 );
 
 /**
  * Append a message about the associated lottery below the order item.
