@@ -513,6 +513,8 @@ function winshirt_render_lottery_info() {
     $active   = get_post_meta( $lottery, '_winshirt_lottery_active', true ) === 'yes';
     $percent  = $max > 0 ? min( 100, round( ( $count / $max ) * 100 ) ) : 0;
 
+    echo '<p class="lottery-ticket-info">🎟️ Ce T-shirt vous donne 1 ticket pour participer à la loterie <strong>' . esc_html( get_the_title( $lottery ) ) . '</strong>.<br>Tirage déclenché dès que le nombre de participants est atteint.<br><em>Jeu encadré par huissier – <a href="/reglement-du-jeu" target="_blank">Voir le règlement</a></em></p>';
+
     echo '<div class="loteries-container">';
     echo '<div class="loterie-card winshirt-theme-inherit">';
     if ( $featured ) {
