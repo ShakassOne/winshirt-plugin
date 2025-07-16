@@ -112,6 +112,9 @@
                         <option value="back" <?php selected($z['side'],'back'); ?>><?php esc_html_e('Verso','winshirt'); ?></option>
                     </select>
                 </label>
+                <label><?php esc_html_e('Prix', 'winshirt'); ?>
+                    <input type="number" step="0.01" class="zone-price" name="zones[<?php echo $zindex; ?>][price]" value="<?php echo esc_attr($z['price'] ?? ''); ?>" />
+                </label>
                 <input type="hidden" name="zones[<?php echo $zindex; ?>][top]" class="zone-top" value="<?php echo esc_attr($z['top']); ?>" />
                 <input type="hidden" name="zones[<?php echo $zindex; ?>][left]" class="zone-left" value="<?php echo esc_attr($z['left']); ?>" />
                 <input type="hidden" name="zones[<?php echo $zindex; ?>][width]" class="zone-width" value="<?php echo esc_attr($z['width']); ?>" />
@@ -140,6 +143,7 @@
                     <option value="back"><?php esc_html_e('Verso','winshirt'); ?></option>
                 </select>
             </label>
+            <label><?php esc_html_e('Prix', 'winshirt'); ?> <input type="number" step="0.01" class="zone-price" name="zones[%i%][price]" value="0" /></label>
             <input type="hidden" name="zones[%i%][top]" class="zone-top" value="10" />
             <input type="hidden" name="zones[%i%][left]" class="zone-left" value="10" />
             <input type="hidden" name="zones[%i%][width]" class="zone-width" value="20" />
@@ -151,13 +155,19 @@
         <div id="mockup-canvas-front" class="mockup-canvas">
             <?php if ($front) { echo wp_get_attachment_image($front, 'medium'); } ?>
             <?php foreach ($zones as $i => $z) : if ($z['side'] !== 'front') continue; ?>
-                <div class="print-zone" data-index="<?php echo esc_attr($i); ?>" data-side="front" data-format="<?php echo esc_attr($z['format']); ?>" style="top:<?php echo esc_attr($z['top']); ?>%;left:<?php echo esc_attr($z['left']); ?>%;width:<?php echo esc_attr($z['width']); ?>%;height:<?php echo esc_attr($z['height']); ?>%;"><?php echo esc_html($z['format']); ?></div>
+                <div class="print-zone" data-index="<?php echo esc_attr($i); ?>" data-side="front" data-format="<?php echo esc_attr($z['format']); ?>" style="top:<?php echo esc_attr($z['top']); ?>%;left:<?php echo esc_attr($z['left']); ?>%;width:<?php echo esc_attr($z['width']); ?>%;height:<?php echo esc_attr($z['height']); ?>%;">
+                    <?php echo esc_html($z['format']); ?>
+                    <?php if(isset($z['price'])) : ?><span class="admin-zone-price"><?php echo esc_html($z['price']); ?>€</span><?php endif; ?>
+                </div>
             <?php endforeach; ?>
         </div>
         <div id="mockup-canvas-back" class="mockup-canvas">
             <?php if ($back) { echo wp_get_attachment_image($back, 'medium'); } ?>
             <?php foreach ($zones as $i => $z) : if ($z['side'] !== 'back') continue; ?>
-                <div class="print-zone" data-index="<?php echo esc_attr($i); ?>" data-side="back" data-format="<?php echo esc_attr($z['format']); ?>" style="top:<?php echo esc_attr($z['top']); ?>%;left:<?php echo esc_attr($z['left']); ?>%;width:<?php echo esc_attr($z['width']); ?>%;height:<?php echo esc_attr($z['height']); ?>%;"><?php echo esc_html($z['format']); ?></div>
+                <div class="print-zone" data-index="<?php echo esc_attr($i); ?>" data-side="back" data-format="<?php echo esc_attr($z['format']); ?>" style="top:<?php echo esc_attr($z['top']); ?>%;left:<?php echo esc_attr($z['left']); ?>%;width:<?php echo esc_attr($z['width']); ?>%;height:<?php echo esc_attr($z['height']); ?>%;">
+                    <?php echo esc_html($z['format']); ?>
+                    <?php if(isset($z['price'])) : ?><span class="admin-zone-price"><?php echo esc_html($z['price']); ?>€</span><?php endif; ?>
+                </div>
             <?php endforeach; ?>
         </div>
     </div>

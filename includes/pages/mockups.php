@@ -75,6 +75,7 @@ function winshirt_page_mockups() {
                     'name'   => sanitize_text_field($z['name']),
                     'format' => in_array($z['format'], ['A3','A4','A5','A6','A7']) ? $z['format'] : 'A4',
                     'side'   => $z['side'] === 'back' ? 'back' : 'front',
+                    'price'  => floatval($z['price'] ?? 0),
                     'top'    => floatval($z['top'] ?? 0),
                     'left'   => floatval($z['left'] ?? 0),
                     'width'  => floatval($z['width'] ?? 0),

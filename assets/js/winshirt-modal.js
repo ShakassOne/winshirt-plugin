@@ -28,6 +28,7 @@ jQuery(function($){
   var $frontField = $('#winshirt-front-image-field');
   var $backField = $('#winshirt-back-image-field');
   var $customField = $('#winshirt-custom-data-field');
+  var $extraField = $('#winshirt-extra-price-field');
   var $prodLocal = $('#winshirt-production-image');
   var $frontLocal = $('#winshirt-front-image');
   var $backLocal = $('#winshirt-back-image');
@@ -459,6 +460,9 @@ jQuery(function($){
     $zoneButtons.find('.ws-zone-btn[data-index="'+index+'"]').addClass('active selected');
     $modal.find('.ws-print-zone').removeClass('active').hide();
     $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
+    if($extraField.length && zones[index]){
+      $extraField.val(zones[index].price || 0);
+    }
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
   }

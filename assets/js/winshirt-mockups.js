@@ -69,8 +69,9 @@ jQuery(function ($) {
     var $row = $('.zone-row[data-index="' + index + '"]');
     var side = $row.find('.zone-side').val();
     var fmt = $row.find('.zone-format').val();
+    var price = parseFloat($row.find('.zone-price').val() || 0);
     var $canvas = side === 'back' ? $('#mockup-canvas-back') : $('#mockup-canvas-front');
-    var $zone = $('<div class="print-zone" data-index="' + index + '" data-side="' + side + '" data-format="' + fmt + '">' + fmt + '</div>')
+    var $zone = $('<div class="print-zone" data-index="' + index + '" data-side="' + side + '" data-format="' + fmt + '">' + fmt + '<span class="admin-zone-price">' + price + '€</span></div>')
       .css({ top: '10%', left: '10%', width: '20%', height: '20%' });
     $canvas.append($zone);
     syncZone($zone);
@@ -98,6 +99,14 @@ jQuery(function ($) {
     var $row = $(this).closest('.zone-row');
     var idx = $row.data('index');
     var fmt = $(this).val();
-    $('.print-zone[data-index="' + idx + '"]').attr('data-format', fmt).text(fmt);
+    var $pz = $('.print-zone[data-index="' + idx + '"]').attr('data-format', fmt);
+    $pz.contents().filter(function(){return this.nodeType===3;}).first().replaceWith(fmt);
+  });
+
+  $(document).on('input change', '.zone-price', function(){
+    var $row = $(this).closest('.zone-row');
+    var idx = $row.data('index');
+    var price = parseFloat($(this).val() || 0);
+    $('.print-zone[data-index="' + idx + '"]').find('.admin-zone-price').text(price + '€');
   });
 });
