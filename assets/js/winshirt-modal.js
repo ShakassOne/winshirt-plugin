@@ -29,6 +29,36 @@ jQuery(function($){
   var $backField = $('#winshirt-back-image-field');
   var $customField = $('#winshirt-custom-data-field');
   var $extraField = $('#winshirt-extra-price-field');
+  var basePrice = null;
+  var $priceEl = $('.summary .price').first();
+  if($priceEl.length){
+    var num = $priceEl.text().replace(/[^0-9.,]/g,'').replace(',','.');
+    basePrice = parseFloat(num);
+    if(isNaN(basePrice)) basePrice = null;
+  }
+
+  function updateDisplayedPrice(){
+    if(basePrice===null || !$priceEl.length) return;
+    var extra = parseFloat($extraField.val()||'0');
+    var total = basePrice + extra;
+    var formatted = total.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
+    $priceEl.find('.amount').first().html(formatted+'\u00a0€');
+  }
+
+  function showCustomPreview(){
+    var front = localStorage.getItem('winshirt_front_image');
+    var back  = localStorage.getItem('winshirt_back_image');
+    if(!front && !back) return;
+    var $wrap = $('#ws-custom-preview');
+    if(!$wrap.length){
+      $wrap = $('<div id="ws-custom-preview" class="ws-custom-preview winshirt-theme-inherit"><h3>Votre T-Shirt personnalisé</h3><div class="ws-custom-images"></div></div>');
+      $('.woocommerce-product-gallery').after($wrap);
+    }
+    var $imgs = $wrap.find('.ws-custom-images');
+    $imgs.empty();
+    if(front){ $imgs.append('<img src="'+front+'" alt="Recto" class="ws-custom-img" />'); }
+    if(back){ $imgs.append('<img src="'+back+'" alt="Verso" class="ws-custom-img" />'); }
+  }
   var $prodLocal = $('#winshirt-production-image');
   var $frontLocal = $('#winshirt-front-image');
   var $backLocal = $('#winshirt-back-image');
@@ -462,6 +492,7 @@ jQuery(function($){
     $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
     if($extraField.length && zones[index]){
       $extraField.val(zones[index].price || 0);
+      updateDisplayedPrice();
     }
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
@@ -551,6 +582,7 @@ function openModal(){
   openTab('gallery');
   if(activeItem){ updateDebug(activeItem); }
   applyClip();
+  updateDisplayedPrice();
   debugHiddenElements();
 }
 
@@ -592,6 +624,7 @@ function openModal(){
       $('.ws-accordion-header').removeClass('open');
       $('.ws-tab-content').addClass('hidden').removeClass('active');
       activeTab = 'gallery';
+      showCustomPreview();
     }, 300);
   }
 
@@ -608,6 +641,7 @@ function openModal(){
     state.color = null;
     selectItem(null);
     saveState();
+    updateDisplayedPrice();
   });
   $modal.on('click', function(e){ if($(e.target).is('.ws-modal')) closeModal(); });
   $(document).on('keyup', function(e){ if(e.key === 'Escape') closeModal(); });
@@ -1045,9 +1079,10 @@ function openModal(){
     if($customField.length){ $customField.val(json); }
     console.log('WinShirt data', JSON.stringify(items));
     saveState();
-    captureAllSides();
-    if(window.dataLayer){ dataLayer.push({event:'customize_completed', product_id:$modal.data('product-id')}); }
-    closeModal();
+    captureAllSides().then(function(){
+      if(window.dataLayer){ dataLayer.push({event:'customize_completed', product_id:$modal.data('product-id')}); }
+      closeModal();
+    });
   });
 
   // Test capture sans fermer la modale
