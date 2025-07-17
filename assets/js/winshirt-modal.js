@@ -37,9 +37,24 @@ jQuery(function($){
   }
   if(isNaN(basePrice)) basePrice = null;
 
+  function computeExtraPrice(){
+    if(!$extraField.length) return 0;
+    var usedSides = {};
+    $canvas.children('.ws-item').each(function(){
+      usedSides[$(this).data('side')||'front'] = true;
+    });
+    var extra = 0;
+    zones.forEach(function(z){
+      var side = z.side || 'front';
+      if(usedSides[side]) extra += parseFloat(z.price || 0);
+    });
+    $extraField.val(extra.toFixed(2));
+    return extra;
+  }
+
   function updateDisplayedPrice(){
     if(basePrice===null || !$priceEl.length) return;
-    var extra = parseFloat($extraField.val()||'0');
+    var extra = computeExtraPrice();
     var total = basePrice + extra;
     var formatted = total.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
     var $amount = $priceEl.find('.amount, bdi').first();
@@ -336,6 +351,7 @@ jQuery(function($){
         updateItemTransform($new);
       });
     }
+    updateDisplayedPrice();
   }
 
   var gallery = $modal.data('gallery') || [];
@@ -500,10 +516,7 @@ jQuery(function($){
     $zoneButtons.find('.ws-zone-btn[data-index="'+index+'"]').addClass('active selected');
     $modal.find('.ws-print-zone').removeClass('active').hide();
     $modal.find('.ws-print-zone[data-index="'+index+'"]').show().addClass('active');
-    if($extraField.length && zones[index]){
-      $extraField.val(zones[index].price || 0);
-      updateDisplayedPrice();
-    }
+    updateDisplayedPrice();
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
   }
@@ -538,8 +551,12 @@ jQuery(function($){
     var zh = $zone.height();
     var base = getBaseHeight();
     var ratio = formatHeights[fmt] || 0;
-    var h = base * ratio;
+    var h = Math.min(base * ratio, zh);
     var w = h / 1.414;
+    if(w > zw){
+      w = zw;
+      h = w * 1.414;
+    }
     var left = zpos.left + (zw - w)/2;
     var top  = zpos.top + (zh - h)/2;
     $it.css({width:w, height:h});
