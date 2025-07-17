@@ -5,7 +5,8 @@
   data-zones='<?php echo esc_attr( $ws_zones ?? '[]' ); ?>'
   data-gallery='<?php echo esc_attr( $ws_gallery ?? '[]' ); ?>'
   data-ai-gallery='<?php echo esc_attr( $ws_ai_gallery ?? '[]' ); ?>'
-  data-product-id="<?php echo esc_attr( $pid ); ?>">
+  data-product-id="<?php echo esc_attr( $pid ); ?>"
+  data-base-price="<?php echo esc_attr( $product instanceof WC_Product ? $product->get_price() : 0 ); ?>">
   
   <div class="ws-modal-content winshirt-theme-inherit">
 

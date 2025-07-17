@@ -29,13 +29,13 @@ jQuery(function($){
   var $backField = $('#winshirt-back-image-field');
   var $customField = $('#winshirt-custom-data-field');
   var $extraField = $('#winshirt-extra-price-field');
-  var basePrice = null;
   var $priceEl = $('.summary .price').first();
-  if($priceEl.length){
+  var basePrice = parseFloat($modal.data('base-price'));
+  if(isNaN(basePrice) && $priceEl.length){
     var num = $priceEl.text().replace(/[^0-9.,]/g,'').replace(',','.');
     basePrice = parseFloat(num);
-    if(isNaN(basePrice)) basePrice = null;
   }
+  if(isNaN(basePrice)) basePrice = null;
 
   function updateDisplayedPrice(){
     if(basePrice===null || !$priceEl.length) return;
