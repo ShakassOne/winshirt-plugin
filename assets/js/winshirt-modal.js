@@ -29,10 +29,10 @@ jQuery(function($){
   var $backField = $('#winshirt-back-image-field');
   var $customField = $('#winshirt-custom-data-field');
   var $extraField = $('#winshirt-extra-price-field');
-  var $priceEl = $('.summary .price').first();
+  var $priceEl = $('.summary .price, .product .price').first();
   var basePrice = parseFloat($modal.data('base-price'));
   if(isNaN(basePrice) && $priceEl.length){
-    var num = $priceEl.text().replace(/[^0-9.,]/g,'').replace(',','.');
+    var num = $priceEl.text().replace(/[^0-9,.-]/g,'').replace(',','.');
     basePrice = parseFloat(num);
   }
   if(isNaN(basePrice)) basePrice = null;
@@ -42,7 +42,12 @@ jQuery(function($){
     var extra = parseFloat($extraField.val()||'0');
     var total = basePrice + extra;
     var formatted = total.toLocaleString('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2});
-    $priceEl.find('.amount').first().html(formatted+'\u00a0€');
+    var $amount = $priceEl.find('.amount, bdi').first();
+    if($amount.length){
+      $amount.html(formatted+'\u00a0€');
+    }else{
+      $priceEl.text(formatted+'\u00a0€');
+    }
   }
 
   function showCustomPreview(){
@@ -630,6 +635,7 @@ function openModal(){
       $('.ws-tab-content').addClass('hidden').removeClass('active');
       activeTab = 'gallery';
       showCustomPreview();
+      updateDisplayedPrice();
     }, 300);
   }
 
@@ -752,8 +758,10 @@ function openModal(){
 
 
   function addItem(type, content){
-    // Supprime l'image existante si besoin
-    if(type === 'image') $canvas.children('.ws-item[data-type="image"]').remove();
+    // Supprime l'image existante sur la même face si besoin
+    if(type === 'image') {
+      $canvas.children('.ws-item[data-type="image"][data-side="'+state.side+'"]').remove();
+    }
 
     var $item = $('<div class="ws-item" />')
       .attr('data-type', type)
