@@ -2,8 +2,7 @@ jQuery(function($){
   var $modal = $('#winshirt-customizer-modal');
   if(!$modal.length) return;
   $('body').append($modal);
-
-  var state = {side:'front', color:null, zone:0, zoneSel:{front:0, back:0}};
+  var state = { side: 'front', color: null, zone: 0, zoneSel: { front: 0, back: 0 } };
   var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
   var initialFront = $modal.data('default-front');
@@ -183,6 +182,7 @@ jQuery(function($){
         canvas.toBlob(function(blob){
           if(!blob){
             if(side!==prev) switchSide(prev);
+
             $modal.find('.ws-preview').css('visibility','');
             resolve();
             return;
