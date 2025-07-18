@@ -1,4 +1,4 @@
-/* WinShirt product customizer - glassmorphism style */
+/* WinShirt product customizer - basic light style */
 .ws-modal {
   position: fixed;
   inset: 0;
@@ -6,7 +6,7 @@
   align-items: center;
   justify-content: center;
   background: rgba(0,0,0,0.6);
-  backdrop-filter: blur(6px);
+  backdrop-filter: none;
   padding: 1%;
   z-index: 9999;
 }
@@ -24,13 +24,12 @@
   height: 95%;
   max-width: 95vw;
   max-height: 95vh;
-  background: rgba(255,255,255,0.05);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.2);
-  border-radius: 1rem;
-  box-shadow: 0 0 40px rgba(0,0,0,0.3);
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 0 40px rgba(0,0,0,0.2);
   padding: 1.5rem;
-  color: #fff;
+  color: #000;
   overflow: hidden;
   transform: scale(0.9);
   opacity: 0;
@@ -50,7 +49,7 @@
 /* generic section container */
 .ws-section {
   padding: 0.75rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid #eee;
   margin-bottom: 0.5rem;
 }
 
@@ -85,16 +84,16 @@
   margin-bottom:1rem;
 }
 .ws-panel-btn {
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
+  background:#f5f5f5;
+  border:1px solid #ccc;
   padding:.5rem;
   border-radius:.5rem;
-  color:#fff;
+  color:#000;
   cursor:pointer;
   text-align:left;
 }
 .ws-panel-btn:hover,
-.ws-panel-btn.active{background:rgba(255,255,255,0.2);}
+.ws-panel-btn.active{background:#e5e5e5;}
 .ws-body {
   flex: 1;
   display: flex;
@@ -104,26 +103,27 @@
   min-height: 0;
 }
 .ws-close {
-  background: rgba(255,255,255,0.1);
+  background: #f5f5f5;
   padding: .25rem .75rem;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid #ccc;
   border-radius: .375rem;
   cursor: pointer;
   transition: background .2s;
+  color: #000;
 }
 .ws-close:hover {
-  background: rgba(255,255,255,0.2);
+  background: #e5e5e5;
 }
 .ws-reset {
-  background: rgba(255,255,255,0.1);
+  background: #f5f5f5;
   padding: .25rem .75rem;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid #ccc;
   border-radius: .375rem;
   cursor: pointer;
   transition: background .2s;
 }
 .ws-reset:hover {
-  background: rgba(255,255,255,0.2);
+  background: #e5e5e5;
 }
 .ws-tabs-header {
   display:none;
@@ -131,18 +131,18 @@
 .ws-tab-button {
   padding: .5rem 1rem;
   border-radius: .5rem;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   cursor: pointer;
   transition: background .3s;
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: #000;
 }
 .ws-tab-button:hover,
 .ws-tab-button.active {
-  background: rgba(255,255,255,0.2);
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+  background: #e5e5e5;
+  box-shadow: 0 0 0 2px #ccc;
 }
 .ws-ml-auto {
   margin-left: auto;
@@ -169,14 +169,14 @@
 .ws-upload-btn {
   margin-top: 1rem;
   padding: .5rem 1rem;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   border-radius: .5rem;
-  color: #fff;
+  color: #000;
   cursor: pointer;
 }
 .ws-upload-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: #e5e5e5;
 }
 .ws-gallery-cats {
   display: flex;
@@ -186,16 +186,16 @@
 }
 .ws-cat-btn {
   padding: .25rem .75rem;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   border-radius: .375rem;
-  color: #fff;
+  color: #000;
   cursor: pointer;
   transition: background .2s;
 }
 .ws-cat-btn.active,
 .ws-cat-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: #e5e5e5;
 }
 .ws-gallery {
   display: grid;
@@ -210,13 +210,13 @@
   height: 64px;
   flex: 0 0 auto;
   object-fit: cover;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid #ccc;
   border-radius: .25rem;
   cursor: pointer;
   transition: transform .2s;
 }
 .ws-gallery-thumb.selected {
-  outline: 2px solid #fff;
+  outline: 2px solid #000;
   outline-offset: -2px;
 }
 .ws-gallery-thumb:hover {
@@ -227,8 +227,8 @@
   margin-top: 1.5rem;
   width: 90%;
   aspect-ratio: 4 / 5;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   border-radius: .5rem;
   overflow: hidden;
   display: flex;
@@ -263,7 +263,7 @@
 .ws-item {
   position: absolute;
   border: 2px dashed #60a5fa;
-  background: rgba(255,255,255,0.2);
+  background: transparent;
   border-radius: .25rem;
   cursor: move;
   transition: none;
@@ -274,8 +274,8 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: rgba(255,255,255,0.4);
-  border: 1px solid rgba(255,255,255,0.8);
+  background: #e5e5e5;
+  border: 1px solid #ccc;
   position: absolute;
   display: none;
 }
@@ -324,8 +324,8 @@
   width: 100%;
   position: sticky;
   bottom: 0;
-  background: rgba(0,0,0,0.4);
-  backdrop-filter: blur(8px);
+  background: #fff;
+  border-top: 1px solid #ccc;
   padding-bottom: .5rem;
 }
 .ws-toggle {
@@ -333,17 +333,17 @@
   gap: .5rem;
 }
 .ws-side-btn {
-  background: rgba(255,255,255,0.1);
+  background: #f5f5f5;
   padding: .5rem 1rem;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1px solid #ccc;
   border-radius: .5rem;
-  color: #fff;
+  color: #000;
   cursor: pointer;
   margin-right: .5rem;
 }
 .ws-side-btn.active,
 .ws-side-btn:hover {
-  background: rgba(255,255,255,0.2);
+  background: #e5e5e5;
 }
 
 .ws-zone-buttons {
@@ -354,19 +354,19 @@
   margin-top: .5rem;
 }
 .ws-zone-btn {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   padding: .25rem .5rem;
   border-radius: .25rem;
-  color: #fff;
+  color: #000;
   cursor: pointer;
 }
 .ws-zone-btn.active,
 .ws-zone-btn:hover {
-  background: rgba(255,255,255,0.3);
+  background: #e5e5e5;
 }
 .ws-zone-btn.selected {
-  border: 2px solid #fff;
+  border: 2px solid #000;
 }
 .ws-validate {
   background: #22c55e;
@@ -389,12 +389,12 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  border: 1px solid #fff;
+  border: 1px solid #ccc;
   cursor: pointer;
   opacity: .8;
 }
 .ws-color-btn.active {
-  outline: 2px solid #fff;
+  outline: 2px solid #000;
   opacity: 1;
 }
 .ws-product-colors {
@@ -417,21 +417,21 @@
   justify-content: center;
 }
 .ws-format-btn {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   padding: .25rem .5rem;
   border-radius: .25rem;
-  color: #fff;
+  color: #000;
   cursor: pointer;
 }
 .ws-format-btn.active,
 .ws-format-btn:hover {
-  background: rgba(255,255,255,0.3);
+  background: #e5e5e5;
 }
 .ws-print-zone {
   position: absolute;
   z-index: 2;
-  border: 2px dashed rgba(255,255,255,0.6);
+  border: 2px dashed #999;
   pointer-events: none;
   overflow: hidden !important;
   display: none;
@@ -439,7 +439,7 @@
   transition: all 0.2s ease;
 }
 .ws-print-zone.active {
-  border-color: #fff;
+  border-color: #000;
 }
 .ws-zone-label {
   position: absolute;
@@ -471,7 +471,7 @@
   line-height: 2rem;
 }
 .ws-item.ws-selected {
-  outline: 1px solid #fff;
+  outline: 1px solid #000;
 }
 .ws-formatting {
   display: flex;
@@ -479,24 +479,24 @@
   margin: .5rem 0;
 }
 .ws-formatting button {
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   padding: .25rem .5rem;
   border-radius: .25rem;
-  color: #fff;
+  color: #000;
   cursor: pointer;
 }
 .ws-formatting button.active,
 .ws-formatting button:hover {
-  background: rgba(255,255,255,0.3);
+  background: #e5e5e5;
 }
 .ws-item.bold .ws-text { font-weight: 700; }
 .ws-item.italic .ws-text { font-style: italic; }
 .ws-item.underline .ws-text { text-decoration: underline; }
 .ws-sidebar {
   margin-top: 1rem;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   border-radius: .5rem;
   padding: 1rem;
   display: none;
@@ -530,17 +530,17 @@
   padding: .75rem 1rem;
   margin-bottom: .25rem;
   text-align: left;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.2);
+  background: #f5f5f5;
+  border: 1px solid #ccc;
   border-radius: .5rem;
   cursor: pointer;
   font-size: 1rem;
   font-weight: 600;
-  color: #fff;
+  color: #000;
 }
 .ws-accordion-header.open {
-  background: rgba(255,255,255,0.2);
-  box-shadow: 0 0 0 2px rgba(255,255,255,0.6);
+  background: #e5e5e5;
+  box-shadow: 0 0 0 2px #ccc;
 }
 
 @media(max-width:768px){
@@ -568,7 +568,6 @@
   .ws-left, .ws-right { flex-basis: 100%; padding-right: 0; }
   .ws-right { position: static; top: auto; }
   .ws-panel { display:none; }
-}
   .ws-tabs-header { display: none; }
   .ws-accordion-header { display: block; }
 }
@@ -683,7 +682,7 @@
 .ws-print-zone, .admin-mockup-zone {
   overflow: hidden !important;
   position: absolute !important;
-  border: 2px dashed rgba(255,255,255,0.6);
+  border: 2px dashed #999;
   background: transparent;
   z-index: 10;
   cursor: move;
@@ -776,9 +775,9 @@
   margin-top:.5rem;
 }
 .ws-format-select {
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
-  color:#fff;
+  background:#f5f5f5;
+  border:1px solid #ccc;
+  color:#000;
   padding:.25rem .5rem;
   border-radius:.25rem;
 }
@@ -789,21 +788,21 @@
   justify-content:space-around;
   gap:.25rem;
   padding:.5rem;
-  background:rgba(0,0,0,0.7);
-  backdrop-filter:blur(8px);
+  background:#fff;
+  border-top:1px solid #ccc;
   z-index:10001;
 }
 .ws-tool-btn {
   flex:1;
   padding:.5rem 0;
-  background:rgba(255,255,255,0.1);
-  border:1px solid rgba(255,255,255,0.2);
+  background:#f5f5f5;
+  border:1px solid #ccc;
   border-radius:.5rem;
-  color:#fff;
+  color:#000;
   font-size:1.25rem;
 }
 .ws-tool-btn:hover {
-  background:rgba(255,255,255,0.3);
+  background:#e5e5e5;
 }
 
 #ws-ai-loading {
