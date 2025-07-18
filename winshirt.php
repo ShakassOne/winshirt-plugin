@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WinShirt by Shakass
  * Description: Module de personnalisation produit et loteries pour WooCommerce.
- * Version: 1.0.3
+ * Version: 1.0.4
  * Author: Shakass Communication
  */
 
