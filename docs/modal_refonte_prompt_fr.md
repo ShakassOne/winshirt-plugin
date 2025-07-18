@@ -38,3 +38,17 @@ Ce document sert de cahier des charges pour la refonte du modal de personnalisat
 
 ## Qualité du code
 - Générer un code clair, commenté et découpé en modules réutilisables pour simplifier la maintenance future.
+## Proposition de refonte détaillée
+L'objectif est d'adopter une ergonomie inspirée de ShirtUp tout en améliorant les fonctionnalités existantes. Les points clés :
+- **Panneau latéral fixe** contenant des boutons (icône + libellé) ouvrant chacun un modal secondaire.
+- Les modals secondaires présentent des interactions fluides et affichent les options suivantes :
+  1. **Galerie Visuelle** : images en grille, possibilité de changer les couleurs des SVG par clic direct.
+  2. **Ajouter Texte** : saisie dynamique, choix de police, taille, couleur, alignements et contour. Prévisualisation instantanée.
+  3. **Téléchargement Image** : zone de dépôt claire, formats autorisés (PNG, JPG, SVG, GIF) et indication des résolutions conseillées.
+  4. **Illustrations SVG** : bibliothèque interne par catégories, couleurs modifiables à la volée.
+  5. **IA Générative** : formulaire simplifié avec aperçu immédiat du résultat.
+- Boutons de validation et d’annulation visibles dans chaque modal.
+- Ajout d’animations légères pour l’ouverture et la fermeture des différentes fenêtres.
+- Prévisualisation actualisée en temps réel sur le T-shirt pour toutes les modifications.
+- Chargement des ressources (galerie, SVG, IA) de manière asynchrone pour optimiser les performances.
+- Interface responsive et accessible (contrastes renforcés, taille des boutons adaptée).
