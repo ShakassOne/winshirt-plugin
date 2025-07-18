@@ -3,7 +3,7 @@ jQuery(function($){
   if(!$modal.length) return;
   $('body').append($modal);
 
-  var state = {side:'front', color:null, zone:0};
+  var state = {side:'front', color:null, zone:0, zoneSel:{front:0, back:0}};
   var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
   var initialFront = $modal.data('default-front');
@@ -39,14 +39,19 @@ jQuery(function($){
 
   function computeExtraPrice(){
     if(!$extraField.length) return 0;
-    var usedSides = {};
+    var used = {front:false, back:false};
     $canvas.children('.ws-item').each(function(){
-      usedSides[$(this).data('side')||'front'] = true;
+      used[$(this).data('side')||'front'] = true;
     });
     var extra = 0;
-    zones.forEach(function(z){
-      var side = z.side || 'front';
-      if(usedSides[side]) extra += parseFloat(z.price || 0);
+    ['front','back'].forEach(function(side){
+      if(!used[side]) return;
+      var idx = state.zoneSel[side];
+      if(typeof idx === 'undefined') return;
+      var z = zones[idx];
+      if(z && (z.side||'front') === side){
+        extra += parseFloat(z.price || 0);
+      }
     });
     $extraField.val(extra.toFixed(2));
     return extra;
@@ -172,10 +177,16 @@ jQuery(function($){
     return new Promise(function(resolve){
       if(!window.html2canvas){ resolve(); return; }
       var prev = state.side;
+      $modal.find('.ws-preview').css('visibility','hidden');
       if(side!==prev) switchSide(side);
-      html2canvas($modal.find('.ws-preview')[0], {backgroundColor:null,scale:2}).then(function(canvas){
+      html2canvas($modal.find('.ws-preview')[0], {backgroundColor:null,scale:1}).then(function(canvas){
         canvas.toBlob(function(blob){
-          if(!blob){ if(side!==prev) switchSide(prev); resolve(); return; }
+          if(!blob){
+            if(side!==prev) switchSide(prev);
+            $modal.find('.ws-preview').css('visibility','');
+            resolve();
+            return;
+          }
           var fd = new FormData();
           fd.append('image', blob, side+'.png');
           fd.append('side', side);
@@ -193,6 +204,7 @@ jQuery(function($){
               }
             }
             if(side!==prev) switchSide(prev);
+            $modal.find('.ws-preview').css('visibility','');
             resolve();
           });
         }, 'image/png');
@@ -493,6 +505,7 @@ jQuery(function($){
   });
   var firstZone = zones.findIndex(function(z){ return z.side === state.side; });
   if(firstZone < 0) firstZone = 0;
+  state.zoneSel[state.side] = firstZone;
   selectZone(firstZone);
   updateZoneButtons();
   applyClip();
@@ -524,6 +537,7 @@ jQuery(function($){
 
   function selectZone(index){
     state.zone = index;
+    state.zoneSel[state.side] = index;
     $zoneButtons.find('.ws-zone-btn').removeClass('active selected');
     $zoneButtons.find('.ws-zone-btn[data-index="'+index+'"]').addClass('active selected');
     $modal.find('.ws-print-zone').removeClass('active').hide();
@@ -757,6 +771,7 @@ function openModal(){
   });
 
   var typingItem = null;
+  var textTimer = null;
   $('#ws-text-content').on('input', function(){
     var txt = $(this).val();
     if(!typingItem){
@@ -766,7 +781,11 @@ function openModal(){
     }
     if(typingItem){
       typingItem.find('.ws-text').text(txt || ' ');
-      applyTextStyles(typingItem);
+      clearTimeout(textTimer);
+      textTimer = setTimeout(function(){
+        applyTextStyles(typingItem);
+        saveState();
+      }, 150);
     }
   });
 
@@ -1115,7 +1134,10 @@ function openModal(){
       $canvas.children('.ws-item').hide().filter('[data-side="front"]').show();
     }
     var next = zones.findIndex(function(z){ return z.side === side; });
-    if(next >= 0) selectZone(next);
+    if(next >= 0){
+      if(typeof state.zoneSel[side] === 'undefined') state.zoneSel[side] = next;
+      selectZone(state.zoneSel[side]);
+    }
     updateZoneButtons();
     if(activeItem){ updateFormatUIFromItem(activeItem); }
     applyClip();
