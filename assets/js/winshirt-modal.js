@@ -292,6 +292,9 @@ jQuery(function($){
         scale: parseFloat($it.attr('data-scale') || 1),
         rotation: parseInt($it.attr('data-rotation') || 0,10),
         color: $it.attr('data-color') || null,
+        align: $it.attr('data-align') || null,
+        outlineColor: $it.attr('data-outline-color') || null,
+        outlineWidth: parseInt($it.attr('data-outline-width') || 0,10),
         width: ($it.width() / $canvas.width()).toFixed(4),
         height: ($it.height() / $canvas.height()).toFixed(4),
         content: (function(){
@@ -347,6 +350,15 @@ jQuery(function($){
           } else if(it.type === 'svg'){
             $new.find('svg').css('color', it.color);
           }
+        }
+        if(it.align){
+          $new.attr('data-align', it.align);
+          $new.find('.ws-text').css('text-align', it.align);
+        }
+        if(it.outlineColor){
+          $new.attr('data-outline-color', it.outlineColor);
+          $new.attr('data-outline-width', it.outlineWidth || 0);
+          $new.find('.ws-text').css('-webkit-text-stroke', (it.outlineWidth||0)+'px '+it.outlineColor);
         }
         updateItemTransform($new);
       });
@@ -579,18 +591,26 @@ jQuery(function($){
     var italic = $('#ws-italic-btn').hasClass('active');
     var underline = $('#ws-underline-btn').hasClass('active');
     var col = $('#ws-color-picker').val() || '#000000';
+    var align = $('#ws-text-align').val() || 'center';
+    var strokeColor = $('#ws-outline-color').val() || '#000000';
+    var strokeWidth = parseInt($('#ws-outline-width').val() || 0,10);
     var scale = parseFloat($('#ws-scale-range').val() || 1);
     var rot = parseInt($('#ws-rotate-range').val() || 0,10);
     $it.attr('data-scale', scale);
     $it.attr('data-rotation', rot);
     $it.attr('data-color', col);
+    $it.attr('data-align', align);
+    $it.attr('data-outline-color', strokeColor);
+    $it.attr('data-outline-width', strokeWidth);
     var $txt = $it.find('.ws-text');
     $txt.css({
       'font-family': font,
       'font-weight': bold ? '700' : '400',
       'font-style': italic ? 'italic' : 'normal',
       'text-decoration': underline ? 'underline' : 'none',
-      'color': col
+      'color': col,
+      'text-align': align,
+      '-webkit-text-stroke': strokeWidth+'px '+strokeColor
     });
     updateItemTransform($it);
   }
@@ -637,7 +657,9 @@ function openModal(){
       if($tabSelect.length){ $tabSelect.val(tab); }
     } else {
       $('.ws-tab-button').removeClass('active');
+      $('.ws-panel-btn').removeClass('active');
       $('.ws-tab-button[data-tab="'+tab+'"]').addClass('active');
+      $('.ws-panel-btn[data-tab="'+tab+'"]').addClass('active');
       $('.ws-tab-content').addClass('hidden').removeClass('active');
       $('#ws-tab-'+tab).removeClass('hidden').addClass('active');
       if($tabSelect.length){ $tabSelect.val(tab); }
@@ -683,6 +705,12 @@ function openModal(){
   });
   $('.ws-accordion-header').on('click', function(){
     openTab($(this).data('tab'));
+  });
+  $('.ws-panel-btn[data-tab]').on('click', function(){
+    openTab($(this).data('tab'));
+  });
+  $('#ws-upload-panel').on('click', function(){
+    $('#ws-upload-trigger').trigger('click');
   });
   $('.ws-tool-btn[data-tab]').on('click', function(){
     openTab($(this).data('tab'));
@@ -762,7 +790,7 @@ function openModal(){
       saveState();
     }
   });
-  $('#ws-color-picker, #ws-scale-range, #ws-rotate-range').on('input change', function(){
+  $('#ws-color-picker, #ws-scale-range, #ws-rotate-range, #ws-text-align, #ws-outline-color, #ws-outline-width').on('input change', function(){
     if(activeItem && activeItem.data('type')==='text'){
       applyTextStyles(activeItem);
       saveState();
@@ -798,8 +826,14 @@ function openModal(){
     } else {
       $item.append('<span class="ws-text">'+content+'</span>');
       var col = $('#ws-color-picker').val() || '#000000';
-      $item.attr('data-color', col);
-      $item.find('.ws-text').css('color', col);
+      var align = $('#ws-text-align').val() || 'center';
+      var strokeColor = $('#ws-outline-color').val() || '#000000';
+      var strokeWidth = parseInt($('#ws-outline-width').val() || 0,10);
+      $item.attr('data-color', col)
+           .attr('data-align', align)
+           .attr('data-outline-color', strokeColor)
+           .attr('data-outline-width', strokeWidth);
+      $item.find('.ws-text').css({'color':col,'text-align':align,'-webkit-text-stroke':strokeWidth+'px '+strokeColor});
     }
 
     $item.append('<div class="ws-zone-resize"></div>');
@@ -954,6 +988,11 @@ function openModal(){
         if(activeItem.data('type') === 'svg'){ $('#ws-svg-color-picker').val(col); }
         $colorInput.closest('label').show();
         $removeBgBtn.addClass('hidden');
+        if(activeItem.data('type') === 'text'){
+          $('#ws-text-align').val(activeItem.attr('data-align') || 'center');
+          $('#ws-outline-color').val(activeItem.attr('data-outline-color') || '#000000');
+          $('#ws-outline-width').val(activeItem.attr('data-outline-width') || 0);
+        }
       } else {
         $colorInput.closest('label').hide();
         if(activeItem.data('type') === 'image'){

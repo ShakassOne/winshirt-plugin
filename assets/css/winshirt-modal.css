@@ -78,6 +78,23 @@
   max-height: 100%;
   overflow-y: auto;
 }
+.ws-panel {
+  display:flex;
+  flex-direction:column;
+  gap:.5rem;
+  margin-bottom:1rem;
+}
+.ws-panel-btn {
+  background:rgba(255,255,255,0.1);
+  border:1px solid rgba(255,255,255,0.2);
+  padding:.5rem;
+  border-radius:.5rem;
+  color:#fff;
+  cursor:pointer;
+  text-align:left;
+}
+.ws-panel-btn:hover,
+.ws-panel-btn.active{background:rgba(255,255,255,0.2);}
 .ws-body {
   flex: 1;
   display: flex;
@@ -109,16 +126,7 @@
   background: rgba(255,255,255,0.2);
 }
 .ws-tabs-header {
-  display: flex;
-  gap: .5rem;
-  margin-bottom: 1rem;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  padding-bottom: .5rem;
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  background: rgba(255,255,255,0.1);
-  backdrop-filter: blur(16px) saturate(180%);
+  display:none;
 }
 .ws-tab-button {
   padding: .5rem 1rem;
@@ -292,6 +300,7 @@
   color: #000;
   text-align: center;
   word-break: break-word;
+  paint-order: stroke fill;
 }
 .ws-remove {
   position: absolute;
@@ -558,6 +567,7 @@
   .ws-modal-content { flex-direction: column; }
   .ws-left, .ws-right { flex-basis: 100%; padding-right: 0; }
   .ws-right { position: static; top: auto; }
+  .ws-panel { display:none; }
 }
   .ws-tabs-header { display: none; }
   .ws-accordion-header { display: block; }
