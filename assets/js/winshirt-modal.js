@@ -2,8 +2,7 @@ jQuery(function($){
   var $modal = $('#winshirt-customizer-modal');
   if(!$modal.length) return;
   $('body').append($modal);
-
-  var state = {side:'front', color:null, zone:0, zoneSel:{}};
+  var state = { side: 'front', color: null, zone: 0, zoneSel: { front: 0, back: 0 } };
   var $canvas = $('#ws-canvas');
   var $previewImg = $modal.find('.ws-preview-img');
   var initialFront = $modal.data('default-front');
@@ -177,11 +176,14 @@ jQuery(function($){
     return new Promise(function(resolve){
       if(!window.html2canvas){ resolve(); return; }
       var prev = state.side;
+      $modal.find('.ws-preview').css('visibility','hidden');
       if(side!==prev) switchSide(side);
       html2canvas($modal.find('.ws-preview')[0], {backgroundColor:null,scale:1}).then(function(canvas){
         canvas.toBlob(function(blob){
           if(!blob){
             if(side!==prev) switchSide(prev);
+
+            $modal.find('.ws-preview').css('visibility','');
             resolve();
             return;
           }
@@ -202,6 +204,7 @@ jQuery(function($){
               }
             }
             if(side!==prev) switchSide(prev);
+            $modal.find('.ws-preview').css('visibility','');
             resolve();
           });
         }, 'image/png');
