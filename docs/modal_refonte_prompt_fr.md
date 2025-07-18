@@ -16,9 +16,12 @@ Ce document sert de cahier des charges pour la refonte du modal de personnalisat
 - Ajouter des transitions fluides : `transition: all 0.3s ease-in-out;`.
 
 ## Interface esthétique et ergonomique
-- Implémenter une grille CSS stricte pour aligner boutons et options.
-- Appliquer un effet **glassmorphisme** léger sur l’ensemble du modal.
-- Harmoniser les espacements et uniformiser les boutons.
+- Adopter une esthétique moderne, claire et épurée, inspirée de ShirtUp ( fond blanc texte noir ).
+- Avec des panneaux latéraux bien délimités
+- des boutons arrondis et colorés, une interface sur fond uni avec ombres douces.
+- Une hiérarchie visuelle lisible et intuitive.
+
+
 
 ## Options d’édition isolées
 - Les options de taille et de rotation ne s’affichent que lorsque l’élément est en édition (double clic ou clic droit).
