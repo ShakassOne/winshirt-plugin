@@ -25,21 +25,15 @@
     </div>
 
     <div class="ws-right winshirt-theme-inherit">
-      <div class="ws-tabs-header winshirt-theme-inherit">
-        <button class="ws-tab-button active winshirt-theme-inherit" data-tab="gallery" aria-label="Galerie">🖼 Galerie</button>
-        <button class="ws-tab-button winshirt-theme-inherit" data-tab="text" aria-label="Texte">🔤 Texte</button>
-        <button class="ws-tab-button winshirt-theme-inherit" data-tab="ai" aria-label="IA">🤖 IA</button>
-        <button class="ws-tab-button winshirt-theme-inherit" data-tab="svg" aria-label="SVG">✒️ SVG</button>
+      <div class="ws-panel winshirt-theme-inherit">
+        <button class="ws-panel-btn winshirt-theme-inherit" data-tab="gallery" aria-label="Galerie">🖼 Galerie</button>
+        <button class="ws-panel-btn winshirt-theme-inherit" data-tab="text" aria-label="Texte">🔤 Texte</button>
+        <button class="ws-panel-btn winshirt-theme-inherit" data-tab="svg" aria-label="SVG">✒️ SVG</button>
+        <button class="ws-panel-btn winshirt-theme-inherit" data-tab="ai" aria-label="IA">🤖 IA</button>
+        <button class="ws-panel-btn" id="ws-upload-panel" aria-label="Upload">⬆ Uploader</button>
         <button id="ws-reset-visual" class="ws-reset winshirt-theme-inherit" aria-label="Réinitialiser">Réinitialiser ↺</button>
-        <button id="winshirt-close-modal" class="ws-close ws-ml-auto winshirt-theme-inherit" aria-label="Fermer">Fermer ✖️</button>
+        <button id="winshirt-close-modal" class="ws-close winshirt-theme-inherit" aria-label="Fermer">Fermer ✖️</button>
       </div>
-
-      <select id="ws-tab-select" class="ws-tab-select select winshirt-theme-inherit">
-        <option value="gallery">Galerie</option>
-        <option value="text">Texte</option>
-        <option value="ai">IA</option>
-        <option value="svg">SVG</option>
-      </select>
 
       <button class="ws-accordion-header winshirt-theme-inherit" data-tab="gallery" aria-label="Galerie">🖼 Galerie</button>
       <div class="ws-tab-content ws-section" id="ws-tab-gallery">
@@ -85,6 +79,17 @@
         </label>
         <label class="winshirt-theme-inherit"><?php esc_html_e('Rotation', 'winshirt'); ?>
           <input type="range" id="ws-rotate-range" class="winshirt-theme-inherit" min="0" max="360" step="1" value="0">
+        </label>
+        <label class="winshirt-theme-inherit">Alignement
+          <select id="ws-text-align" class="ws-select winshirt-theme-inherit">
+            <option value="left">Gauche</option>
+            <option value="center" selected>Centre</option>
+            <option value="right">Droite</option>
+          </select>
+        </label>
+        <label class="winshirt-theme-inherit">Contour
+          <input type="color" id="ws-outline-color" class="winshirt-theme-inherit" value="#000000" />
+          <input type="number" id="ws-outline-width" class="winshirt-theme-inherit" min="0" max="10" step="1" value="0" style="width:60px;" />
         </label>
         <button class="ws-upload-btn winshirt-theme-inherit" id="ws-add-text" aria-label="Ajouter le texte">Ajouter</button>
       </div>
