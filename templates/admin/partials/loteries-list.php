@@ -135,6 +135,12 @@
             </td>
         </tr>
         <tr>
+            <th scope="row"><label for="lottery-url">URL du bouton</label></th>
+            <td>
+                <input type="url" name="url" id="lottery-url" class="regular-text" value="<?php echo esc_attr(get_post_meta($editing->ID ?? 0, '_winshirt_lottery_url', true)); ?>" placeholder="https://" />
+            </td>
+        </tr>
+        <tr>
             <th scope="row"><label for="lottery-animation">Animation/Image</label></th>
             <td>
                 <input type="file" name="animation" id="lottery-animation" />
