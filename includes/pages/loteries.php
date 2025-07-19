@@ -44,6 +44,7 @@ function winshirt_page_lotteries() {
         update_post_meta($lottery_id, '_winshirt_lottery_active', isset($_POST['active']) ? 'yes' : 'no');
         update_post_meta($lottery_id, '_winshirt_lottery_draw', in_array($_POST['draw'] ?? 'manual', ['manual','auto'], true) ? $_POST['draw'] : 'manual');
         update_post_meta($lottery_id, 'max_participants', absint($_POST['max_participants'] ?? 0));
+        update_post_meta($lottery_id, '_winshirt_lottery_url', esc_url_raw($_POST['url'] ?? ''));
 
         if (!empty($_FILES['animation']['tmp_name'])) {
             require_once ABSPATH . 'wp-admin/includes/file.php';

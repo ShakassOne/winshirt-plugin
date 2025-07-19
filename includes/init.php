@@ -73,6 +73,7 @@ function winshirt_lottery_box_shortcode( $atts ) {
     $draw_date   = get_post_meta( $id, '_winshirt_lottery_end', true );
     $img_id      = get_post_meta( $id, '_winshirt_lottery_animation', true );
     $img_url     = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+    $url         = get_post_meta( $id, '_winshirt_lottery_url', true );
     $percent     = $max > 0 ? min( 100, ( $count / $max ) * 100 ) : 0;
 
     ob_start();
@@ -97,7 +98,7 @@ function winshirt_lottery_box_shortcode( $atts ) {
         <?php if ( $draw_date ) : ?>
             <p class="lottery-draw"><?php echo esc_html( $draw_date ); ?></p>
         <?php endif; ?>
-        <a href="#" class="lottery-button">Participer</a>
+        <a href="<?php echo $url ? esc_url( $url ) : '#'; ?>" class="lottery-button">Participer</a>
     </div>
     <?php
     return ob_get_clean();
@@ -158,6 +159,7 @@ function winshirt_lotteries_shortcode() {
         $draw_date = get_post_meta( $id, '_winshirt_lottery_end', true );
         $img_id    = get_post_meta( $id, '_winshirt_lottery_animation', true );
         $img_url   = $img_id ? wp_get_attachment_image_url( $img_id, 'large' ) : '';
+        $url       = get_post_meta( $id, '_winshirt_lottery_url', true );
         $featured  = get_post_meta( $id, '_winshirt_lottery_featured', true ) === 'yes';
         $percent   = $max > 0 ? min( 100, ( $count / $max ) * 100 ) : 0;
 
@@ -182,7 +184,7 @@ function winshirt_lotteries_shortcode() {
             <?php if ( $draw_date ) : ?>
                 <p class="lottery-draw">Tirage le <?php echo esc_html( date_i18n( 'd/m/Y', strtotime( $draw_date ) ) ); ?></p>
             <?php endif; ?>
-            <a href="#" class="lottery-button">Participer</a>
+            <a href="<?php echo $url ? esc_url( $url ) : '#'; ?>" class="lottery-button">Participer</a>
         </div>
         <?php
     }
