@@ -1007,10 +1007,14 @@ function winshirt_account_customs_page() {
     echo '<h3>' . esc_html__( 'Mes personnalisations', 'winshirt' ) . '</h3>';
 
     if ( is_array( $saved ) ) {
-        foreach ( array_reverse( $saved ) as $custo ) {
-            $front = isset( $custo['front'] ) ? esc_url( $custo['front'] ) : '';
-            $back  = isset( $custo['back'] ) ? esc_url( $custo['back'] ) : '';
-            $data  = isset( $custo['data'] ) ? esc_js( $custo['data'] ) : '';
+        $count = count( $saved );
+        for ( $i = $count - 1; $i >= 0; $i-- ) {
+            $custo  = $saved[ $i ];
+            $front  = isset( $custo['front'] ) ? esc_url( $custo['front'] ) : '';
+            $back   = isset( $custo['back'] ) ? esc_url( $custo['back'] ) : '';
+            $data   = isset( $custo['data'] ) ? esc_js( $custo['data'] ) : '';
+            $pid    = absint( $custo['product'] ?? 0 );
+            $link   = $pid ? get_permalink( $pid ) : '';
             echo '<div style="margin-bottom:1rem;">';
             if ( $front ) {
                 echo '<img src="' . $front . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
@@ -1021,7 +1025,10 @@ function winshirt_account_customs_page() {
                 echo '<br/><a href="' . $back . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
             }
             if ( $front || $back ) {
-                echo '<br/><button class="winshirt-resume" data-custom="' . esc_attr( $data ) . '" data-front="' . esc_attr( $front ) . '" data-back="' . esc_attr( $back ) . '">' . esc_html__( 'Reprendre', 'winshirt' ) . '</button>';
+                if ( $link ) {
+                    echo '<br/><a href="' . esc_url( $link ) . '" class="winshirt-resume" data-index="' . esc_attr( $i ) . '" data-custom="' . esc_attr( $data ) . '" data-front="' . esc_attr( $front ) . '" data-back="' . esc_attr( $back ) . '">' . esc_html__( 'Reprendre', 'winshirt' ) . '</a>';
+                }
+                echo ' <button class="winshirt-delete" data-index="' . esc_attr( $i ) . '">' . esc_html__( 'Supprimer', 'winshirt' ) . '</button>';
             }
             echo '</div>';
         }
@@ -1032,6 +1039,8 @@ function winshirt_account_customs_page() {
             $front = $item->get_meta( 'winshirt_front_hd' );
             $back  = $item->get_meta( 'winshirt_back_hd' );
             $data  = $item->get_meta( 'winshirt_custom_data' );
+            $pid   = $item->get_product_id();
+            $link  = $pid ? get_permalink( $pid ) : '';
             if ( ! $front && ! $back ) {
                 continue;
             }
@@ -1046,20 +1055,13 @@ function winshirt_account_customs_page() {
                 echo '<br/><a href="' . esc_url( $back ) . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
             }
             if ( $data ) {
-                echo '<br/><button class="winshirt-resume" data-custom="' . esc_attr( $data ) . '" data-front="' . esc_attr( $front ) . '" data-back="' . esc_attr( $back ) . '">' . esc_html__( 'Reprendre', 'winshirt' ) . '</button>';
+                if ( $link ) {
+                    echo '<br/><a href="' . esc_url( $link ) . '" class="winshirt-resume" data-custom="' . esc_attr( $data ) . '" data-front="' . esc_attr( $front ) . '" data-back="' . esc_attr( $back ) . '">' . esc_html__( 'Reprendre', 'winshirt' ) . '</a>';
+                }
             }
             echo '</div>';
         }
     }
-
-    $pid = 0;
-    $default_front = '';
-    $default_back  = '';
-    $ws_colors = '[]';
-    $ws_zones  = '[]';
-    $ws_gallery = '[]';
-    $ws_ai_gallery = '[]';
-    include WINSHIRT_PATH . 'templates/personalizer-modal.php';
 
     ?>
     <script type="text/javascript">
@@ -1072,7 +1074,22 @@ function winshirt_account_customs_page() {
             if(data){ localStorage.setItem('winshirt_custom', data); }
             if(front){ localStorage.setItem('winshirt_front_image', front); }
             if(back){ localStorage.setItem('winshirt_back_image', back); }
-            openWinShirtModal();
+            localStorage.setItem('winshirt_resume','1');
+            window.location.href = $(this).attr('href');
+        });
+        $(document).on('click','.winshirt-delete',function(e){
+            e.preventDefault();
+            var idx = $(this).data('index');
+            if(typeof idx === 'undefined') return;
+            if(!confirm('Supprimer cette personnalisation ?')) return;
+            fetch(winshirtAjax.rest+'delete-customization',{
+                method:'DELETE',
+                credentials:'same-origin',
+                headers:{'X-WP-Nonce':winshirtAjax.nonce,'Content-Type':'application/json'},
+                body:JSON.stringify({index:idx})
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(){ location.reload(); });
         });
     });
     </script>
