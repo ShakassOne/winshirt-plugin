@@ -137,8 +137,9 @@ function winshirt_rest_save_customization( WP_REST_Request $request ) {
         return new WP_REST_Response( [ 'message' => 'no_data' ], 400 );
     }
 
-    $front = esc_url_raw( $request->get_param( 'front' ) );
-    $back  = esc_url_raw( $request->get_param( 'back' ) );
+    $front   = esc_url_raw( $request->get_param( 'front' ) );
+    $back    = esc_url_raw( $request->get_param( 'back' ) );
+    $product = absint( $request->get_param( 'product' ) );
 
     $user_id = get_current_user_id();
     $saved   = get_user_meta( $user_id, 'winshirt_saved_customs', true );
@@ -151,11 +152,33 @@ function winshirt_rest_save_customization( WP_REST_Request $request ) {
         'data'  => wp_unslash( $data ),
         'front' => $front,
         'back'  => $back,
+        'product' => $product,
     ];
 
     update_user_meta( $user_id, 'winshirt_saved_customs', $saved );
 
     return new WP_REST_Response( [ 'status' => 'ok' ], 200 );
+}
+
+/**
+ * Delete a saved customization by index for logged in users.
+ */
+function winshirt_rest_delete_customization( WP_REST_Request $request ) {
+    if ( ! is_user_logged_in() ) {
+        return new WP_REST_Response( [ 'message' => 'forbidden' ], 403 );
+    }
+
+    $index   = intval( $request->get_param( 'index' ) );
+    $user_id = get_current_user_id();
+    $saved   = get_user_meta( $user_id, 'winshirt_saved_customs', true );
+    if ( ! is_array( $saved ) || ! isset( $saved[ $index ] ) ) {
+        return new WP_REST_Response( [ 'message' => 'not_found' ], 404 );
+    }
+
+    array_splice( $saved, $index, 1 );
+    update_user_meta( $user_id, 'winshirt_saved_customs', $saved );
+
+    return new WP_REST_Response( [ 'status' => 'deleted' ], 200 );
 }
 
 add_action( 'rest_api_init', function() {
@@ -180,6 +203,12 @@ add_action( 'rest_api_init', function() {
     register_rest_route( 'winshirt/v1', '/save-customization', [
         'methods'             => WP_REST_Server::CREATABLE,
         'callback'            => 'winshirt_rest_save_customization',
+        'permission_callback' => '__return_true',
+    ] );
+
+    register_rest_route( 'winshirt/v1', '/delete-customization', [
+        'methods'             => WP_REST_Server::DELETABLE,
+        'callback'            => 'winshirt_rest_delete_customization',
         'permission_callback' => '__return_true',
     ] );
 });
