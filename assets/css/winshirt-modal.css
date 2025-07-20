@@ -856,12 +856,41 @@
   align-items:center;
 }
 .ws-mobile .ws-preview {
-  margin-top:0;
-  width:100%;
-  max-height:calc(100dvh - 90px);
+  margin-top: 0;
+  width: 100%;
+  max-height: calc(100dvh - 90px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
 }
 .ws-mobile .ws-toggle {
-  justify-content:center;
-  gap:1rem;
-  margin-top:.5rem;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: .5rem;
+  background: #fff;
+  padding-bottom: 1rem;
+  padding-top: .5rem;
+}
+
+.ws-mobile .ws-panel {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  background: #fff;
+  z-index: 10;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  padding: 1rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+
+.ws-item {
+  padding: 10px;
+  box-sizing: content-box;
 }
