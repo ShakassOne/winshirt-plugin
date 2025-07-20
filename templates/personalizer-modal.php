@@ -11,7 +11,7 @@
   <div class="ws-modal-content winshirt-theme-inherit">
 
     <div class="ws-left winshirt-theme-inherit">
-      <div class="ws-toggle winshirt-theme-inherit" style="margin-bottom:.5rem;">
+      <div class="ws-toggle ws-sides-toggle winshirt-theme-inherit">
         <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit" aria-label="Recto">Recto</button>
         <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit" aria-label="Verso">Verso</button>
       </div>
