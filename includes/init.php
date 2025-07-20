@@ -8,6 +8,9 @@ add_action('wp_enqueue_scripts', function () {
     if ( ! $needs_assets && isset( $post->post_content ) ) {
         $needs_assets = has_shortcode( $post->post_content, 'product_page' );
     }
+    if ( ! $needs_assets && function_exists( 'is_account_page' ) && is_account_page() && is_wc_endpoint_url( 'mes-personnalisations' ) ) {
+        $needs_assets = true;
+    }
     if ( $needs_assets ) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
@@ -981,32 +984,54 @@ add_action( 'woocommerce_before_shop_loop_item_title', 'winshirt_shop_customizab
 add_action( 'init', 'winshirt_account_endpoint' );
 function winshirt_account_endpoint() {
     add_rewrite_endpoint( 'mes-personnalisations', EP_ROOT | EP_PAGES );
-    add_rewrite_endpoint( 'mes-custos', EP_ROOT | EP_PAGES );
 }
 
 add_filter( 'query_vars', function( $vars ) {
     $vars[] = 'mes-personnalisations';
-    $vars[] = 'mes-custos';
     return $vars;
 } );
 
 add_filter( 'woocommerce_account_menu_items', function( $items ) {
     $items['mes-personnalisations'] = __( 'Mes personnalisations', 'winshirt' );
-    $items['mes-custos'] = __( 'Mes Custos', 'winshirt' );
     return $items;
 } );
 
 add_action( 'woocommerce_account_mes-personnalisations_endpoint', 'winshirt_account_customs_page' );
 function winshirt_account_customs_page() {
+    $user_id = get_current_user_id();
     $orders = wc_get_orders( [
-        'customer_id' => get_current_user_id(),
+        'customer_id' => $user_id,
         'limit'       => -1,
     ] );
+    $saved = get_user_meta( $user_id, 'winshirt_saved_customs', true );
     echo '<h3>' . esc_html__( 'Mes personnalisations', 'winshirt' ) . '</h3>';
+
+    if ( is_array( $saved ) ) {
+        foreach ( array_reverse( $saved ) as $custo ) {
+            $front = isset( $custo['front'] ) ? esc_url( $custo['front'] ) : '';
+            $back  = isset( $custo['back'] ) ? esc_url( $custo['back'] ) : '';
+            $data  = isset( $custo['data'] ) ? esc_js( $custo['data'] ) : '';
+            echo '<div style="margin-bottom:1rem;">';
+            if ( $front ) {
+                echo '<img src="' . $front . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
+                echo '<br/><a href="' . $front . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
+            }
+            if ( $back ) {
+                echo '<br/><img src="' . $back . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
+                echo '<br/><a href="' . $back . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
+            }
+            if ( $front || $back ) {
+                echo '<br/><button class="winshirt-resume" data-custom="' . esc_attr( $data ) . '" data-front="' . esc_attr( $front ) . '" data-back="' . esc_attr( $back ) . '">' . esc_html__( 'Reprendre', 'winshirt' ) . '</button>';
+            }
+            echo '</div>';
+        }
+    }
+
     foreach ( $orders as $order ) {
         foreach ( $order->get_items() as $item ) {
             $front = $item->get_meta( 'winshirt_front_hd' );
             $back  = $item->get_meta( 'winshirt_back_hd' );
+            $data  = $item->get_meta( 'winshirt_custom_data' );
             if ( ! $front && ! $back ) {
                 continue;
             }
@@ -1020,31 +1045,37 @@ function winshirt_account_customs_page() {
                 echo '<br/><img src="' . esc_url( $back ) . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
                 echo '<br/><a href="' . esc_url( $back ) . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
             }
+            if ( $data ) {
+                echo '<br/><button class="winshirt-resume" data-custom="' . esc_attr( $data ) . '" data-front="' . esc_attr( $front ) . '" data-back="' . esc_attr( $back ) . '">' . esc_html__( 'Reprendre', 'winshirt' ) . '</button>';
+            }
             echo '</div>';
         }
     }
+
+    $pid = 0;
+    $default_front = '';
+    $default_back  = '';
+    $ws_colors = '[]';
+    $ws_zones  = '[]';
+    $ws_gallery = '[]';
+    $ws_ai_gallery = '[]';
+    include WINSHIRT_PATH . 'templates/personalizer-modal.php';
+
+    ?>
+    <script type="text/javascript">
+    jQuery(function($){
+        $(document).on('click','.winshirt-resume',function(e){
+            e.preventDefault();
+            var data = $(this).data('custom') || '';
+            var front = $(this).data('front') || '';
+            var back  = $(this).data('back') || '';
+            if(data){ localStorage.setItem('winshirt_custom', data); }
+            if(front){ localStorage.setItem('winshirt_front_image', front); }
+            if(back){ localStorage.setItem('winshirt_back_image', back); }
+            openWinShirtModal();
+        });
+    });
+    </script>
+    <?php
 }
 
-add_action( 'woocommerce_account_mes-custos_endpoint', 'winshirt_account_custos_drafts_page' );
-function winshirt_account_custos_drafts_page() {
-    $saved = get_user_meta( get_current_user_id(), 'winshirt_saved_customs', true );
-    if ( ! is_array( $saved ) ) {
-        echo '<p>' . esc_html__( 'Aucune personnalisation sauvegardée.', 'winshirt' ) . '</p>';
-        return;
-    }
-    echo '<h3>' . esc_html__( 'Mes Custos', 'winshirt' ) . '</h3>';
-    foreach ( array_reverse( $saved ) as $custo ) {
-        $front = isset( $custo['front'] ) ? esc_url( $custo['front'] ) : '';
-        $back  = isset( $custo['back'] ) ? esc_url( $custo['back'] ) : '';
-        echo '<div style="margin-bottom:1rem;">';
-        if ( $front ) {
-            echo '<img src="' . $front . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
-            echo '<br/><a href="' . $front . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
-        }
-        if ( $back ) {
-            echo '<br/><img src="' . $back . '" style="max-width:150px;height:auto;border:1px solid #ccc;" />';
-            echo '<br/><a href="' . $back . '" download>' . esc_html__( 'Télécharger', 'winshirt' ) . '</a>';
-        }
-        echo '</div>';
-    }
-}
