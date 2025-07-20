@@ -1090,9 +1090,6 @@ function winshirt_account_customs_page() {
             })
             .then(function(r){ return r.json(); })
             .then(function(){ location.reload(); });
-
-            }).then(function(){ location.reload(); });
- main
         });
     });
     </script>
