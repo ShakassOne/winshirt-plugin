@@ -175,6 +175,9 @@ function winshirt_rest_delete_customization( WP_REST_Request $request ) {
     }
     $index   = intval( $index );
 
+
+    $index   = intval( $request->get_param( 'index' ) );
+main
     $user_id = get_current_user_id();
     $saved   = get_user_meta( $user_id, 'winshirt_saved_customs', true );
     if ( ! is_array( $saved ) || ! isset( $saved[ $index ] ) ) {
