@@ -258,7 +258,7 @@ jQuery(function($){
   function updatePreviewHeight(){
     if(!$modal.hasClass('ws-mobile')) return;
     var toolsH = $modal.find('.ws-tools').outerHeight() || 0;
-    var toggleH = $modal.find('.ws-toggle').outerHeight() || 0;
+    var toggleH = $modal.find('.ws-sides-toggle').outerHeight() || 0;
     var offset = toolsH + toggleH + 16; // padding/margins reduced
     var max = window.innerHeight - offset;
     $modal.find('.ws-preview').css('max-height', max + 'px');
@@ -745,7 +745,7 @@ function openModal(){
 
   window.addEventListener('resize', () => {
     const preview = document.querySelector('.ws-preview');
-    const footer = document.querySelector('.ws-toggle');
+    const footer = document.querySelector('.ws-sides-toggle');
     const headerHeight = 40; // boutons recto/verso
     const footerHeight = footer?.offsetHeight || 90;
     const availableHeight = window.innerHeight - headerHeight - footerHeight;

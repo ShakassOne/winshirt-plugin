@@ -273,13 +273,15 @@
   pointer-events: auto;
 }
 .ws-item .ui-resizable-handle {
-  width: 8px;
-  height: 8px;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  background: #000;
   border-radius: 50%;
-  background: #e5e5e5;
-  border: 1px solid #ccc;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   position: absolute;
   display: none;
+  touch-action: none;
 }
 .ws-item .ui-resizable-nw { cursor: nwse-resize; }
 .ws-item .ui-resizable-ne { cursor: nesw-resize; }
@@ -623,11 +625,13 @@
 .ws-debug.show { display: block; }
 .ui-resizable-handle {
   position: absolute;
-  width: 12px;
-  height: 12px;
-  background: #fff;
-  border: 1px solid #000;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  background: #000;
   border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0,0,0,0.3);
+  touch-action: none;
 }
 .ui-resizable-nw { left: -6px; top: -6px; cursor: nw-resize; }
 .ui-resizable-ne { right: -6px; top: -6px; cursor: ne-resize; }
@@ -696,15 +700,17 @@
 /* Poign\xC3\xA9es de resize */
 .ws-zone-resize, .admin-zone-resize {
   position: absolute;
-  width: 18px;
-  height: 18px;
-  background: #fff;
-  border: 2px solid #52a3ff;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  background: #000;
   border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
   cursor: nwse-resize;
-  right: -9px;
-  bottom: -9px;
-  z-index: 15;
+  right: -8px;
+  bottom: -8px;
+  z-index: 20;
+  touch-action: none;
 }
 
 .ws-item, .admin-mockup-item {
@@ -858,11 +864,19 @@
 .ws-mobile .ws-preview {
   margin-top: 0;
   width: 100%;
-  max-height: calc(100dvh - 90px);
+  max-height: calc(100dvh - 100px);
   display: flex;
   align-items: center;
   justify-content: center;
   position: relative;
+}
+.ws-mobile .ws-sides-toggle {
+  margin-bottom: 0.5rem;
+  padding-top: 0;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  z-index: 5;
 }
 .ws-mobile .ws-toggle {
   justify-content: center;
@@ -877,8 +891,8 @@
   position: absolute;
   top: 0;
   width: 100%;
-  background: #fff;
-  z-index: 10;
+  background-color: #fff !important;
+  z-index: 20;
   border-radius: 1rem;
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   padding: 1rem;
@@ -891,6 +905,21 @@
 }
 
 .ws-item {
-  padding: 10px;
+  padding: 6px;
   box-sizing: content-box;
+}
+
+.draggable-element .resize-handle {
+  width: 16px;
+  height: 16px;
+  border: 2px solid #fff;
+  background: #000;
+  border-radius: 50%;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+  z-index: 20;
+  touch-action: none;
+}
+
+.draggable-element {
+  padding: 6px;
 }
