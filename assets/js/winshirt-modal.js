@@ -36,6 +36,8 @@ jQuery(function($){
   }
   if(isNaN(basePrice)) basePrice = null;
 
+  var saveTimeout = null;
+
   function computeExtraPrice(){
     if(!$extraField.length) return 0;
     var used = {front:false, back:false};
@@ -344,9 +346,12 @@ jQuery(function($){
       zoneSel: state.zoneSel
     };
     localStorage.setItem('winshirt_custom', JSON.stringify(data));
-    uploadMockup();
     updateDisplayedPrice();
-    syncState();
+    if(saveTimeout){ clearTimeout(saveTimeout); }
+    saveTimeout = setTimeout(function(){
+      uploadMockup();
+      syncState();
+    }, 500);
   }
 
   function loadState(){
