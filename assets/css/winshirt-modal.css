@@ -51,6 +51,7 @@
   padding: 0.75rem;
   border-bottom: 1px solid #eee;
   margin-bottom: 0.5rem;
+  background: #fff;
 }
 
 .ws-left {
@@ -149,6 +150,7 @@
 }
 .ws-tab-content {
   display: none;
+  background: #fff;
   animation: wsFade .3s ease;
 }
 .ws-tab-content.active {
@@ -552,6 +554,7 @@
     left: 0;
     right: 0;
     bottom: 0;
+    background: #fff;
     max-height: 60vh;
     overflow-y: auto;
     border-top-left-radius: 1rem;
@@ -855,7 +858,7 @@
 .ws-mobile .ws-preview {
   margin-top:0;
   width:100%;
-  max-height:calc(100dvh - 150px);
+  max-height:calc(100dvh - 90px);
 }
 .ws-mobile .ws-toggle {
   justify-content:center;

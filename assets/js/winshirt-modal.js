@@ -259,7 +259,7 @@ jQuery(function($){
     if(!$modal.hasClass('ws-mobile')) return;
     var toolsH = $modal.find('.ws-tools').outerHeight() || 0;
     var toggleH = $modal.find('.ws-toggle').outerHeight() || 0;
-    var offset = toolsH + toggleH + 32; // padding/margins
+    var offset = toolsH + toggleH + 16; // padding/margins reduced
     var max = window.innerHeight - offset;
     $modal.find('.ws-preview').css('max-height', max + 'px');
   }
@@ -856,13 +856,19 @@ function openModal(){
       $canvas.children('.ws-item[data-type="image"][data-side="'+state.side+'"]').remove();
     }
 
+    var $zone = $(getContainment());
+    var zoneW = $zone.width();
+    var zoneH = $zone.height();
+    var initSize = Math.min(zoneW, zoneH) * 0.5;
+    if(!initSize || isNaN(initSize)) initSize = 120;
+
     var $item = $('<div class="ws-item" />')
       .attr('data-type', type)
       .attr('data-side', state.side)
       .attr('data-scale','1')
       .attr('data-rotation','0')
       .attr('data-x','0').attr('data-y','0')
-      .css({width:120, height:120, left:0, top:0});
+      .css({width:initSize, height:initSize, left:0, top:0});
 
     if(type === 'image'){
       $item.append('<img src="'+content+'" alt="" style="width:100%;height:100%;pointer-events:none;"/>');
@@ -889,10 +895,7 @@ function openModal(){
     $canvas.append($item);
 
     // Centre dans la zone d'impression
-    var $zone = $(getContainment());
     var zonePos = $zone.position();
-    var zoneW = $zone.width();
-    var zoneH = $zone.height();
     var itemW = $item.width();
     var itemH = $item.height();
     $item.attr('data-x', zonePos.left + (zoneW - itemW)/2)
