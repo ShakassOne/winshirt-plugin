@@ -16,7 +16,7 @@
         <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit" aria-label="Verso">Verso</button>
       </div>
       <div class="ws-preview mockup-fixed ws-section winshirt-theme-inherit">
-        <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" />
+        <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" crossorigin="anonymous" />
         <div class="ws-color-overlay winshirt-theme-inherit"></div>
         <div id="ws-canvas" class="ws-canvas"></div>
         <div id="ws-print-zones"></div>
