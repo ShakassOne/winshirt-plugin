@@ -1087,7 +1087,12 @@ function winshirt_account_customs_page() {
                 credentials:'same-origin',
                 headers:{'X-WP-Nonce':winshirtAjax.nonce,'Content-Type':'application/json'},
                 body:JSON.stringify({index:idx})
+            })
+            .then(function(r){ return r.json(); })
+            .then(function(){ location.reload(); });
+
             }).then(function(){ location.reload(); });
+ main
         });
     });
     </script>
