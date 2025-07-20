@@ -279,6 +279,25 @@ jQuery(function($){
     }
   }
 
+  function syncState(){
+    if(!winshirtAjax.loggedIn) return;
+    var data = localStorage.getItem('winshirt_custom');
+    if(!data) return;
+    fetch(winshirtAjax.rest+'save-customization', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'X-WP-Nonce': winshirtAjax.nonce,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        data: data,
+        front: localStorage.getItem('winshirt_front_image') || '',
+        back: localStorage.getItem('winshirt_back_image') || ''
+      })
+    });
+  }
+
   checkMobile();
   if(localStorage.getItem('wsDebug')==='1'){ $debug.addClass('show'); }
   $(document).on('keydown', function(e){
@@ -321,11 +340,13 @@ jQuery(function($){
       color: state.color,
       defaultFront: $modal.data('default-front') || initialFront,
       defaultBack: $modal.data('default-back') || initialBack,
-      side: state.side
+      side: state.side,
+      zoneSel: state.zoneSel
     };
     localStorage.setItem('winshirt_custom', JSON.stringify(data));
     uploadMockup();
     updateDisplayedPrice();
+    syncState();
   }
 
   function loadState(){
@@ -335,6 +356,9 @@ jQuery(function($){
     $canvas.empty();
     if(raw.defaultFront){ $modal.data('default-front', raw.defaultFront); }
     if(raw.defaultBack){ $modal.data('default-back', raw.defaultBack); }
+    if(raw.zoneSel){
+      state.zoneSel = raw.zoneSel;
+    }
     if(raw.color){
       $('.ws-color-overlay').css('background-color', raw.color);
       state.color = raw.color;
@@ -545,6 +569,7 @@ jQuery(function($){
     updateDisplayedPrice();
     applyClip();
     if(activeItem){ updateDebug(activeItem); }
+    saveState();
   }
 
   function updateZoneButtons(){
@@ -689,6 +714,7 @@ function openModal(){
       activeTab = 'gallery';
       showCustomPreview();
       updateDisplayedPrice();
+      syncState();
     }, 300);
   }
 
