@@ -743,6 +743,15 @@ function openModal(){
     updatePreviewHeight();
   });
 
+  window.addEventListener('resize', () => {
+    const preview = document.querySelector('.ws-preview');
+    const footer = document.querySelector('.ws-toggle');
+    const headerHeight = 40; // boutons recto/verso
+    const footerHeight = footer?.offsetHeight || 90;
+    const availableHeight = window.innerHeight - headerHeight - footerHeight;
+    if (preview) preview.style.maxHeight = `${availableHeight}px`;
+  });
+
   $('.ws-tab-button').on('click', function(){
     openTab($(this).data('tab'));
   });
@@ -859,7 +868,7 @@ function openModal(){
     var $zone = $(getContainment());
     var zoneW = $zone.width();
     var zoneH = $zone.height();
-    var initSize = Math.min(zoneW, zoneH) * 0.5;
+    var initSize = Math.min(zoneW, zoneH) * 0.6;
     if(!initSize || isNaN(initSize)) initSize = 120;
 
     var $item = $('<div class="ws-item" />')
@@ -868,7 +877,14 @@ function openModal(){
       .attr('data-scale','1')
       .attr('data-rotation','0')
       .attr('data-x','0').attr('data-y','0')
-      .css({width:initSize, height:initSize, left:0, top:0});
+      .css({
+        width: initSize,
+        height: initSize,
+        left: 0,
+        top: 0,
+        maxWidth: '100%',
+        maxHeight: '100%'
+      });
 
     if(type === 'image'){
       $item.append('<img src="'+content+'" alt="" style="width:100%;height:100%;pointer-events:none;"/>');
