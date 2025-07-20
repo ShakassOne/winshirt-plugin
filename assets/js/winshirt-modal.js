@@ -294,7 +294,8 @@ jQuery(function($){
       body: JSON.stringify({
         data: data,
         front: localStorage.getItem('winshirt_front_image') || '',
-        back: localStorage.getItem('winshirt_back_image') || ''
+        back: localStorage.getItem('winshirt_back_image') || '',
+        product: parseInt($modal.data('product-id') || 0)
       })
     });
   }
@@ -349,7 +350,6 @@ jQuery(function($){
     if(saveTimeout){ clearTimeout(saveTimeout); }
     saveTimeout = setTimeout(function(){
       uploadMockup();
-      syncState();
     }, 500);
   }
 
@@ -718,7 +718,6 @@ function openModal(){
       activeTab = 'gallery';
       showCustomPreview();
       updateDisplayedPrice();
-      syncState();
     }, 300);
   }
 
@@ -1200,6 +1199,7 @@ function openModal(){
     if($customField.length){ $customField.val(json); }
     console.log('WinShirt data', JSON.stringify(items));
     saveState();
+    syncState();
     captureAllSides().then(function(){
       if(window.dataLayer){ dataLayer.push({event:'customize_completed', product_id:$modal.data('product-id')}); }
       closeModal();
@@ -1215,4 +1215,8 @@ function openModal(){
 
   switchSide('front');
   openTab('gallery');
+  if(localStorage.getItem('winshirt_resume') === '1'){
+    localStorage.removeItem('winshirt_resume');
+    openModal();
+  }
 });
