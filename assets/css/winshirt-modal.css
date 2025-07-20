@@ -855,7 +855,7 @@
 .ws-mobile .ws-preview {
   margin-top:0;
   width:100%;
-  max-height:calc(100dvh - 150px);
+  max-height:calc(100dvh - 120px);
 }
 .ws-mobile .ws-toggle {
   justify-content:center;
