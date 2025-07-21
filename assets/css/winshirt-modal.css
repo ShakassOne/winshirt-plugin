@@ -17,13 +17,13 @@
 .ws-modal-content {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: flex-start;
+  justify-content: center;
   width: 95%;
-  height: 100dvh;
+  height: 95%;
   max-width: 95vw;
-  max-height: 100dvh;
+  max-height: 95vh;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -38,6 +38,49 @@
 .ws-modal.open .ws-modal-content {
   transform: none;
   opacity: 1;
+}
+
+/* --- Ajout croix fermer haut gauche --- */
+.ws-modal-close-btn {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 1001;
+  width: 32px;
+  height: 32px;
+  background: #fff;
+  border: 1.5px solid #ccc;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+.ws-modal-close-btn:hover {
+  background: #ffe5e5;
+  box-shadow: 0 2px 12px rgba(255,0,0,0.10);
+}
+.ws-modal-close-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke: #d32f2f;
+  stroke-width: 2.2;
+  fill: none;
+  pointer-events: none;
+}
+@media (max-width: 700px) {
+  .ws-modal-close-btn {
+    top: 10px;
+    left: 10px;
+    width: 28px;
+    height: 28px;
+  }
+  .ws-modal-close-btn svg {
+    width: 15px;
+    height: 15px;
+  }
 }
 
 .ws-modal-content input,
