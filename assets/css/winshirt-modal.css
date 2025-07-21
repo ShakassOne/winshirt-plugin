@@ -17,13 +17,13 @@
 .ws-modal-content {
   position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: flex-start;
+  justify-content: center;
   width: 95%;
-  height: 100dvh;
+  height: 95%;
   max-width: 95vw;
-  max-height: 100dvh;
+  max-height: 95vh;
   background: #fff;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -82,7 +82,6 @@
     height: 15px;
   }
 }
-
 @media (min-width: 769px) {
   .ws-modal-content {
     flex-direction: row;
@@ -91,6 +90,7 @@
     max-height: 95vh;
   }
 }
+
 
 .ws-modal-content input,
 .ws-modal-content textarea,
