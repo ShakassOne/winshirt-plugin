@@ -9,6 +9,9 @@
   data-base-price="<?php echo esc_attr( $product instanceof WC_Product ? $product->get_price() : 0 ); ?>">
   
   <div class="ws-modal-content winshirt-theme-inherit">
+    <button type="button" class="ws-modal-close-btn" aria-label="Fermer">
+      <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+    </button>
 
     <div class="ws-left winshirt-theme-inherit">
       <div class="ws-toggle ws-sides-toggle winshirt-theme-inherit">
