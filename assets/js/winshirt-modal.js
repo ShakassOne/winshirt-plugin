@@ -719,6 +719,7 @@ function openModal(){
   // Ouvre la modale depuis le bouton de personnalisation
   $('#btn-personnaliser').on('click', function(e){ e.preventDefault(); openModal(); });
   $('#winshirt-close-modal').on('click', closeModal);
+  $('.ws-modal-close-btn').on('click', closeModal);
   $('#ws-reset-visual').on('click', function(){
     $canvas.children('.ws-item[data-type="image"]').remove();
     $modal.data('default-front', initialFront);
