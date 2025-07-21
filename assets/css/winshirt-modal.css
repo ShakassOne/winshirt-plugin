@@ -82,6 +82,15 @@
     height: 15px;
   }
 }
+@media (min-width: 769px) {
+  .ws-modal-content {
+    flex-direction: row;
+    justify-content: center;
+    height: 95%;
+    max-height: 95vh;
+  }
+}
+
 
 .ws-modal-content input,
 .ws-modal-content textarea,
