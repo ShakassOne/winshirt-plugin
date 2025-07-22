@@ -38,7 +38,6 @@
         <button id="winshirt-close-modal" class="ws-close winshirt-theme-inherit" aria-label="Fermer">Fermer ✖️</button>
       </div>
 
-      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="gallery" aria-label="Galerie">🖼 Galerie</button>
       <div class="ws-tab-content ws-section" id="ws-tab-gallery">
         <p>Choisissez un design dans la galerie.</p>
         <div class="ws-gallery-cats winshirt-theme-inherit"></div>
@@ -47,7 +46,6 @@
         <input type="file" id="ws-upload-input" accept="image/*" class="hidden winshirt-theme-inherit" />
       </div>
 
-      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="text" aria-label="Texte">🔤 Texte</button>
       <div class="ws-tab-content ws-section hidden" id="ws-tab-text">
         <input type="text" id="ws-text-content" class="ws-input input-text winshirt-theme-inherit" placeholder="Votre texte..." />
         <select id="ws-font-select" class="ws-select select winshirt-theme-inherit">
@@ -97,7 +95,6 @@
         <button class="ws-upload-btn winshirt-theme-inherit" id="ws-add-text" aria-label="Ajouter le texte">Ajouter</button>
       </div>
 
-      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="ai" aria-label="IA">🤖 IA</button>
       <div class="ws-tab-content ws-section hidden" id="ws-tab-ai">
         <div class="ws-ai-form winshirt-theme-inherit">
           <input type="text" id="ws-ai-prompt" class="ws-input input-text winshirt-theme-inherit" placeholder="Décris le visuel que tu veux créer" />
@@ -107,7 +104,6 @@
         <div id="ws-ai-gallery" class="ws-ai-gallery winshirt-theme-inherit"></div>
       </div>
 
-      <button class="ws-accordion-header winshirt-theme-inherit" data-tab="svg" aria-label="SVG">✒️ SVG</button>
       <div class="ws-tab-content ws-section hidden" id="ws-tab-svg">
         <p>Bibliothèque d’icônes vectorielles (SVG).</p>
         <button id="ws-svg-upload-trigger" class="ws-upload-btn winshirt-theme-inherit" aria-label="Uploader un SVG">Uploader un SVG</button>
@@ -156,12 +152,5 @@
 
     </div>
   <div id="ws-debug" class="ws-debug"></div>
-  <div class="ws-tools winshirt-theme-inherit">
-    <button class="ws-tool-btn" data-tab="gallery" aria-label="Galerie">📷</button>
-    <button class="ws-tool-btn" id="ws-upload-tool" aria-label="Uploader">⬆</button>
-    <button class="ws-tool-btn" data-tab="ai" aria-label="IA">🤖</button>
-    <button class="ws-tool-btn" data-tab="text" aria-label="Texte">✏</button>
-    <button class="ws-tool-btn" data-tab="svg" aria-label="SVG">📄</button>
-  </div>
 </div>
 </div>

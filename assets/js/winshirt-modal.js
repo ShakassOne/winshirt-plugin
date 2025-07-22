@@ -676,39 +676,18 @@ function openModal(){
   };
 
   function openTab(tab){
-    if($modal.hasClass('ws-mobile')){
-      var $c = $('#ws-tab-'+tab);
-      var $h = $('.ws-accordion-header[data-tab="'+tab+'"]');
-      if(activeTab === tab && $c.hasClass('active')){
-        $c.addClass('hidden').removeClass('active');
-        $h.removeClass('open');
-        $modal.find('.ws-right').removeClass('show');
-        activeTab = null;
-        return;
-      }
-      activeTab = tab;
-      $('.ws-accordion-header').removeClass('open');
-      $('.ws-tab-content').addClass('hidden').removeClass('active');
-      $h.addClass('open');
-      $c.removeClass('hidden').addClass('active');
-      $modal.find('.ws-right').addClass('show');
-      if($tabSelect.length){ $tabSelect.val(tab); }
-    } else {
-      $('.ws-tab-button').removeClass('active');
-      $('.ws-panel-btn').removeClass('active');
-      $('.ws-tab-button[data-tab="'+tab+'"]').addClass('active');
-      $('.ws-panel-btn[data-tab="'+tab+'"]').addClass('active');
-      $('.ws-tab-content').addClass('hidden').removeClass('active');
-      $('#ws-tab-'+tab).removeClass('hidden').addClass('active');
-      if($tabSelect.length){ $tabSelect.val(tab); }
-    }
+    activeTab = tab;
+    $('.ws-panel-btn').removeClass('active');
+    $('.ws-panel-btn[data-tab="'+tab+'"]').addClass('active');
+    $('.ws-tab-content').addClass('hidden').removeClass('active');
+    $('#ws-tab-'+tab).removeClass('hidden').addClass('active');
+    if($tabSelect.length){ $tabSelect.val(tab); }
   }
   function closeModal(){
     $modal.removeClass('open');
     setTimeout(function(){
       $modal.addClass('hidden');
       $modal.find('.ws-right').removeClass('show');
-      $('.ws-accordion-header').removeClass('open');
       $('.ws-tab-content').addClass('hidden').removeClass('active');
       activeTab = 'gallery';
       showCustomPreview();
@@ -741,22 +720,11 @@ function openModal(){
 
 
 
-  $('.ws-tab-button').on('click', function(){
-    openTab($(this).data('tab'));
-  });
-  $('.ws-accordion-header').on('click', function(){
-    openTab($(this).data('tab'));
-  });
+  // Interaction principale : clic sur les boutons du panneau latéral
   $('.ws-panel-btn[data-tab]').on('click', function(){
     openTab($(this).data('tab'));
   });
   $('#ws-upload-panel').on('click', function(){
-    $('#ws-upload-trigger').trigger('click');
-  });
-  $('.ws-tool-btn[data-tab]').on('click', function(){
-    openTab($(this).data('tab'));
-  });
-  $('#ws-upload-tool').on('click', function(){
     $('#ws-upload-trigger').trigger('click');
   });
   $tabSelect.on('change', function(){

@@ -163,25 +163,6 @@
 .ws-reset:hover {
   background: #e5e5e5;
 }
-.ws-tabs-header {
-  display:none;
-}
-.ws-tab-button {
-  padding: .5rem 1rem;
-  border-radius: .5rem;
-  background: #f5f5f5;
-  border: 1px solid #ccc;
-  cursor: pointer;
-  transition: background .3s;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #000;
-}
-.ws-tab-button:hover,
-.ws-tab-button.active {
-  background: #e5e5e5;
-  box-shadow: 0 0 0 2px #ccc;
-}
 .ws-ml-auto {
   margin-left: auto;
 }
