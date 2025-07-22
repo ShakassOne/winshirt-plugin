@@ -17,11 +17,10 @@
 .ws-modal-content {
   position: relative;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  justify-content: center;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
   width: 95%;
-  height: 100dvh;
   max-width: 95vw;
   max-height: 100dvh;
   background: #fff;
@@ -43,7 +42,7 @@
 .ws-modal-close-btn {
   position: absolute;
   top: 16px;
-  left: 16px;
+  right: 16px;
   z-index: 1001;
   width: 32px;
   height: 32px;
@@ -72,7 +71,7 @@
 @media (max-width: 700px) {
   .ws-modal-close-btn {
     top: 10px;
-    left: 10px;
+    right: 10px;
     width: 28px;
     height: 28px;
   }
@@ -93,7 +92,7 @@
   background: #fff;
 }
 .ws-left {
-  flex-basis: 75%;
+  flex-basis: 70%;
   padding-right: 1rem;
   box-sizing: border-box;
   position: sticky;
@@ -107,13 +106,51 @@
   justify-content: center;
 }
 .ws-right {
-  flex-basis: 25%;
+  flex-basis: 30%;
   position: sticky;
   top: 0;
   display: flex;
   flex-direction: column;
   max-height: 100%;
   overflow-y: auto;
+}
+
+.modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+}
+
+.modal__header,
+.modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .5rem;
+}
+
+.modal__content {
+  flex: 1;
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+}
+
+.modal__mockup-area { flex-basis: 70%; padding-right: 1rem; box-sizing: border-box; }
+.modal__sidebar { flex-basis: 30%; overflow-y: auto; }
+
+.side-btn {
+  background: #fff;
+  border: 1px solid #000;
+  padding: .25rem .75rem;
+  border-radius: .375rem;
+  cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.side-btn:hover,
+.side-btn.active {
+  background: #000;
+  color: #fff;
 }
 .ws-panel {
   display:flex;
@@ -122,16 +159,20 @@
   margin-bottom:1rem;
 }
 .ws-panel-btn {
-  background:#f5f5f5;
-  border:1px solid #ccc;
+  background:#fff;
+  border:1px solid #000;
   padding:.5rem;
   border-radius:.5rem;
   color:#000;
   cursor:pointer;
   text-align:left;
+  transition:background .2s,color .2s;
 }
 .ws-panel-btn:hover,
-.ws-panel-btn.active{background:#e5e5e5;}
+.ws-panel-btn.active{
+  background:#000;
+  color:#fff;
+}
 .ws-body {
   flex: 1;
   display: flex;
@@ -141,27 +182,30 @@
   min-height: 0;
 }
 .ws-close {
-  background: #f5f5f5;
+  background: #fff;
   padding: .25rem .75rem;
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   border-radius: .375rem;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s,color .2s;
   color: #000;
 }
 .ws-close:hover {
-  background: #e5e5e5;
+  background: #000;
+  color: #fff;
 }
 .ws-reset {
-  background: #f5f5f5;
+  background: #fff;
   padding: .25rem .75rem;
-  border: 1px solid #ccc;
+  border: 1px solid #000;
   border-radius: .375rem;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s,color .2s;
+  color: #000;
 }
 .ws-reset:hover {
-  background: #e5e5e5;
+  background: #000;
+  color: #fff;
 }
 .ws-ml-auto {
   margin-left: auto;
@@ -189,14 +233,29 @@
 .ws-upload-btn {
   margin-top: 1rem;
   padding: .5rem 1rem;
-  background: #f5f5f5;
-  border: 1px solid #ccc;
+  background: #fff;
+  border: 1px solid #000;
   border-radius: .5rem;
   color: #000;
   cursor: pointer;
+  transition: background .2s,color .2s;
 }
 .ws-upload-btn:hover {
-  background: #e5e5e5;
+  background: #000;
+  color: #fff;
+}
+.ws-validate {
+  background: #fff;
+  border: 1px solid #000;
+  padding: .25rem .75rem;
+  border-radius: .375rem;
+  cursor: pointer;
+  transition: background .2s,color .2s;
+  color: #000;
+}
+.ws-validate:hover {
+  background: #000;
+  color: #fff;
 }
 .ws-gallery-cats {
   display: flex;
@@ -206,16 +265,17 @@
 }
 .ws-cat-btn {
   padding: .25rem .75rem;
-  background: #f5f5f5;
-  border: 1px solid #ccc;
+  background: #fff;
+  border: 1px solid #000;
   border-radius: .375rem;
   color: #000;
   cursor: pointer;
-  transition: background .2s;
+  transition: background .2s,color .2s;
 }
 .ws-cat-btn.active,
 .ws-cat-btn:hover {
-  background: #e5e5e5;
+  background: #000;
+  color: #fff;
 }
 .ws-gallery {
   display: grid;

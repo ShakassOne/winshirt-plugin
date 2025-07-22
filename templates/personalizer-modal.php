@@ -1,4 +1,4 @@
-<div id="winshirt-customizer-modal" class="ws-modal hidden winshirt-theme-inherit"
+<div id="winshirt-customizer-modal" class="ws-modal hidden winshirt-theme-inherit modal"
   data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>"
   data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>"
   data-colors='<?php echo esc_attr( $ws_colors ?? '[]' ); ?>'
@@ -7,17 +7,22 @@
   data-ai-gallery='<?php echo esc_attr( $ws_ai_gallery ?? '[]' ); ?>'
   data-product-id="<?php echo esc_attr( $pid ); ?>"
   data-base-price="<?php echo esc_attr( $product instanceof WC_Product ? $product->get_price() : 0 ); ?>">
-  
-  <div class="ws-modal-content winshirt-theme-inherit">
-    <button type="button" class="ws-modal-close-btn" aria-label="Fermer">
-      <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
-    </button>
 
-    <div class="ws-left winshirt-theme-inherit">
-      <div class="ws-toggle ws-sides-toggle winshirt-theme-inherit">
-        <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit" aria-label="Recto">Recto</button>
-        <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit" aria-label="Verso">Verso</button>
+  <div class="modal__overlay"></div>
+  <div class="ws-modal-content winshirt-theme-inherit modal__container">
+    <div class="modal__header">
+      <div class="ws-toggle ws-sides-toggle winshirt-theme-inherit modal__side-switch">
+        <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit side-btn" aria-label="Recto">Recto</button>
+        <button id="winshirt-back-btn" class="ws-side-btn winshirt-theme-inherit side-btn" aria-label="Verso">Verso</button>
       </div>
+      <div class="ws-colors winshirt-theme-inherit modal__color-picker"></div>
+      <button type="button" class="ws-modal-close-btn modal__close" aria-label="Fermer">
+        <svg viewBox="0 0 24 24"><line x1="4" y1="4" x2="20" y2="20"/><line x1="20" y1="4" x2="4" y2="20"/></svg>
+      </button>
+    </div>
+
+    <div class="modal__content">
+      <div class="ws-left winshirt-theme-inherit modal__mockup-area">
       <div class="ws-preview mockup-fixed ws-section winshirt-theme-inherit">
         <img src="<?php echo esc_url( $default_front ?? '' ); ?>" alt="Mockup" class="ws-preview-img" crossorigin="anonymous" />
         <div class="ws-color-overlay winshirt-theme-inherit"></div>
@@ -34,8 +39,6 @@
         <button class="ws-panel-btn winshirt-theme-inherit" data-tab="svg" aria-label="SVG">✒️ SVG</button>
         <button class="ws-panel-btn winshirt-theme-inherit" data-tab="ai" aria-label="IA">🤖 IA</button>
         <button class="ws-panel-btn" id="ws-upload-panel" aria-label="Upload">⬆ Uploader</button>
-        <button id="ws-reset-visual" class="ws-reset winshirt-theme-inherit" aria-label="Réinitialiser">Réinitialiser ↺</button>
-        <button id="winshirt-close-modal" class="ws-close winshirt-theme-inherit" aria-label="Fermer">Fermer ✖️</button>
       </div>
 
       <div class="ws-tab-content ws-section" id="ws-tab-gallery">
@@ -138,19 +141,22 @@
         </div>
       </div>
 
-      <div class="ws-colors winshirt-theme-inherit"></div>
       <input type="hidden" id="winshirt-custom-data" value="" />
       <input type="hidden" id="winshirt-production-image" value="" />
       <input type="hidden" id="winshirt-front-image" value="" />
-      <input type="hidden" id="winshirt-back-image" value="" />
+        <input type="hidden" id="winshirt-back-image" value="" />
 
-        <div class="ws-actions ws-section winshirt-theme-inherit">
-          <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
-          <button id="btn-valider-personnalisation" class="ws-validate winshirt-theme-inherit" aria-label="Valider la personnalisation">Valider la personnalisation</button>
-          <button id="btn-test-capture" class="ws-validate winshirt-theme-inherit" aria-label="Test capture">Test Capture</button>
-        </div>
+      </div>
 
+    </div> <!-- end modal__content -->
+
+    <div class="ws-actions ws-section winshirt-theme-inherit modal__footer">
+      <small class="ws-size-note">Taille réelle estimée sur un visuel 1500x1500px – affichage à titre indicatif.</small>
+      <button id="ws-reset-visual" class="ws-reset winshirt-theme-inherit modal__reset" aria-label="Réinitialiser">Réinitialiser ↺</button>
+      <button id="btn-valider-personnalisation" class="ws-validate winshirt-theme-inherit modal__save" aria-label="Valider la personnalisation">Valider la personnalisation</button>
+      <button id="btn-test-capture" class="ws-validate winshirt-theme-inherit" aria-label="Test capture">Test Capture</button>
     </div>
-  <div id="ws-debug" class="ws-debug"></div>
-</div>
+
+    <div id="ws-debug" class="ws-debug"></div>
+  </div>
 </div>
