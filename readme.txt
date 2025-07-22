@@ -27,6 +27,7 @@ Une page "Loteries" permet de créer et d'administrer les tirages. Chaque loteri
 * `[loterie_box id="123" vedette="true"]` – carte individuelle de loterie avec tous les détails.
 * `[winshirt_lotteries]` – liste de toutes les loteries sous forme de cartes.
 * `[loterie_thumb id="123"]` – uniquement l'image miniature.
+* `[winshirt_customizer]` – bouton de personnalisation avec chargement automatique des scripts.
 
 ## Ouverture du modale via JavaScript
 Ajoutez un bouton personnalisé et appelez la fonction suivante pour afficher la personnalisation :
