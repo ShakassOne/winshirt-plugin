@@ -31,3 +31,10 @@
 .ws-remove,.admin-remove-zone{position:absolute;right:-18px;top:-18px;background:#fff;border:2px solid #ff3a4b;color:#ff3a4b;border-radius:50%;width:22px;height:22px;text-align:center;cursor:pointer;z-index:30;font-size:17px;line-height:18px;}
 .admin-zone-price{position:absolute;left:0;bottom:-26px;background:#fff;color:#333;border:1px solid #aaa;padding:2px 6px;font-size:14px;border-radius:4px;z-index:20;min-width:54px;}
 @media (max-width:700px){.ws-modal,.admin-mockup-container{min-width:100vw;}.ws-right,.admin-mockup-controls{width:100vw;}.ws-modal-content,.admin-mockup-workspace{width:100vw!important;}}
+@media (max-width: 768px) {
+  #ws-print-zones .ws-print-zone {
+    border: 1.5px dashed #777;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+  }
+}
