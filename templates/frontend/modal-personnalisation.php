@@ -1,12 +1,12 @@
 <div id="winshirt-modal" class="winshirt-modal" data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>" data-default-back="<?php echo esc_attr( $default_back ?? '' ); ?>">
   <div class="winshirt-modal-content">
     <span class="winshirt-close">&times;</span>
-    <ul class="winshirt-tab-links">
-      <li class="active"><a href="#winshirt-tab-galerie">🖼 Galerie</a></li>
-      <li><a href="#winshirt-tab-texte">🔤 Texte</a></li>
-      <li><a href="#winshirt-tab-ia">🤖 IA</a></li>
-      <li><a href="#winshirt-tab-svg">🖌️ SVG</a></li>
-    </ul>
+    <div class="winshirt-buttons">
+      <button type="button" class="winshirt-btn active" data-target="winshirt-tab-galerie">🖼 Galerie</button>
+      <button type="button" class="winshirt-btn" data-target="winshirt-tab-texte">🔤 Texte</button>
+      <button type="button" class="winshirt-btn" data-target="winshirt-tab-ia">🤖 IA</button>
+      <button type="button" class="winshirt-btn" data-target="winshirt-tab-svg">🖌️ SVG</button>
+    </div>
     <div class="winshirt-tab" id="winshirt-tab-galerie">
       <button class="winshirt-upload button alt">Uploader un visuel</button>
       <input type="file" class="winshirt-upload-input" style="display:none" accept="image/*" />
