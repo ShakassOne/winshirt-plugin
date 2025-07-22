@@ -1196,3 +1196,23 @@ function openModal(){
     openModal();
   }
 });
+
+jQuery(function($){
+  var $basic = $('#winshirt-modal');
+  if(!$basic.length) return;
+
+  function showSection(id){
+    $basic.find('.winshirt-tab').removeClass('active');
+    $basic.find('#'+id).addClass('active');
+    $basic.find('.winshirt-btn').removeClass('active');
+    $basic.find('.winshirt-btn[data-target="'+id+'"]').addClass('active');
+  }
+
+  $basic.on('click', '.winshirt-btn', function(e){
+    e.preventDefault();
+    showSection($(this).data('target'));
+  });
+
+  var first = $basic.find('.winshirt-btn').first().data('target');
+  if(first){ showSection(first); }
+});
