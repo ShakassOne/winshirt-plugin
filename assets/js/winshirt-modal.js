@@ -1,6 +1,9 @@
 jQuery(function($){
   var $modal = $('#winshirt-customizer-modal');
-  if(!$modal.length) return;
+  if(!$modal.length){
+    console.error('WinShirt: modal #winshirt-customizer-modal not found');
+    return;
+  }
   $('body').append($modal);
   var state = { side: 'front', color: null, zone: 0, zoneSel: { front: 0, back: 0 } };
   var $canvas = $('#ws-canvas');
@@ -660,7 +663,7 @@ function openModal(){
   loadAiImages();
   renderAiGallery();
   if(state.color){ $('.ws-color-overlay').css('background-color', state.color); }
-  $modal.removeClass('hidden').addClass('open');
+  $modal.removeClass('hidden').addClass('open active');
   if (!$modal.hasClass('ws-mobile')) {
     setTimeout(function(){ $modal.find('.ws-right').addClass('show'); }, 10);
   }
@@ -684,7 +687,7 @@ function openModal(){
     if($tabSelect.length){ $tabSelect.val(tab); }
   }
   function closeModal(){
-    $modal.removeClass('open');
+    $modal.removeClass('open active');
     setTimeout(function(){
       $modal.addClass('hidden');
       $modal.find('.ws-right').removeClass('show');
@@ -696,7 +699,14 @@ function openModal(){
   }
 
   // Ouvre la modale depuis le bouton de personnalisation
-  $('#btn-personnaliser').on('click', function(e){ e.preventDefault(); openModal(); });
+  var $openBtn = $('.btn-personnaliser, #btn-personnaliser');
+  if(!$openBtn.length){
+    console.error('WinShirt: bouton de personnalisation introuvable');
+  }
+  $openBtn.on('click', function(e){
+    e.preventDefault();
+    try{ openModal(); }catch(err){ console.error('WinShirt: ouverture du modal impossible', err); }
+  });
   $('#winshirt-close-modal').on('click', closeModal);
   $('.ws-modal-close-btn').on('click', closeModal);
   $('#ws-reset-visual').on('click', function(){
