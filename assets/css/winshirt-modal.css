@@ -398,3 +398,39 @@
 }
 #winshirt-modal .winshirt-tab { display: none; }
 #winshirt-modal .winshirt-tab.active { display: block; }
+/* Style des icônes et boutons sur mobile */
+@media (max-width: 768px) {
+  .modal__footer button,
+  .ws-panel-btn,
+  .side-btn {
+    font-size: 0.9rem;
+    padding: 0.5em 1em;
+    border: 1.5px solid #111;
+    background: #fff;
+    color: #111;
+    border-radius: 0.5em;
+    transition: all 0.15s ease;
+  }
+
+  .modal__footer button:hover,
+  .ws-panel-btn:hover,
+  .side-btn:hover {
+    background: #111;
+    color: #fff;
+    border-color: #111;
+  }
+
+  /* Indicateur d'action active */
+  .ws-panel-btn.active,
+  .side-btn.active {
+    background: #f0f0f0;
+    border-bottom: 2px solid #111;
+  }
+
+  /* Zone d'impression sur mobile */
+  #ws-print-zones .ws-print-zone {
+    border: 1.5px dashed #777;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+  }
+}
