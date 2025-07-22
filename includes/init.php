@@ -6,7 +6,8 @@ add_action('wp_enqueue_scripts', function () {
     global $post;
     $needs_assets = is_product();
     if ( ! $needs_assets && isset( $post->post_content ) ) {
-        $needs_assets = has_shortcode( $post->post_content, 'product_page' );
+        $needs_assets = has_shortcode( $post->post_content, 'product_page' ) ||
+            has_shortcode( $post->post_content, 'winshirt_customizer' );
     }
     if ( ! $needs_assets && function_exists( 'is_account_page' ) && is_account_page() && is_wc_endpoint_url( 'mes-personnalisations' ) ) {
         $needs_assets = true;
