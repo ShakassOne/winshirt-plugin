@@ -698,17 +698,23 @@ function openModal(){
     }, 300);
   }
 
-  // Ouvre la modale depuis le bouton de personnalisation
-  // utilise la délégation pour prendre en compte les boutons ajoutés dynamiquement
-  var $openBtn = $('.btn-personnaliser, #btn-personnaliser');
-  if(!$openBtn.length){
-    console.error('WinShirt: bouton de personnalisation introuvable');
+// WinShirt: ouverture du modal de personnalisation
+
+// Délégation d’événement = fonctionne même si le bouton est injecté après coup
+$(document).on('click', '.btn-personnaliser, #btn-personnaliser', function(e){
+  e.preventDefault();
+  try {
+    openModal();
+  } catch(err) {
+    console.error('WinShirt: ouverture du modal impossible', err);
   }
-  $(document).on('click', '.btn-personnaliser, #btn-personnaliser', function(e){
-    e.preventDefault();
-    try{ openModal(); }catch(err){
-      console.error('WinShirt: ouverture du modal impossible', err);
-    }
+});
+
+// Debug visuel (optionnel) : log si bouton absent au DOM load
+if (!$('.btn-personnaliser, #btn-personnaliser').length) {
+  console.warn('WinShirt: bouton de personnalisation introuvable au DOMContentLoaded');
+}
+
   });
   $('#winshirt-close-modal').on('click', closeModal);
   $('.ws-modal-close-btn').on('click', closeModal);
