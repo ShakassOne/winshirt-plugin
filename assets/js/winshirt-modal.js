@@ -701,7 +701,10 @@ function openModal(){
 // WinShirt: ouverture du modal de personnalisation
 
 // Délégation d’événement = fonctionne même si le bouton est injecté après coup
-$(document).on('click', '.btn-personnaliser, #btn-personnaliser', function(e){
+// Sur certains thémès mobiles, l'événement "click" peut ne pas se déclencher
+// correctement. On écoute également "touchstart" pour garantir l'ouverture du
+// modal sur tous les navigateurs mobiles.
+$(document).on('click touchstart', '.btn-personnaliser, #btn-personnaliser', function(e){
   e.preventDefault();
   try {
     openModal();
