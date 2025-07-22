@@ -1,8 +1,9 @@
 jQuery(function($){
+  function init(){
   var $modal = $('#winshirt-customizer-modal');
   if(!$modal.length){
     console.error('WinShirt: modal #winshirt-customizer-modal not found');
-    return;
+    return false;
   }
   $('body').append($modal);
   var state = { side: 'front', color: null, zone: 0, zoneSel: { front: 0, back: 0 } };
@@ -718,7 +719,6 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
   console.warn('WinShirt: bouton de personnalisation introuvable au DOMContentLoaded');
 }
 
-  });
   $('#winshirt-close-modal').on('click', closeModal);
   $('.ws-modal-close-btn').on('click', closeModal);
   $('#ws-reset-visual').on('click', function(){
@@ -1210,15 +1210,20 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
       alert('Capture enregistrée');
     });
   });
-
   switchSide('front');
   openTab('gallery');
   if(localStorage.getItem('winshirt_resume') === '1'){
     localStorage.removeItem('winshirt_resume');
     openModal();
   }
-});
+  return true;
+}
 
+  if(!init()){
+    var observer = new MutationObserver(function(){ if(init()){ observer.disconnect(); } });
+    observer.observe(document.body,{childList:true,subtree:true});
+  }
+});
 jQuery(function($){
   var $basic = $('#winshirt-modal');
   if(!$basic.length) return;
