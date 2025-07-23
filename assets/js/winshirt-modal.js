@@ -707,6 +707,8 @@ function openModal(){
 // modal sur tous les navigateurs mobiles.
 $(document).on('click touchstart', '.btn-personnaliser, #btn-personnaliser', function(e){
   e.preventDefault();
+  e.stopPropagation();
+  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
   try {
     openModal();
   } catch(err) {
