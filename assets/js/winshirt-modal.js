@@ -1,3 +1,17 @@
+// Déclencheur universel pour ouvrir le modal WinShirt
+document.addEventListener('click', function(e) {
+  const btn = e.target.closest('.btn-personnaliser');
+  if(btn) {
+    const pid = btn.getAttribute('data-pid');
+    if(window.openWinShirtModal) {
+      openWinShirtModal(pid);
+    } else {
+      alert("Erreur : la personnalisation n'est pas disponible pour le moment.");
+    }
+    e.preventDefault();
+  }
+});
+
 jQuery(function($){
   function init(){
   var $modal = $('#winshirt-customizer-modal');
@@ -699,27 +713,7 @@ function openModal(){
     }, 300);
   }
 
-// WinShirt: ouverture du modal de personnalisation
 
-// Délégation d’événement = fonctionne même si le bouton est injecté après coup
-// Sur certains thémès mobiles, l'événement "click" peut ne pas se déclencher
-// correctement. On écoute également "touchstart" pour garantir l'ouverture du
-// modal sur tous les navigateurs mobiles.
-$(document).on('click touchstart', '.btn-personnaliser, #btn-personnaliser', function(e){
-  e.preventDefault();
-  e.stopPropagation();
-  if (e.stopImmediatePropagation) e.stopImmediatePropagation();
-  try {
-    openModal();
-  } catch(err) {
-    console.error('WinShirt: ouverture du modal impossible', err);
-  }
-});
-
-// Debug visuel (optionnel) : log si bouton absent au DOM load
-if (!$('.btn-personnaliser, #btn-personnaliser').length) {
-  console.warn('WinShirt: bouton de personnalisation introuvable au DOMContentLoaded');
-}
 
   $('#winshirt-close-modal').on('click', closeModal);
   $('.ws-modal-close-btn').on('click', closeModal);
