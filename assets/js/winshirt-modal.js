@@ -1,14 +1,17 @@
 // Déclencheur universel pour ouvrir le modal WinShirt
+// Gestion robuste du bouton "Personnaliser ce produit"
 document.addEventListener('click', function(e) {
-  const btn = e.target.closest('.btn-personnaliser');
-  if(btn) {
-    const pid = btn.getAttribute('data-pid');
-    if(window.openWinShirtModal) {
-      openWinShirtModal(pid);
+  var btn = e.target.closest('.btn-personnaliser');
+  if (btn) {
+    var pid = btn.getAttribute('data-pid');
+    console.log("Bouton personnaliser cliqué, pid=", pid, "openWinShirtModal=", typeof window.openWinShirtModal);
+    if (typeof window.openWinShirtModal === "function") {
+      window.openWinShirtModal(pid);
     } else {
-      alert("Erreur : la personnalisation n'est pas disponible pour le moment.");
+      alert("La personnalisation n'est pas disponible pour le moment.");
     }
     e.preventDefault();
+    return false;
   }
 });
 
@@ -284,7 +287,8 @@ jQuery(function($){
       if(!$el.is(':visible')){
         var desc = this.tagName.toLowerCase();
         if(this.id) desc += '#' + this.id;
-        if(this.className) desc += '.' + this.className.trim().replace(/\s+/g,'.');
+        var cls = this.getAttribute('class');
+        if(cls) desc += '.' + cls.trim().replace(/\s+/g,'.');
         hidden.push(desc);
       }
     });
