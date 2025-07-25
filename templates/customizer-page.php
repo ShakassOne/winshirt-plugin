@@ -3,6 +3,9 @@
  * Dedicated customization page.
  * Expect variables from winshirt_get_customizer_vars().
  */
+if ( empty( $product ) && isset( $GLOBALS['winshirt_customizer_vars'] ) ) {
+    extract( $GLOBALS['winshirt_customizer_vars'] );
+}
 ?>
 <div id="winshirt-customizer-modal" class="ws-modal open active ws-page winshirt-theme-inherit modal"
   data-default-front="<?php echo esc_attr( $default_front ?? '' ); ?>"

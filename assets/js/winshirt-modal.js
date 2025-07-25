@@ -3,7 +3,7 @@
 console.log('JS du bouton personnalisation chargé');
 document.addEventListener('click', function(e) {
   var btn = e.target.closest('.btn-personnaliser');
-  if (btn) {
+  if (btn && btn.hasAttribute('data-pid')) {
     var pid = btn.getAttribute('data-pid');
     console.log("Bouton personnaliser cliqué, pid=", pid, "openWinShirtModal=", typeof window.openWinShirtModal);
     if (typeof window.openWinShirtModal === "function") {

@@ -237,6 +237,20 @@ function winshirt_replace_customizer_page( $content ) {
     return $content;
 }
 
+add_filter( 'template_include', 'winshirt_customizer_template' );
+function winshirt_customizer_template( $template ) {
+    $page_id = absint( get_option( 'winshirt_custom_page' ) );
+    if ( $page_id && is_page( $page_id ) && isset( $_GET['product_id'] ) ) {
+        $pid  = absint( $_GET['product_id'] );
+        $vars = winshirt_get_customizer_vars( $pid );
+        if ( $vars ) {
+            $GLOBALS['winshirt_customizer_vars'] = $vars;
+            return WINSHIRT_PATH . 'templates/customizer-page.php';
+        }
+    }
+    return $template;
+}
+
 // Register custom post type for lotteries
 add_action('init', function () {
     register_post_type('winshirt_lottery', [
@@ -418,7 +432,8 @@ function winshirt_render_customize_button() {
 
     if ( $page_id ) {
         $url = add_query_arg( 'product_id', $pid, get_permalink( $page_id ) );
-        echo '<div class="winshirt-personnaliser-btn"><a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</a></div>';
+        echo '<div class="winshirt-personnaliser-btn"><a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt glow-on-hover winshirt-customizer-link">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</a></div>';
+
     } else {
         echo '<div class="winshirt-personnaliser-btn"><button class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser" data-pid="' . esc_attr( $pid ) . '">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
         include WINSHIRT_PATH . 'templates/personalizer-modal.php';
