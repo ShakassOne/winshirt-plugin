@@ -30,8 +30,8 @@ Une page "Loteries" permet de créer et d'administrer les tirages. Chaque loteri
 * `[winshirt_customizer]` – bouton de personnalisation avec chargement automatique des scripts.
 
 ## Ouverture du modale via JavaScript
-Ajoutez un bouton personnalisé et appelez la fonction suivante pour afficher la personnalisation :
+Ajoutez un bouton personnalisé comportant l'attribut `data-pid` ; le déclenchement se fait automatiquement :
 
 ```
-<button onclick="openWinShirtModal(123)">Personnaliser</button>
+<button class="btn-personnaliser" data-pid="123">Personnaliser</button>
 ```

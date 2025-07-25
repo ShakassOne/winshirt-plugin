@@ -325,7 +325,7 @@ function winshirt_render_customize_button() {
 
     // Bouton d\xE9clenchant la personnalisation sur la fiche produit
     // Utilise les mêmes classes que le bouton "Ajouter au panier" pour hériter du style du thème
-    echo '<div class="winshirt-personnaliser-btn"><button id="btn-personnaliser" class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser" onclick="if(window.openWinShirtModal){openWinShirtModal(' . $pid . ');}return false;">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
+    echo '<div class="winshirt-personnaliser-btn">\n  <button class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser" data-pid="' . esc_attr( $pid ) . '">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button>\n</div>';
     $default_front = $front_url;
     $default_back  = $back_url;
     $ws_colors     = wp_json_encode( $colors );
