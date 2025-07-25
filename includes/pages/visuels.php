@@ -22,6 +22,24 @@ function winshirt_send_to_ftp($file_path) {
     }
 }
 
+function winshirt_get_visual_categories() {
+    $posts = get_posts([
+        'post_type'   => 'winshirt_visual',
+        'numberposts' => -1,
+        'fields'      => 'ids',
+    ]);
+    $cats = [];
+    foreach ($posts as $pid) {
+        $cat = get_post_meta($pid, '_winshirt_category', true);
+        if ($cat !== '') {
+            $cats[] = $cat;
+        }
+    }
+    $cats = array_unique($cats);
+    sort($cats, SORT_NATURAL | SORT_FLAG_CASE);
+    return $cats;
+}
+
 function winshirt_page_designs() {
     $filters = [
         'date' => sanitize_text_field($_GET['date'] ?? ''),
@@ -62,7 +80,11 @@ function winshirt_page_designs() {
             ]);
             if ($post_id) {
                 set_post_thumbnail($post_id, $attachment_id);
-                update_post_meta($post_id, '_winshirt_category', sanitize_text_field($_POST['category'] ?? ''));
+                $category = sanitize_text_field($_POST['category_new'] ?? '');
+                if (!$category) {
+                    $category = sanitize_text_field($_POST['category_select'] ?? '');
+                }
+                update_post_meta($post_id, '_winshirt_category', $category);
                 update_post_meta($post_id, '_winshirt_visual_validated', 'no');
                 $path = get_attached_file($attachment_id);
                 winshirt_send_to_ftp($path);
@@ -90,7 +112,8 @@ function winshirt_page_designs() {
         ];
     }
 
-    $visuals = get_posts($query);
+    $visuals    = get_posts($query);
+    $categories = winshirt_get_visual_categories();
 
     echo '<div class="wrap"><h1>Bibliothèque des visuels</h1>';
     include WINSHIRT_PATH . 'templates/admin/partials/visuels-list.php';
