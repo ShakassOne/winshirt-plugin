@@ -244,6 +244,10 @@
   background: #000;
   color: #fff;
 }
+.ws-qr-field input {
+  display: block;
+  margin: .25rem 0;
+}
 .ws-validate {
   background: #fff;
   border: 1px solid #000;

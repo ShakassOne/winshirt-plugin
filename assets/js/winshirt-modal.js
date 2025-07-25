@@ -768,24 +768,39 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
     $(this).val('');
   });
 
-  $('#ws-svg-upload-trigger').on('click', function(e){
+  $('#ws-qr-type').on('change', function(){
+    var t = $(this).val();
+    $('.ws-qr-field').addClass('hidden');
+    $('#ws-qr-' + t + '-wrap').removeClass('hidden');
+  });
+
+  function generateQr(text){
+    if(typeof QRious === 'undefined') return;
+    var qr = new QRious({ value: text, size: 512 });
+    var url = qr.toDataURL();
+    var $it = addItem('qr', url);
+    selectItem($it);
+  }
+
+  $('#ws-generate-qr').on('click', function(e){
     e.preventDefault();
-    $('#ws-svg-upload-input').trigger('click');
-  });
-  $('#ws-svg-upload-input').on('change', function(){
-    var file = this.files[0];
-    if(!file) return;
-    var reader = new FileReader();
-    reader.onload = function(e){ addSvgItem(e.target.result); };
-    reader.readAsText(file);
-    $(this).val('');
-  });
-  $('#ws-svg-color-picker').on('input change', function(){
-    if(activeItem && activeItem.data('type')==='svg'){
-      activeItem.attr('data-color', $(this).val());
-      activeItem.find('svg').css('color', $(this).val());
-      $colorInput.val($(this).val());
-      saveState();
+    var type = $('#ws-qr-type').val();
+    if(type === 'url'){
+      var u = $('#ws-qr-url').val().trim();
+      if(u){ generateQr(u); }
+    } else if(type === 'image'){
+      var file = $('#ws-qr-image')[0].files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev){ generateQr(ev.target.result); };
+      reader.readAsDataURL(file);
+    } else if(type === 'vcard'){
+      var first = $('#ws-qr-prenom').val().trim();
+      var last = $('#ws-qr-nom').val().trim();
+      var mail = $('#ws-qr-email').val().trim();
+      var tel = $('#ws-qr-tel').val().trim();
+      var v = 'BEGIN:VCARD\nVERSION:3.0\nN:'+last+';'+first+'\nFN:'+first+' '+last+'\nEMAIL:'+mail+'\nTEL:'+tel+'\nEND:VCARD';
+      generateQr(v);
     }
   });
 
@@ -841,9 +856,9 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
 
 
   function addItem(type, content){
-    // Supprime l'image existante sur la même face si besoin
-    if(type === 'image') {
-      $canvas.children('.ws-item[data-type="image"][data-side="'+state.side+'"]').remove();
+    // Supprime l'image ou le QR existant sur la même face si besoin
+    if(type === 'image' || type === 'qr') {
+      $canvas.children('.ws-item[data-type="'+type+'"][data-side="'+state.side+'"]').remove();
     }
 
     var $zone = $(getContainment());
@@ -867,11 +882,11 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
         maxHeight: '100%'
       });
 
-    if(type === 'image'){
+    if(type === 'image' || type === 'qr'){
       $item.append('<img src="'+content+'" alt="" style="width:100%;height:100%;pointer-events:none;"/>');
     } else if(type === 'svg'){
       $item.append('<div class="ws-svg-wrap">'+content+'</div>');
-      var col = $('#ws-svg-color-picker').val() || '#000000';
+      var col = '#000000';
       $item.attr('data-color', col);
       $item.find('svg').css('color', col);
     } else {
@@ -1033,7 +1048,6 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
       if(activeItem.data('type') === 'text' || activeItem.data('type') === 'svg'){
         var col = activeItem.attr('data-color') || '#000000';
         $colorInput.val(col);
-        if(activeItem.data('type') === 'svg'){ $('#ws-svg-color-picker').val(col); }
         $colorInput.closest('label').show();
         $removeBgBtn.addClass('hidden');
         if(activeItem.data('type') === 'text'){
@@ -1084,7 +1098,6 @@ if (!$('.btn-personnaliser, #btn-personnaliser').length) {
     } else if(activeItem.data('type')==='svg'){
       activeItem.attr('data-color', $(this).val());
       activeItem.find('svg').css('color', $(this).val());
-      $('#ws-svg-color-picker').val($(this).val());
     } else {
       return;
     }
