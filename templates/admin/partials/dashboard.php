@@ -42,3 +42,18 @@
     <li><a href="<?php echo esc_url(admin_url('admin.php?page=winshirt-settings')); ?>">Paramètres du plugin</a></li>
   </ul>
 </div>
+
+<div class="winshirt-custom-page" style="margin-top:30px;">
+  <h3><?php esc_html_e('Page de personnalisation', 'winshirt'); ?></h3>
+  <form method="post">
+    <?php wp_nonce_field('winshirt_save_custom_page'); ?>
+    <?php
+      wp_dropdown_pages([
+        'name' => 'winshirt_custom_page',
+        'selected' => get_option('winshirt_custom_page'),
+        'show_option_none' => __('— Sélectionner —', 'winshirt')
+      ]);
+      submit_button(__('Enregistrer', 'winshirt'));
+    ?>
+  </form>
+</div>

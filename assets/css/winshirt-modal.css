@@ -438,3 +438,23 @@
     background: rgba(255,255,255,0.1);
   }
 }
+
+/* Customizer page layout */
+.ws-modal.ws-page {
+  position: relative;
+  inset: auto;
+  background: none;
+  padding: 0;
+}
+.ws-modal.ws-page .modal__overlay,
+.ws-modal.ws-page .ws-modal-close-btn {
+  display: none;
+}
+.ws-modal.ws-page .ws-modal-content {
+  max-width: 100%;
+  width: 100%;
+  max-height: none;
+  box-shadow: none;
+  transform: none;
+  opacity: 1;
+}
