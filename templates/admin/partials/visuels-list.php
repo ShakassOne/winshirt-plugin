@@ -1,7 +1,7 @@
 <?php
 /**
  * Admin visual management interface.
- * Variables: $visuals, $filters
+ * Variables: $visuals, $filters, $categories
  */
 ?>
 <form method="get" style="margin-bottom:15px;">
@@ -72,8 +72,19 @@
             <td><input type="file" name="file" id="visual-file" required /></td>
         </tr>
         <tr>
-            <th scope="row"><label for="visual-category"><?php esc_html_e('Catégorie', 'winshirt'); ?></label></th>
-            <td><input type="text" name="category" id="visual-category" /></td>
+            <th scope="row"><label for="visual-category-select"><?php esc_html_e('Catégorie', 'winshirt'); ?></label></th>
+            <td>
+                <select name="category_select" id="visual-category-select">
+                    <option value=""><?php esc_html_e('Choisir', 'winshirt'); ?></option>
+                    <?php foreach ($categories as $cat) : ?>
+                        <option value="<?php echo esc_attr($cat); ?>"><?php echo esc_html($cat); ?></option>
+                    <?php endforeach; ?>
+                </select>
+                <p style="margin-top:6px;">
+                    <label for="visual-category-new"><?php esc_html_e('Ou créer une nouvelle', 'winshirt'); ?>:</label>
+                    <input type="text" name="category_new" id="visual-category-new" />
+                </p>
+            </td>
         </tr>
     </table>
     <p><input type="submit" class="button button-primary" value="<?php esc_attr_e('Uploader', 'winshirt'); ?>" /></p>
