@@ -36,7 +36,7 @@
       <div class="ws-panel winshirt-theme-inherit">
         <button class="ws-panel-btn winshirt-theme-inherit" data-tab="gallery" aria-label="Galerie">🖼 Galerie</button>
         <button class="ws-panel-btn winshirt-theme-inherit" data-tab="text" aria-label="Texte">🔤 Texte</button>
-        <button class="ws-panel-btn winshirt-theme-inherit" data-tab="svg" aria-label="SVG">✒️ SVG</button>
+        <button class="ws-panel-btn winshirt-theme-inherit" data-tab="qr" aria-label="QR Code">🔳 QRCode</button>
         <button class="ws-panel-btn winshirt-theme-inherit" data-tab="ai" aria-label="IA">🤖 IA</button>
         <button class="ws-panel-btn" id="ws-upload-panel" aria-label="Upload">⬆ Uploader</button>
       </div>
@@ -107,11 +107,28 @@
         <div id="ws-ai-gallery" class="ws-ai-gallery winshirt-theme-inherit"></div>
       </div>
 
-      <div class="ws-tab-content ws-section hidden" id="ws-tab-svg">
-        <p>Bibliothèque d’icônes vectorielles (SVG).</p>
-        <button id="ws-svg-upload-trigger" class="ws-upload-btn winshirt-theme-inherit" aria-label="Uploader un SVG">Uploader un SVG</button>
-        <input type="file" id="ws-svg-upload-input" accept=".svg" class="hidden winshirt-theme-inherit" />
-        <input type="color" id="ws-svg-color-picker" class="winshirt-theme-inherit" value="#000000" style="margin-top:.5rem;" />
+      <div class="ws-tab-content ws-section hidden" id="ws-tab-qr">
+        <p>Générez un QR Code personnalisé.</p>
+        <label class="winshirt-theme-inherit">Type
+          <select id="ws-qr-type" class="ws-select winshirt-theme-inherit">
+            <option value="url">URL</option>
+            <option value="image">Image</option>
+            <option value="vcard">vCard</option>
+          </select>
+        </label>
+        <div id="ws-qr-url-wrap" class="ws-qr-field">
+          <input type="text" id="ws-qr-url" class="ws-input input-text winshirt-theme-inherit" placeholder="https://..." />
+        </div>
+        <div id="ws-qr-image-wrap" class="ws-qr-field hidden">
+          <input type="file" id="ws-qr-image" accept="image/*" class="winshirt-theme-inherit" />
+        </div>
+        <div id="ws-qr-vcard-wrap" class="ws-qr-field hidden">
+          <input type="text" id="ws-qr-prenom" class="ws-input input-text winshirt-theme-inherit" placeholder="Prénom" />
+          <input type="text" id="ws-qr-nom" class="ws-input input-text winshirt-theme-inherit" placeholder="Nom" />
+          <input type="email" id="ws-qr-email" class="ws-input input-text winshirt-theme-inherit" placeholder="Email" />
+          <input type="tel" id="ws-qr-tel" class="ws-input input-text winshirt-theme-inherit" placeholder="Téléphone" />
+        </div>
+        <button id="ws-generate-qr" class="ws-upload-btn winshirt-theme-inherit" aria-label="Générer le QR Code">Générer</button>
       </div>
 
 

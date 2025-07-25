@@ -20,7 +20,8 @@ add_action('wp_enqueue_scripts', function () {
 
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('html2canvas', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', [], '1.4.1', true);
-        wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch', 'html2canvas'], '1.0', true);
+        wp_enqueue_script('qrious', 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js', [], '4.0.2', true);
+        wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch', 'html2canvas', 'qrious'], '1.0', true);
         wp_localize_script('winshirt-modal', 'winshirtAjax', [
             'url'      => admin_url('admin-ajax.php'),
             'rest'     => esc_url_raw(rest_url('winshirt/v1/')),
