@@ -23,6 +23,7 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
         wp_enqueue_style('winshirt-theme', WINSHIRT_URL . 'assets/css/winshirt-theme.css', [], '1.0');
         wp_enqueue_style('winshirt-mockups', WINSHIRT_URL . 'assets/css/winshirt-mockups.css', [], '1.0');
+        wp_enqueue_style('winshirt-customizer-page', WINSHIRT_URL . 'assets/css/winshirt-customizer-page.css', [], '1.0');
 
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('html2canvas', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', [], '1.4.1', true);
@@ -221,15 +222,14 @@ add_filter( 'the_content', 'winshirt_replace_customizer_page' );
 function winshirt_replace_customizer_page( $content ) {
     $page_id = absint( get_option( 'winshirt_custom_page' ) );
     if ( $page_id && is_page( $page_id ) && in_the_loop() && is_main_query() ) {
-        $pid = isset( $_GET['product_id'] ) ? absint( $_GET['product_id'] ) : 0;
-        if ( ! $pid ) {
-            return $content;
+        $pid  = isset( $_GET['product_id'] ) ? absint( $_GET['product_id'] ) : 0;
+        $vars = $pid ? winshirt_get_customizer_vars( $pid ) : false;
+        $product = $vars ? $vars['product'] : null;
+        if ( $vars ) {
+            $GLOBALS['winshirt_customizer_vars'] = $vars;
+        } else {
+            $GLOBALS['winshirt_customizer_vars'] = [ 'product' => null ];
         }
-        $vars = winshirt_get_customizer_vars( $pid );
-        if ( ! $vars ) {
-            return $content;
-        }
-        extract( $vars );
         ob_start();
         include WINSHIRT_PATH . 'templates/customizer-page.php';
         return ob_get_clean();
@@ -240,13 +240,15 @@ function winshirt_replace_customizer_page( $content ) {
 add_filter( 'template_include', 'winshirt_customizer_template' );
 function winshirt_customizer_template( $template ) {
     $page_id = absint( get_option( 'winshirt_custom_page' ) );
-    if ( $page_id && is_page( $page_id ) && isset( $_GET['product_id'] ) ) {
-        $pid  = absint( $_GET['product_id'] );
-        $vars = winshirt_get_customizer_vars( $pid );
+    if ( $page_id && is_page( $page_id ) ) {
+        $pid  = isset( $_GET['product_id'] ) ? absint( $_GET['product_id'] ) : 0;
+        $vars = $pid ? winshirt_get_customizer_vars( $pid ) : false;
         if ( $vars ) {
             $GLOBALS['winshirt_customizer_vars'] = $vars;
-            return WINSHIRT_PATH . 'templates/customizer-page.php';
+        } else {
+            $GLOBALS['winshirt_customizer_vars'] = [ 'product' => null ];
         }
+        return WINSHIRT_PATH . 'templates/customizer-page.php';
     }
     return $template;
 }

@@ -1,0 +1,60 @@
+.winshirt-customizer-container {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 2rem 1rem;
+  background: #fff;
+  border-radius: 1.2rem;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.09);
+  min-height: 85vh;
+}
+.winshirt-no-product {
+  text-align: center;
+}
+.winshirt-btn,
+.winshirt-btn-main,
+.winshirt-btn-small {
+  display: inline-block;
+  background: #00c569;
+  color: #fff;
+  border-radius: .8rem;
+  padding: .8em 2.2em;
+  font-weight: bold;
+  text-decoration: none;
+  margin: 1.5em .5em .5em .5em;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: background 0.15s;
+}
+.winshirt-btn-small { padding: .5em 1.4em; font-size: .92em; }
+.winshirt-btn:hover { background: #009d56; }
+.winshirt-featured-products {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 2em;
+  margin: 2.5em auto 0 auto;
+  max-width: 800px;
+}
+.winshirt-featured-product {
+  background: #f6f6f8;
+  border-radius: 1em;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.04);
+  overflow: hidden;
+  width: 160px;
+  text-align: center;
+  padding: .7em;
+  transition: box-shadow .15s;
+}
+.winshirt-featured-product img { width: 100%; border-radius: .7em; }
+.winshirt-featured-title { margin: .7em 0 0 0; font-weight: 500; }
+.winshirt-customizer-main { padding: 1em 0; }
+.winshirt-customizer-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 1em;
+  border-bottom: 1px solid #f0f0f0; margin-bottom: 2em;
+}
+@media (max-width: 600px) {
+  .winshirt-customizer-container { padding: 1em .2em; }
+  .winshirt-featured-products { gap: 1em; }
+  .winshirt-featured-product { width: 48vw; min-width: 135px; }
+  .winshirt-customizer-header { flex-direction: column; align-items: flex-start; }
+}
