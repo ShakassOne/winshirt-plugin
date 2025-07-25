@@ -1,5 +1,6 @@
 // Déclencheur universel pour ouvrir le modal WinShirt
 // Gestion robuste du bouton "Personnaliser ce produit"
+console.log('JS du bouton personnalisation chargé');
 document.addEventListener('click', function(e) {
   var btn = e.target.closest('.btn-personnaliser');
   if (btn) {
