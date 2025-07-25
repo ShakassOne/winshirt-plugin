@@ -12,6 +12,12 @@ add_action('wp_enqueue_scripts', function () {
     if ( ! $needs_assets && function_exists( 'is_account_page' ) && is_account_page() && is_wc_endpoint_url( 'mes-personnalisations' ) ) {
         $needs_assets = true;
     }
+    if ( ! $needs_assets ) {
+        $page_id = absint( get_option( 'winshirt_custom_page' ) );
+        if ( $page_id && is_page( $page_id ) ) {
+            $needs_assets = true;
+        }
+    }
     if ( $needs_assets ) {
         wp_enqueue_style('winshirt-modal', WINSHIRT_URL . 'assets/css/winshirt-modal.css', [], '1.0');
         wp_enqueue_style('winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0');
@@ -211,6 +217,26 @@ function winshirt_customizer_shortcode() {
 }
 add_shortcode( 'winshirt_customizer', 'winshirt_customizer_shortcode' );
 
+add_filter( 'the_content', 'winshirt_replace_customizer_page' );
+function winshirt_replace_customizer_page( $content ) {
+    $page_id = absint( get_option( 'winshirt_custom_page' ) );
+    if ( $page_id && is_page( $page_id ) && in_the_loop() && is_main_query() ) {
+        $pid = isset( $_GET['product_id'] ) ? absint( $_GET['product_id'] ) : 0;
+        if ( ! $pid ) {
+            return $content;
+        }
+        $vars = winshirt_get_customizer_vars( $pid );
+        if ( ! $vars ) {
+            return $content;
+        }
+        extract( $vars );
+        ob_start();
+        include WINSHIRT_PATH . 'templates/customizer-page.php';
+        return ob_get_clean();
+    }
+    return $content;
+}
+
 // Register custom post type for lotteries
 add_action('init', function () {
     register_post_type('winshirt_lottery', [
@@ -245,6 +271,8 @@ add_action('admin_init', function () {
     // Register Supabase settings
     register_setting('winshirt_options', 'winshirt_supabase_url');
     register_setting('winshirt_options', 'winshirt_supabase_key');
+    // Register customizer page option
+    register_setting('winshirt_options', 'winshirt_custom_page');
 });
 
 // Enqueue assets on WinShirt admin pages
@@ -261,35 +289,33 @@ add_action('admin_enqueue_scripts', function ($hook) {
     }
 });
 
-// Add customize button and modal on product page
-function winshirt_render_customize_button() {
-    global $product;
-    if ( ! $product instanceof WC_Product ) {
-        return;
+/**
+ * Retrieve all data required for the customizer from a product ID.
+ *
+ * @param int $product_id
+ * @return array|false
+ */
+function winshirt_get_customizer_vars( $product_id ) {
+    $product = wc_get_product( $product_id );
+    if ( ! $product ) {
+        return false;
     }
 
-    $pid            = $product->get_id();
-    $enabled        = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
-    $show_meta      = get_post_meta( $pid, '_winshirt_show_button', true );
-    $show_button    = $show_meta === '' ? true : $show_meta === 'yes';
-    $front_id       = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
-    $back_id        = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
-    $mockups_raw    = get_post_meta( $pid, '_winshirt_mockups', true );
-    $has_mockup     = $front_id || $back_id || ! empty( $mockups_raw );
-
-    // Display button only if the product is marked as customizable
-    // and the button should be shown
-    if ( ! $enabled || ! $has_mockup || ! $show_button ) {
-        return;
+    $pid         = $product->get_id();
+    $enabled     = get_post_meta( $pid, '_winshirt_enabled', true ) === 'yes';
+    $front_id    = absint( get_post_meta( $pid, '_winshirt_default_mockup_front', true ) );
+    $back_id     = absint( get_post_meta( $pid, '_winshirt_default_mockup_back', true ) );
+    $mockups_raw = get_post_meta( $pid, '_winshirt_mockups', true );
+    $has_mockup  = $front_id || $back_id || ! empty( $mockups_raw );
+    if ( ! $enabled || ! $has_mockup ) {
+        return false;
     }
 
     $front_img_id = $front_id ? get_post_meta( $front_id, '_winshirt_front_image', true ) : 0;
     $back_img_id  = $back_id ? get_post_meta( $back_id, '_winshirt_back_image', true ) : 0;
+    $front_url    = $front_img_id ? wp_get_attachment_image_url( $front_img_id, 'full' ) : '';
+    $back_url     = $back_img_id ? wp_get_attachment_image_url( $back_img_id, 'full' ) : '';
 
-    $front_url  = $front_img_id ? wp_get_attachment_image_url( $front_img_id, 'full' ) : '';
-    $back_url   = $back_img_id ? wp_get_attachment_image_url( $back_img_id, 'full' ) : '';
-
-    // Retrieve available colors from the default mockup
     $colors_meta = $front_id ? get_post_meta( $front_id, '_winshirt_colors', true ) : [];
     $colors_meta = is_array( $colors_meta ) ? $colors_meta : [];
     $colors      = [];
@@ -300,8 +326,7 @@ function winshirt_render_customize_button() {
         ];
     }
 
-    // Retrieve print zones for front/back sides
-    $zones      = [];
+    $zones = [];
     foreach ( array_unique( array_filter( [ $front_id, $back_id ] ) ) as $mid ) {
         if ( ! $mid ) {
             continue;
@@ -323,28 +348,15 @@ function winshirt_render_customize_button() {
         }
     }
 
-    // Bouton d\xE9clenchant la personnalisation sur la fiche produit
-    // Utilise les mêmes classes que le bouton "Ajouter au panier" pour hériter du style du thème
-    echo '<div class="winshirt-personnaliser-btn"><button class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser" data-pid="' . esc_attr( $pid ) . '">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
-    $default_front = $front_url;
-    $default_back  = $back_url;
-    $ws_colors     = wp_json_encode( $colors );
-    $ws_zones      = wp_json_encode( $zones );
-
-    // Retrieve validated visuals for the gallery
     $gallery_posts = get_posts([
         'post_type'   => 'winshirt_visual',
         'numberposts' => -1,
         'orderby'     => 'date',
         'order'       => 'DESC',
         'meta_query'  => [
-            [
-                'key'   => '_winshirt_visual_validated',
-                'value' => 'yes',
-            ],
+            [ 'key' => '_winshirt_visual_validated', 'value' => 'yes' ],
         ],
     ]);
-
     $gallery = [];
     foreach ( $gallery_posts as $g ) {
         $url = get_the_post_thumbnail_url( $g->ID, 'full' );
@@ -357,19 +369,17 @@ function winshirt_render_customize_button() {
             ];
         }
     }
-    $ws_gallery = wp_json_encode( $gallery );
 
-// Retrieve validated AI generated visuals
-$ai_posts = get_posts([
-    'post_type'   => 'winshirt_visual',
-    'numberposts' => -1,
-    'orderby'     => 'date',
-    'order'       => 'DESC',
-    'meta_query'  => [
-        [ 'key' => '_winshirt_visual_validated', 'value' => 'yes' ],
-        [ 'key' => '_winshirt_category', 'value' => 'IA' ],
-    ],
-]);
+    $ai_posts = get_posts([
+        'post_type'   => 'winshirt_visual',
+        'numberposts' => -1,
+        'orderby'     => 'date',
+        'order'       => 'DESC',
+        'meta_query'  => [
+            [ 'key' => '_winshirt_visual_validated', 'value' => 'yes' ],
+            [ 'key' => '_winshirt_category', 'value' => 'IA' ],
+        ],
+    ]);
 
     $ai_gallery = [];
     foreach ( $ai_posts as $a ) {
@@ -378,9 +388,41 @@ $ai_posts = get_posts([
             $ai_gallery[] = $url;
         }
     }
-    $ws_ai_gallery = wp_json_encode( $ai_gallery );
 
-    include WINSHIRT_PATH . 'templates/personalizer-modal.php';
+    return [
+        'product'        => $product,
+        'pid'            => $pid,
+        'default_front'  => $front_url,
+        'default_back'   => $back_url,
+        'ws_colors'      => wp_json_encode( $colors ),
+        'ws_zones'       => wp_json_encode( $zones ),
+        'ws_gallery'     => wp_json_encode( $gallery ),
+        'ws_ai_gallery'  => wp_json_encode( $ai_gallery ),
+    ];
+}
+
+// Add customize button and modal on product page
+function winshirt_render_customize_button() {
+    global $product;
+    if ( ! $product instanceof WC_Product ) {
+        return;
+    }
+
+    $vars = winshirt_get_customizer_vars( $product->get_id() );
+    if ( ! $vars ) {
+        return;
+    }
+
+    extract( $vars );
+    $page_id = absint( get_option( 'winshirt_custom_page' ) );
+
+    if ( $page_id ) {
+        $url = add_query_arg( 'product_id', $pid, get_permalink( $page_id ) );
+        echo '<div class="winshirt-personnaliser-btn"><a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</a></div>';
+    } else {
+        echo '<div class="winshirt-personnaliser-btn"><button class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser" data-pid="' . esc_attr( $pid ) . '">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
+        include WINSHIRT_PATH . 'templates/personalizer-modal.php';
+    }
 }
 // Affiche le bouton juste sous le prix, avant les billets de loterie
 add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 15 );

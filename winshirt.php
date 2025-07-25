@@ -2,7 +2,7 @@
 /**
  * Plugin Name: WinShirt by Shakass
  * Description: Module de personnalisation produit et loteries pour WooCommerce.
- * Version: 1.0.5
+ * Version: 1.0.6
  * Author: Shakass Communication
  */
 
@@ -137,6 +137,10 @@ function winshirt_register_admin_pages() {
  * Display the dashboard page.
  */
 function winshirt_page_dashboard() {
+    if ( isset( $_POST['winshirt_custom_page'] ) && check_admin_referer( 'winshirt_save_custom_page' ) ) {
+        update_option( 'winshirt_custom_page', absint( $_POST['winshirt_custom_page'] ) );
+        echo '<div class="updated notice"><p>' . esc_html__( 'Page enregistrée.', 'winshirt' ) . '</p></div>';
+    }
     // Gather counts based on product metadata
     $products          = wc_get_products(['limit' => -1, 'status' => 'publish']);
     $mockup_ids        = [];
