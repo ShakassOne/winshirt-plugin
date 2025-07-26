@@ -10,6 +10,17 @@
 
   <div class="modal__overlay"></div>
   <div class="ws-modal-content winshirt-theme-inherit modal__container">
+    <?php if ( empty( $product ) ) : ?>
+    <div class="ws-product-select-overlay">
+      <h2><?php esc_html_e( 'Choisissez un produit à personnaliser', 'winshirt' ); ?></h2>
+      <select id="ws-modal-product-select" class="ws-select">
+        <option value="">-- <?php esc_html_e( 'Sélectionner', 'winshirt' ); ?> --</option>
+        <?php foreach ( $selectable_products as $sp ) : ?>
+          <option value="<?php echo esc_attr( $sp->get_id() ); ?>"><?php echo esc_html( $sp->get_name() ); ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <?php endif; ?>
     <div class="modal__header">
       <div class="ws-toggle ws-sides-toggle winshirt-theme-inherit modal__side-switch">
         <button id="winshirt-front-btn" class="ws-side-btn active winshirt-theme-inherit side-btn" aria-label="Recto">Recto</button>
