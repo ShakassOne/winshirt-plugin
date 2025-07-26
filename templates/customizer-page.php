@@ -45,47 +45,36 @@ $customizer_page_url = $page_id ? get_permalink( $page_id ) : '/personnalisez/';
       <?php endforeach; ?>
     </select>
   </div>
-  <?php if ( empty($product) ) : ?>
-    <div class="winshirt-no-product">
-      <h2>Choisissez un produit à personnaliser</h2>
-      <p>Veuillez sélectionner un produit dans la boutique pour commencer.</p>
-      <a href="<?php echo esc_url( get_permalink( wc_get_page_id('shop') ) ); ?>" class="winshirt-btn winshirt-btn-main">Voir la boutique</a>
-      <?php if ( !empty($featured_products) ) : ?>
-        <div class="winshirt-featured-products">
-          <?php foreach ($featured_products as $fp) : ?>
-            <div class="winshirt-featured-product">
-              <a href="<?php echo esc_url( add_query_arg( 'product_id', $fp->ID, $customizer_page_url ) ); ?>">
-                <?php echo get_the_post_thumbnail($fp->ID, 'medium'); ?>
-                <div class="winshirt-featured-title"><?php echo esc_html(get_the_title($fp->ID)); ?></div>
-              </a>
-            </div>
-          <?php endforeach; ?>
-        </div>
-      <?php endif; ?>
-    </div>
-  <?php else : ?>
-    <main class="winshirt-customizer-main">
-      <header class="winshirt-customizer-header">
-        <h1>Personnalisez votre T-shirt : <?php echo esc_html($product->get_name()); ?></h1>
-        <a href="<?php echo esc_url( get_permalink( wc_get_page_id('shop') ) ); ?>" class="winshirt-btn winshirt-btn-small">Changer de produit</a>
-      </header>
-      <section class="winshirt-customizer-workspace">
-        <?php include WINSHIRT_PATH . 'templates/personalizer-modal.php'; ?>
-      </section>
-      <script type="text/javascript">
-      document.addEventListener('DOMContentLoaded', function(){
-        if (typeof window.openWinShirtModal === 'function') {
-          window.openWinShirtModal(<?php echo intval( $product->get_id() ); ?>);
-        }
-      });
-      </script>
-    </main>
-  <?php endif; ?>
+<main class="winshirt-customizer-main">
+  <header class="winshirt-customizer-header">
+    <?php if ( empty( $product ) ) : ?>
+      <h1><?php esc_html_e( 'Choisissez un produit à personnaliser', 'winshirt' ); ?></h1>
+    <?php else : ?>
+      <h1><?php echo esc_html__( 'Personnalisez votre T-shirt', 'winshirt' ) . ' : ' . esc_html( $product->get_name() ); ?></h1>
+      <a href="<?php echo esc_url( get_permalink( wc_get_page_id('shop') ) ); ?>" class="winshirt-btn winshirt-btn-small"><?php esc_html_e( 'Changer de produit', 'winshirt' ); ?></a>
+    <?php endif; ?>
+  </header>
+  <section class="winshirt-customizer-workspace">
+    <?php include WINSHIRT_PATH . 'templates/personalizer-modal.php'; ?>
+  </section>
+  <script type="text/javascript">
+  document.addEventListener('DOMContentLoaded', function(){
+    if (typeof window.openWinShirtModal === 'function') {
+      window.openWinShirtModal(<?php echo intval( $product ? $product->get_id() : 0 ); ?>);
+    }
+  });
+  </script>
+</main>
 </div>
 <script type="text/javascript">
-document.getElementById('ws-product-select').addEventListener('change', function(){
-  if(this.value){
-    window.location.href = '<?php echo esc_url( $customizer_page_url ); ?>?product_id=' + this.value;
+var wsPageUrl = '<?php echo esc_url( $customizer_page_url ); ?>';
+function wsSelectProduct(pid){
+  if(pid){
+    window.location.href = wsPageUrl + '?product_id=' + pid;
   }
-});
+}
+var sel1 = document.getElementById('ws-product-select');
+if(sel1){ sel1.addEventListener('change', function(){ wsSelectProduct(this.value); }); }
+var sel2 = document.getElementById('ws-modal-product-select');
+if(sel2){ sel2.addEventListener('change', function(){ wsSelectProduct(this.value); }); }
 </script>
