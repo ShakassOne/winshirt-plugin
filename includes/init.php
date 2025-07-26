@@ -7,7 +7,8 @@ add_action('wp_enqueue_scripts', function () {
     $needs_assets = is_product();
     if ( ! $needs_assets && isset( $post->post_content ) ) {
         $needs_assets = has_shortcode( $post->post_content, 'product_page' ) ||
-            has_shortcode( $post->post_content, 'winshirt_customizer' );
+            has_shortcode( $post->post_content, 'winshirt_customizer' ) ||
+            has_shortcode( $post->post_content, 'winshirt_nextgen' );
     }
     if ( ! $needs_assets && function_exists( 'is_account_page' ) && is_account_page() && is_wc_endpoint_url( 'mes-personnalisations' ) ) {
         $needs_assets = true;
@@ -24,11 +25,13 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_style('winshirt-theme', WINSHIRT_URL . 'assets/css/winshirt-theme.css', [], '1.0');
         wp_enqueue_style('winshirt-mockups', WINSHIRT_URL . 'assets/css/winshirt-mockups.css', [], '1.0');
         wp_enqueue_style('winshirt-customizer-page', WINSHIRT_URL . 'assets/css/winshirt-customizer-page.css', [], '1.0');
+        wp_enqueue_style('winshirt-nextgen', WINSHIRT_URL . 'assets/css/winshirt-nextgen.css', [], '1.0');
 
         wp_enqueue_script('winshirt-touch', WINSHIRT_URL . 'assets/js/jquery.ui.touch-punch.min.js', ['jquery', 'jquery-ui-mouse'], '0.2.3', true);
         wp_enqueue_script('html2canvas', 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js', [], '1.4.1', true);
         wp_enqueue_script('qrious', 'https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js', [], '4.0.2', true);
         wp_enqueue_script('winshirt-modal', WINSHIRT_URL . 'assets/js/winshirt-modal.js', ['jquery', 'jquery-ui-draggable', 'jquery-ui-resizable', 'winshirt-touch', 'html2canvas', 'qrious'], '1.0', true);
+        wp_enqueue_script('winshirt-nextgen', WINSHIRT_URL . 'assets/js/winshirt-nextgen.js', [], '1.0', true);
         wp_localize_script('winshirt-modal', 'winshirtAjax', [
             'url'      => admin_url('admin-ajax.php'),
             'rest'     => esc_url_raw(rest_url('winshirt/v1/')),
@@ -217,6 +220,17 @@ function winshirt_customizer_shortcode() {
     return ob_get_clean();
 }
 add_shortcode( 'winshirt_customizer', 'winshirt_customizer_shortcode' );
+
+/**
+ * Display the Next-Gen customizer layout.
+ * Usage: [winshirt_nextgen]
+ */
+function winshirt_nextgen_shortcode() {
+    ob_start();
+    include WINSHIRT_PATH . 'templates/nextgen/page-nextgen.php';
+    return ob_get_clean();
+}
+add_shortcode( 'winshirt_nextgen', 'winshirt_nextgen_shortcode' );
 
 add_filter( 'the_content', 'winshirt_replace_customizer_page' );
 function winshirt_replace_customizer_page( $content ) {
