@@ -2,6 +2,20 @@
 /**
  * WinShirt Next-Gen customizer template
  */
+
+$vars = $GLOBALS['winshirt_customizer_vars'] ?? [];
+$front_url = $vars['default_front'] ?? '';
+$back_url  = $vars['default_back'] ?? '';
+
+$default_front = 'https://winshirt.fr/wp-content/uploads/2025/06/White-Tshirt-Recto.png';
+$default_back  = 'https://winshirt.fr/wp-content/uploads/2025/06/White-Tshirt-Verso.png';
+
+if ( ! $front_url ) {
+  $front_url = $default_front;
+}
+if ( ! $back_url ) {
+  $back_url = $default_back;
+}
 ?>
 
 <!-- PAGE WINSHIRT DÉDIÉE PERSONNALISATION (Lumise-like) -->
@@ -35,7 +49,7 @@
         <button class="ws-face-btn">Verso</button>
       </div>
       <div class="ws-product-preview">
-        <img src="<?php echo esc_url( WINSHIRT_URL . 'assets/img/tshirt.svg' ); ?>" alt="Mockup produit" class="ws-mockup-img" />
+        <img src="<?php echo esc_url( $front_url ); ?>" data-front="<?php echo esc_url( $front_url ); ?>" data-back="<?php echo esc_url( $back_url ); ?>" alt="Mockup produit" class="ws-mockup-img" />
         <div class="ws-print-area" tabindex="0" aria-label="Zone d'impression"></div>
       </div>
       <div class="ws-size-selector">

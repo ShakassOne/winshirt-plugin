@@ -46,12 +46,27 @@
     }
   }
 
+  function initFaceSwitcher() {
+    const img = document.querySelector('.ws-mockup-img');
+    const faceBtns = document.querySelectorAll('.ws-face-btn');
+    if (!img || !faceBtns.length) return;
+    faceBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        faceBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const isBack = btn.textContent.trim().toLowerCase() === 'verso';
+        img.src = isBack ? img.dataset.back : img.dataset.front;
+      });
+    });
+  }
+
   function init() {
     const printArea = document.querySelector('.ws-print-area');
     if (printArea) {
       injectHandles(printArea);
     }
     initPanels();
+    initFaceSwitcher();
     initHelp();
   }
 
