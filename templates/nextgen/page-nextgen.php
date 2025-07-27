@@ -35,7 +35,7 @@
         <button class="ws-face-btn">Verso</button>
       </div>
       <div class="ws-product-preview">
-        <img src="/mockups/tshirt.png" alt="Mockup produit" class="ws-mockup-img" />
+        <img src="<?php echo esc_url( WINSHIRT_URL . 'assets/img/tshirt.svg' ); ?>" alt="Mockup produit" class="ws-mockup-img" />
         <div class="ws-print-area" tabindex="0" aria-label="Zone d'impression"></div>
       </div>
       <div class="ws-size-selector">
