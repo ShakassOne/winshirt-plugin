@@ -103,9 +103,9 @@ body {
 .ws-mockup-img {
   display: block;
   width: 100%;
-  height: auto;
-  max-height: 74vh;
+  height: 100%;
   object-fit: contain;
+  object-position: center;
   pointer-events: none;
   user-select: none;
 }
