@@ -61,3 +61,16 @@
   border: 1px solid #ddd;
   margin-right: 0.25rem;
 }
+
+/* Style du bouton "Personnaliser ce produit" */
+.btn-personnaliser {
+  display: inline-block;
+}
+
+.glow-on-hover {
+  transition: box-shadow .3s ease-in-out;
+}
+
+.glow-on-hover:hover {
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+}
