@@ -13,7 +13,7 @@ $default_back  = 'https://winshirt.fr/wp-content/uploads/2025/06/White-Tshirt-Ve
 if (!$front_url) $front_url = $default_front;
 if (!$back_url) $back_url = $default_back;
 ?>
-
+<link rel="stylesheet" href="/wp-content/plugins/winshirt-plugin/assets/css/winshirt-nextgen.css?v=<?php echo time(); ?>" />
 <div class="ws-configurator">
   <header class="ws-header">
     <div class="ws-logo"><img src="/wp-content/uploads/2025/07/Fichier%202@2x.png" alt="WinShirt" height="36"></div>
