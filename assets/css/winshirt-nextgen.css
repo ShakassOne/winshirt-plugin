@@ -1,118 +1,48 @@
 :root {
   --ws-bg: #f7f7fa;
-  --ws-main: #fff;
-  --ws-accent: #02b7f0;
-  --ws-grey: #ccc;
-  --ws-btn: #232b2b;
-  --ws-btn-active: #02b7f0;
-  --ws-shadow: 0 2px 16px 0 #0002;
+  --ws-panel-bg: #fff;
+  --ws-card-shadow: 0 4px 32px 0 #0002;
+  --ws-border-radius: 22px;
+  --ws-gap: 1.2rem;
+  --ws-accent: #53a7e9;
+  --ws-text: #222;
+  --ws-btn: #f5f5f5;
 }
 
-body {
-  background: var(--ws-bg);
-  margin: 0;
-  font-family: 'Inter', Arial, sans-serif;
-}
-
-/* Wrapper principal */
-.ws-configurator {
+/* Fond général */
+body, .ws-configurator {
+  background: var(--ws-bg) !important;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+  color: var(--ws-text);
 }
 
-/* Header */
-.ws-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: var(--ws-main);
-  padding: 0.5rem 1rem;
-  border-bottom: 1px solid var(--ws-grey);
-}
-.ws-logo { font-weight: 800; font-size: 1.2rem; color: var(--ws-accent);} 
-.ws-nav-btn {
-  background: none; border: none; font-size: 1.6rem; margin: 0 0.2rem; cursor: pointer;
-  transition: color .2s;
-}
-.ws-nav-btn:focus, .ws-nav-btn:hover { color: var(--ws-accent); outline: none; }
-
-/* Main area */
-.ws-main {
-  display: flex;
-  flex: 1;
-  min-height: 0;
-  background: var(--ws-bg);
-}
-.ws-sidebar, .ws-rightbar {
-  display: none;
-}
-@media (min-width: 900px) {
-  .ws-sidebar {
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    border-radius: 16px;
-    margin: 2rem 1rem;
-    padding: 1rem 0.3rem;
-    box-shadow: 0 2px 22px #0001;
-  }
-  .ws-rightbar {
-    display: flex;
-    flex-direction: column;
-    gap: .6rem;
-    background: var(--ws-main);
-    min-width: 60px;
-    width: 60px;
-    border-right: 1px solid var(--ws-grey);
-    padding-top: 1rem;
-  }
-}
-
-/* Design area */
-.ws-design-area {
+/* Card centrale */
+.ws-design-area, .ws-main {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  background: #f7f7fa;
   min-height: 100vh;
-  padding-top: 2rem;
+  width: 100vw;
+  background: var(--ws-bg);
+  padding-top: 2.5rem;
 }
 
-.ws-face-switcher {
-  display: flex;
-  gap: 1rem;
-  margin: 1rem 0;
-  justify-content: center;
-  z-index: 2;
-}
-.ws-face-btn {
-  background: #fff; border: 2px solid var(--ws-accent); color: var(--ws-accent);
-  border-radius: 18px; padding: .4rem 1.2rem; font-size: 1rem; font-weight: 600;
-  box-shadow: var(--ws-shadow);
-  cursor: pointer;
-  transition: background .2s, color .2s;
-}
-.ws-face-btn.active,
-.ws-face-btn:focus { background: var(--ws-accent); color: #fff; outline: none; }
-
-/* Preview produit (t-shirt géant) */
 .ws-product-preview {
-  background: #fff;
-  border: 1px solid #eee;
-  border-radius: 22px;
-  box-shadow: 0 2px 32px 0 #0002;
-  margin: 0 auto 2rem auto;
+  background: var(--ws-panel-bg);
+  border-radius: var(--ws-border-radius);
+  box-shadow: var(--ws-card-shadow);
+  margin: 0 auto 1.2rem auto;
   max-width: 430px;
   max-height: 540px;
-  width: 90vw;
+  width: 94vw;
   height: auto;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
-  padding: 2rem 1.2rem;
+  padding: 2.2rem 1.2rem 2.2rem 1.2rem;
+  position: relative;
 }
 
 .ws-mockup-img {
@@ -122,107 +52,144 @@ body {
   max-height: 430px;
   margin: 0 auto;
   background: #fff;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  border-radius: 18px;
 }
 
-.ws-print-area {
-  position: absolute;
-  left: 50%; top: 50%;
-  width: 50%; height: 45%;
-  border: 2px dashed #232b2b;
-  border-radius: 6px;
-  box-shadow: 0 0 0 2px #fff5;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  background: none;
-  pointer-events: auto;
-}
-.ws-print-area:focus { outline: 2px solid var(--ws-accent); }
-
-.ws-size-selector {
+.ws-face-switcher, .ws-size-selector {
   display: flex;
   gap: 1rem;
   margin: 1rem 0;
   justify-content: center;
+  width: 100%;
 }
-.ws-size-btn {
-  border: 2px solid var(--ws-accent); background: #fff;
-  color: var(--ws-accent); border-radius: 18px; font-size: 1rem; padding: .4rem 1.2rem;
-  cursor: pointer; font-weight: 600;
-  transition: background .2s, color .2s;
-}
-.ws-size-btn.active,
-.ws-size-btn:focus { background: var(--ws-accent); color: #fff; outline: none; }
-
-/* TOOLBAR MOBILE */
-.ws-mobile-toolbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100vw;
-  background: #fff;
-  box-shadow: 0 -2px 18px #0001;
-  display: flex;
-  justify-content: center;
-  gap: 0.4rem;
-  z-index: 90;
-  padding: 0.6rem 0;
-}
-.ws-toolbar-btn {
-  font-size: 2.1rem; background: none; border: none; margin: 0 0.4rem; color: var(--ws-btn);
-  border-radius: 10px; width: 48px; height: 48px; cursor: pointer; outline: none;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .2s, color .2s;
-}
-.ws-toolbar-btn:focus, .ws-toolbar-btn.active { background: var(--ws-accent); color: #fff; }
-
-/* Hide toolbar on desktop */
-@media (min-width: 900px) {
-  .ws-mobile-toolbar { display: none; }
-}
-
-/* Panels contextuels, slide in/out */
-.ws-panel {
-  display: none; /* JS: display: flex ou block si actif */
-  position: fixed; top: 0; right: 0; height: 100vh; width: 92vw; max-width: 360px;
-  background: #fff; z-index: 199; box-shadow: -4px 0 24px #0002;
-  flex-direction: column; padding: 2rem 1.4rem;
-  overflow-y: auto;
-  transition: transform .35s cubic-bezier(.6,0,.6,1), opacity .18s;
-  transform: translateX(100%);
-  opacity: 0;
-}
-.ws-panel.active {
-  display: flex;
-  transform: translateX(0);
-  opacity: 1;
-}
-
-/* Adaptations desktop : preview plus grand, centré */
-@media (min-width: 900px) {
-  .ws-main { flex-direction: row; }
-  .ws-design-area { flex: 1; align-items: center; }
-  .ws-product-preview {
-    max-width: 430px;
-    max-height: 540px;
-    width: 90vw;
-    height: auto;
-  }
-  .ws-panel { left: 70px; right: auto; width: 340px; }
-}
-
-/* Handles, exemple (injecté par JS) */
-.ws-handle {
-  position: absolute;
-  width: 32px;
-  height: 32px;
-  background: #02b7f0;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 1.4rem;
-  box-shadow: var(--ws-shadow);
+.ws-face-switcher button, .ws-size-selector button {
+  background: var(--ws-btn);
+  border: none;
+  padding: 0.9em 2.1em;
+  border-radius: 12px;
+  font-size: 1.08em;
+  box-shadow: 0 1px 6px #0001;
+  color: #333;
+  transition: background .18s, color .16s;
   cursor: pointer;
 }
+.ws-face-switcher button.active,
+.ws-size-selector button.active {
+  background: var(--ws-accent);
+  color: #fff;
+  font-weight: bold;
+}
 
+.ws-toolbar,
+.ws-panel {
+  background: var(--ws-panel-bg);
+  border-radius: var(--ws-border-radius);
+  box-shadow: var(--ws-card-shadow);
+  margin-top: var(--ws-gap);
+  padding: 1.3rem 1.1rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Barre d'outils mobile fixée en bas */
+.ws-mobile-toolbar {
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  width: 100vw;
+  background: var(--ws-panel-bg);
+  box-shadow: 0 -3px 18px #0001;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: .7rem;
+  z-index: 1001;
+  padding: 0.6rem 0 .7rem 0;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+.ws-mobile-toolbar button {
+  background: var(--ws-btn);
+  border: none;
+  padding: 0.7em 1.3em;
+  border-radius: 9px;
+  font-size: 1.25em;
+  transition: background .18s;
+  cursor: pointer;
+  color: #666;
+}
+.ws-mobile-toolbar button.active {
+  background: var(--ws-accent);
+  color: #fff;
+}
+
+/* Sidebar desktop */
+@media (min-width: 1000px) {
+  .ws-main {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 2.6rem;
+    padding-top: 2.2rem;
+    width: 100vw;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  .ws-sidebar {
+    display: flex;
+    flex-direction: column;
+    background: var(--ws-panel-bg);
+    border-radius: var(--ws-border-radius);
+    margin: 0 2.2rem 0 0;
+    padding: 1.7rem 1.2rem;
+    box-shadow: 0 2px 18px #0001;
+    min-width: 150px;
+    min-height: 420px;
+    align-items: flex-start;
+    gap: .7rem;
+  }
+  .ws-mobile-toolbar {
+    display: none !important;
+  }
+}
+
+/* Scrollbar custom simple */
+.ws-panel, .ws-sidebar {
+  scrollbar-width: thin;
+  scrollbar-color: #eee #e1e1e1;
+}
+.ws-panel::-webkit-scrollbar,
+.ws-sidebar::-webkit-scrollbar {
+  width: 8px;
+  background: #e1e1e1;
+}
+.ws-panel::-webkit-scrollbar-thumb,
+.ws-sidebar::-webkit-scrollbar-thumb {
+  background: #eee;
+  border-radius: 6px;
+}
+
+/* Détail : fond card bien séparé du fond général */
+.ws-product-preview,
+.ws-toolbar,
+.ws-panel,
+.ws-sidebar {
+  border: 1px solid #ececec;
+}
+
+@media (max-width: 600px) {
+  .ws-design-area, .ws-main {
+    padding-top: 1rem;
+  }
+  .ws-product-preview {
+    padding: .7rem .4rem 1.3rem .4rem;
+    max-width: 99vw;
+    box-shadow: 0 3px 18px #0001;
+  }
+  .ws-toolbar,
+  .ws-panel {
+    padding: .7rem .4rem;
+  }
+}
