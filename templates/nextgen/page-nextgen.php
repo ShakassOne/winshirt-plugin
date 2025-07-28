@@ -62,13 +62,13 @@ if ( ! $back_url )  $back_url  = $default_back;
 
   <!-- TOOLBAR MOBILE (scrollable horizontal) -->
   <nav class="ws-mobile-toolbar">
-    <button class="ws-toolbar-btn" data-tab="product">🛍</button>
-    <button class="ws-toolbar-btn" data-tab="images">🖼</button>
-    <button class="ws-toolbar-btn" data-tab="text">✏️</button>
-    <button class="ws-toolbar-btn" data-tab="layers">⧉</button>
-    <button class="ws-toolbar-btn" data-tab="cliparts">💖</button>
-    <button class="ws-toolbar-btn" data-tab="ai">🤖</button>
-    <button class="ws-toolbar-btn" data-tab="qrcode">#️⃣</button>
+    <button class="ws-toolbar-btn" data-tab="product" data-label="Produit">🛍</button>
+    <button class="ws-toolbar-btn" data-tab="images" data-label="Images">🖼</button>
+    <button class="ws-toolbar-btn" data-tab="text" data-label="Texte">✏️</button>
+    <button class="ws-toolbar-btn" data-tab="layers" data-label="Calques">⧉</button>
+    <button class="ws-toolbar-btn" data-tab="cliparts" data-label="Cliparts">💖</button>
+    <button class="ws-toolbar-btn" data-tab="ai" data-label="IA">🤖</button>
+    <button class="ws-toolbar-btn" data-tab="qrcode" data-label="QR">#️⃣</button>
   </nav>
 
   <!-- PANELS CONTEXTUELS -->
