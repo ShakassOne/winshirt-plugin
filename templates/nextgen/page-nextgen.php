@@ -1,7 +1,10 @@
 <?php
 /**
- * WinShirt Next-Gen customizer template
+ * Template Name: WinShirt Next-Gen
+ * Description: Page de personnalisation WinShirt (structure Lumise-like, chargement complet WordPress)
  */
+
+get_header();
 
 $vars = $GLOBALS['winshirt_customizer_vars'] ?? [];
 $front_url = $vars['default_front'] ?? '';
@@ -10,12 +13,8 @@ $back_url  = $vars['default_back'] ?? '';
 $default_front = 'https://winshirt.fr/wp-content/uploads/2025/06/White-Tshirt-Recto.png';
 $default_back  = 'https://winshirt.fr/wp-content/uploads/2025/06/White-Tshirt-Verso.png';
 
-if ( ! $front_url ) {
-  $front_url = $default_front;
-}
-if ( ! $back_url ) {
-  $back_url = $default_back;
-}
+if ( ! $front_url ) $front_url = $default_front;
+if ( ! $back_url )  $back_url  = $default_back;
 ?>
 
 <!-- PAGE WINSHIRT DÉDIÉE PERSONNALISATION (Lumise-like) -->
@@ -81,3 +80,5 @@ if ( ! $back_url ) {
   <section class="ws-panel" data-panel="ai"></section>
   <section class="ws-panel" data-panel="qrcode"></section>
 </div>
+
+<?php get_footer(); ?>
