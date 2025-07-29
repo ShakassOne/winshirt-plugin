@@ -1,0 +1,42 @@
+.winshirt-lottery-carousel-wrapper {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+.winshirt-lottery-carousel {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 1rem;
+  padding-bottom: 1rem;
+}
+.winshirt-lottery-carousel::-webkit-scrollbar { display: none; }
+.winshirt-lottery-item {
+  flex: 0 0 250px;
+  scroll-snap-align: start;
+}
+.winshirt-lottery-carousel-wrapper .carousel-prev,
+.winshirt-lottery-carousel-wrapper .carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.5);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.winshirt-lottery-carousel-wrapper .carousel-prev { left: 5px; }
+.winshirt-lottery-carousel-wrapper .carousel-next { right: 5px; }
+
+.winshirt-lottery-info {
+  border: 1px solid #ddd;
+  background: #f9f9f9;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}

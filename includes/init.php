@@ -57,11 +57,17 @@ add_action('wp_enqueue_scripts', function () {
 // Enqueue assets when the lottery shortcode is present
 add_action('wp_enqueue_scripts', function(){
     global $post;
-    if ( isset( $post->post_content ) && ( has_shortcode( $post->post_content, 'loterie_box' ) || has_shortcode( $post->post_content, 'winshirt_lotteries' ) ) ) {
+    if ( isset( $post->post_content ) && (
+        has_shortcode( $post->post_content, 'loterie_box' ) ||
+        has_shortcode( $post->post_content, 'winshirt_lotteries' ) ||
+        has_shortcode( $post->post_content, 'winshirt_lottery_carousel' )
+    ) ) {
         wp_enqueue_style( 'winshirt-lottery', WINSHIRT_URL . 'assets/css/winshirt-lottery.css', [], '1.0' );
         wp_enqueue_script( 'vanilla-tilt', WINSHIRT_URL . 'assets/js/vanilla-tilt.min.js', [], '1.0', true );
         wp_enqueue_script( 'winshirt-lottery-card', WINSHIRT_URL . 'assets/js/winshirt-lottery-card.js', [ 'vanilla-tilt' ], '1.0', true );
         wp_enqueue_script( 'winshirt-lottery-cards', WINSHIRT_URL . 'assets/js/winshirt-lottery-cards.js', [ 'jquery', 'winshirt-lottery-card' ], '1.0', true );
+        wp_enqueue_style( 'winshirt-lottery-carousel', WINSHIRT_URL . 'assets/css/winshirt-lottery-carousel.css', [], '1.0' );
+        wp_enqueue_script( 'winshirt-lottery-carousel', WINSHIRT_URL . 'assets/js/winshirt-lottery-carousel.js', [ 'jquery' ], '1.0', true );
     }
 });
 
