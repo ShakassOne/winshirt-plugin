@@ -61,16 +61,49 @@
   border: 1px solid #ddd;
   margin-right: 0.25rem;
 }
-
-/* Style du bouton "Personnaliser ce produit" */
-.btn-personnaliser {
-  display: inline-block;
+.btn-personnaliser.outline {
+  color: black;
+  overflow: hidden;
+  position: relative;
 }
 
-.glow-on-hover {
-  transition: box-shadow .3s ease-in-out;
+.btn-personnaliser.outline:before,
+.btn-personnaliser.outline:after,
+.btn-personnaliser.outline .lines:before,
+.btn-personnaliser.outline .lines:after {
+  background-color: black;
+  content: '';
+  height: 2px;
+  left: 0;
+  position: absolute;
+  top: 0;
+  transition: transform 300ms;
+  width: 100%;
 }
 
-.glow-on-hover:hover {
-  box-shadow: 0 0 10px rgba(37, 99, 235, 0.6);
+.btn-personnaliser.outline:before {
+  bottom: 0;
+  top: auto;
 }
+
+.btn-personnaliser.outline .lines {
+  display: block;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  z-index: 0;
+}
+
+.btn-personnaliser.outline .lines:before,
+.btn-personnaliser.outline .lines:after {
+  height: 100%;
+  width: 2px;
+}
+
+.btn-personnaliser.outline .lines:after {
+  left: auto;
+  right: 0;
+}
+

@@ -449,10 +449,10 @@ function winshirt_render_customize_button() {
 
     if ( $page_id ) {
         $url = add_query_arg( 'product_id', $pid, get_permalink( $page_id ) );
-        echo '<div class="winshirt-personnaliser-btn"><a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt glow-on-hover winshirt-customizer-link">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</a></div>';
+        echo '<div class="winshirt-personnaliser-btn"><a href="' . esc_url( $url ) . '" class="single_add_to_cart_button button alt btn-personnaliser outline winshirt-customizer-link"><span class="lines"></span>' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</a></div>';
 
     } else {
-        echo '<div class="winshirt-personnaliser-btn"><button class="single_add_to_cart_button button alt glow-on-hover btn-personnaliser" data-pid="' . esc_attr( $pid ) . '">' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
+        echo '<div class="winshirt-personnaliser-btn"><button class="single_add_to_cart_button button alt btn-personnaliser outline" data-pid="' . esc_attr( $pid ) . '"><span class="lines"></span>' . esc_html__( 'Personnaliser ce produit', 'winshirt' ) . '</button></div>';
         include WINSHIRT_PATH . 'templates/personalizer-modal.php';
     }
 }
