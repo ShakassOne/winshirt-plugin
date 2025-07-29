@@ -61,18 +61,6 @@
   border: 1px solid #ddd;
   margin-right: 0.25rem;
 }
-
-/* Style du bouton "Personnaliser ce produit" */
-.btn-personnaliser {
-  display: inline-block;
-  font-weight: bold;
-  letter-spacing: 2px;
-  padding: 15px 30px;
-  text-decoration: none;
-  text-transform: uppercase;
-  transition: background 300ms;
-}
-
 .btn-personnaliser.outline {
   color: black;
   overflow: hidden;
@@ -119,18 +107,3 @@
   right: 0;
 }
 
-.btn-personnaliser:hover:before {
-  transform: translateX(-100%);
-}
-
-.btn-personnaliser:hover:after {
-  transform: translateX(100%);
-}
-
-.btn-personnaliser:hover .lines:before {
-  transform: translateY(-100%);
-}
-
-.btn-personnaliser:hover .lines:after {
-  transform: translateY(100%);
-}
