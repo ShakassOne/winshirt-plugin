@@ -61,16 +61,16 @@
   border: 1px solid #ddd;
   margin-right: 0.25rem;
 }
-.btn-personnaliser.outline {
+.btn-personnaliser {
   color: black;
   overflow: hidden;
   position: relative;
 }
 
-.btn-personnaliser.outline:before,
-.btn-personnaliser.outline:after,
-.btn-personnaliser.outline .lines:before,
-.btn-personnaliser.outline .lines:after {
+.btn-personnaliser:before,
+.btn-personnaliser:after,
+.btn-personnaliser .lines:before,
+.btn-personnaliser .lines:after {
   background-color: black;
   content: '';
   height: 2px;
@@ -81,12 +81,12 @@
   width: 100%;
 }
 
-.btn-personnaliser.outline:before {
+.btn-personnaliser:before {
   bottom: 0;
   top: auto;
 }
 
-.btn-personnaliser.outline .lines {
+.btn-personnaliser .lines {
   display: block;
   height: 100%;
   left: 0;
@@ -96,8 +96,8 @@
   z-index: 0;
 }
 
-.btn-personnaliser.outline .lines:before,
-.btn-personnaliser.outline .lines:after {
+.btn-personnaliser .lines:before,
+.btn-personnaliser .lines:after {
   height: 100%;
   width: 2px;
 }
