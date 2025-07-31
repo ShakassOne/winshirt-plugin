@@ -32,6 +32,24 @@
   <p style="margin-top:5px;"><?php echo esc_html(round($lottery_progress)); ?>% des produits contiennent une loterie.</p>
 </div>
 
+<div class="winshirt-toggles" style="margin-top:30px;">
+  <form method="post" style="display:inline-block;margin-right:10px;">
+    <?php wp_nonce_field('winshirt_toggle_module'); ?>
+    <input type="hidden" name="winshirt_toggle_module" value="<?php echo $module_active ? 'no' : 'yes'; ?>" />
+    <?php submit_button($module_active ? 'Désactiver le module' : 'Activer le module', 'secondary', 'submit', false); ?>
+  </form>
+  <form method="post" style="display:inline-block;margin-right:10px;">
+    <?php wp_nonce_field('winshirt_toggle_lottery'); ?>
+    <input type="hidden" name="winshirt_toggle_lottery" value="<?php echo $lottery_active ? 'no' : 'yes'; ?>" />
+    <?php submit_button($lottery_active ? 'Désactiver la loterie' : 'Activer la loterie', 'secondary', 'submit', false); ?>
+  </form>
+  <form method="post" style="display:inline-block;">
+    <?php wp_nonce_field('winshirt_toggle_customization'); ?>
+    <input type="hidden" name="winshirt_toggle_customization" value="<?php echo $custom_active ? 'no' : 'yes'; ?>" />
+    <?php submit_button($custom_active ? 'Désactiver la personnalisation' : 'Activer la personnalisation', 'secondary', 'submit', false); ?>
+  </form>
+</div>
+
 <div class="winshirt-dashboard-links" style="margin-top:30px;">
   <h3>Liens rapides</h3>
   <ul style="list-style:disc;padding-left:20px;">
