@@ -1,7 +1,11 @@
 <?php
 
+$winshirt_active             = get_option( 'winshirt_active', 'yes' ) === 'yes';
+$winshirt_enable_lottery     = get_option( 'winshirt_enable_lottery', 'yes' ) === 'yes';
+$winshirt_enable_customization = get_option( 'winshirt_enable_customization', 'yes' ) === 'yes';
 
 // Enqueue assets for customizer pages
+if ( $winshirt_active && $winshirt_enable_customization ) {
 add_action('wp_enqueue_scripts', function () {
     global $post;
 
@@ -45,16 +49,20 @@ add_action('wp_enqueue_scripts', function () {
         wp_enqueue_script( 'winshirt-nextgen', WINSHIRT_URL . 'assets/js/winshirt-nextgen.js', [], '1.0', true );
     }
 });
+}
 
 // Enqueue badge style on shop listings
+if ( $winshirt_active && $winshirt_enable_customization ) {
 add_action('wp_enqueue_scripts', function () {
     if (is_shop() || is_product_category() || is_product_tag()) {
         wp_enqueue_style('winshirt-badge', WINSHIRT_URL . 'assets/css/winshirt-badge.css', [], '1.0');
     }
 });
+}
 
 
 // Enqueue assets when the lottery shortcode is present
+if ( $winshirt_active && $winshirt_enable_lottery ) {
 add_action('wp_enqueue_scripts', function(){
     global $post;
     if ( isset( $post->post_content ) && (
@@ -70,6 +78,7 @@ add_action('wp_enqueue_scripts', function(){
         wp_enqueue_script( 'winshirt-lottery-carousel', WINSHIRT_URL . 'assets/js/winshirt-lottery-carousel.js', [ 'jquery' ], '1.0', true );
     }
 });
+}
 
 /**
  * Display a lottery card anywhere with [loterie_box id="123" vedette="true"].
@@ -127,7 +136,9 @@ function winshirt_lottery_box_shortcode( $atts ) {
     <?php
     return ob_get_clean();
 }
-add_shortcode( 'loterie_box', 'winshirt_lottery_box_shortcode' );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_shortcode( 'loterie_box', 'winshirt_lottery_box_shortcode' );
+}
 
 /**
  * Display only the lottery thumbnail image.
@@ -156,7 +167,9 @@ function winshirt_lottery_thumb_shortcode( $atts ) {
 
     return wp_get_attachment_image( $img_id, $size );
 }
-add_shortcode( 'loterie_thumb', 'winshirt_lottery_thumb_shortcode' );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_shortcode( 'loterie_thumb', 'winshirt_lottery_thumb_shortcode' );
+}
 
 /**
  * Display a list of lottery cards with [winshirt_lotteries].
@@ -215,7 +228,9 @@ function winshirt_lotteries_shortcode() {
     echo '</div>';
     return ob_get_clean();
 }
-add_shortcode( 'winshirt_lotteries', 'winshirt_lotteries_shortcode' );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_shortcode( 'winshirt_lotteries', 'winshirt_lotteries_shortcode' );
+}
 
 /**
  * Shortcode to display the customization button and modal.
@@ -226,7 +241,9 @@ function winshirt_customizer_shortcode() {
     winshirt_render_customize_button();
     return ob_get_clean();
 }
-add_shortcode( 'winshirt_customizer', 'winshirt_customizer_shortcode' );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_shortcode( 'winshirt_customizer', 'winshirt_customizer_shortcode' );
+}
 
 /**
  * Display the Next-Gen customizer layout.
@@ -237,9 +254,13 @@ function winshirt_nextgen_shortcode() {
     include WINSHIRT_PATH . 'templates/nextgen/page-nextgen.php';
     return ob_get_clean();
 }
-add_shortcode( 'winshirt_nextgen', 'winshirt_nextgen_shortcode' );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_shortcode( 'winshirt_nextgen', 'winshirt_nextgen_shortcode' );
+}
 
-add_filter( 'the_content', 'winshirt_replace_customizer_page' );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_filter( 'the_content', 'winshirt_replace_customizer_page' );
+}
 function winshirt_replace_customizer_page( $content ) {
     $page_id = absint( get_option( 'winshirt_custom_page' ) );
     if ( $page_id && is_page( $page_id ) && in_the_loop() && is_main_query() ) {
@@ -258,7 +279,9 @@ function winshirt_replace_customizer_page( $content ) {
     return $content;
 }
 
-add_filter( 'template_include', 'winshirt_customizer_template' );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_filter( 'template_include', 'winshirt_customizer_template' );
+}
 function winshirt_customizer_template( $template ) {
     $page_id = absint( get_option( 'winshirt_custom_page' ) );
     if ( $page_id && is_page( $page_id ) ) {
@@ -275,6 +298,7 @@ function winshirt_customizer_template( $template ) {
 }
 
 // Register custom post type for lotteries
+if ( $winshirt_active ) {
 add_action('init', function () {
     register_post_type('winshirt_lottery', [
         'label'       => 'Loteries',
@@ -283,8 +307,10 @@ add_action('init', function () {
         'supports'    => ['title', 'editor', 'thumbnail'],
     ]);
 });
+}
 
 // Register custom post type for visuals
+if ( $winshirt_active ) {
 add_action('init', function () {
     register_post_type('winshirt_visual', [
         'label'       => 'Visuels',
@@ -293,6 +319,7 @@ add_action('init', function () {
         'supports'    => ['title', 'thumbnail'],
     ]);
 });
+}
 
 // Register FTP options
 add_action('admin_init', function () {
@@ -310,6 +337,10 @@ add_action('admin_init', function () {
     register_setting('winshirt_options', 'winshirt_supabase_key');
     // Register customizer page option
     register_setting('winshirt_options', 'winshirt_custom_page');
+    // Register enable/disable options
+    register_setting('winshirt_options', 'winshirt_active');
+    register_setting('winshirt_options', 'winshirt_enable_lottery');
+    register_setting('winshirt_options', 'winshirt_enable_customization');
 });
 
 // Enqueue assets on WinShirt admin pages
@@ -463,7 +494,9 @@ function winshirt_render_customize_button() {
     }
 }
 // Affiche le bouton juste sous le prix, avant les billets de loterie
-add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 15 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_single_product_summary', 'winshirt_render_customize_button', 15 );
+}
 
 function winshirt_render_color_picker() {
     global $product;
@@ -513,7 +546,9 @@ function winshirt_render_color_picker() {
     </script>
     <?php
 }
-add_action( 'woocommerce_single_product_summary', 'winshirt_render_color_picker', 34 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_single_product_summary', 'winshirt_render_color_picker', 34 );
+}
 
 function winshirt_render_lottery_selector() {
     static $rendered = false;
@@ -580,7 +615,9 @@ function winshirt_render_lottery_selector() {
     echo '</div>';
     echo '<div class="loteries-container"></div>';
 }
-add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_selector', 28 );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_action( 'woocommerce_single_product_summary', 'winshirt_render_lottery_selector', 28 );
+}
 
 function winshirt_render_lottery_info() {
     global $product;
@@ -643,7 +680,9 @@ function winshirt_lottery_purchasable( $purchasable, $product ) {
     }
     return $purchasable;
 }
-add_filter( 'woocommerce_is_purchasable', 'winshirt_lottery_purchasable', 10, 2 );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_filter( 'woocommerce_is_purchasable', 'winshirt_lottery_purchasable', 10, 2 );
+}
 
 function winshirt_add_lottery_to_cart_item( $cart_item_data, $product_id ) {
     if ( isset( $_POST['winshirt_lotteries'] ) && is_array( $_POST['winshirt_lotteries'] ) ) {
@@ -655,7 +694,9 @@ function winshirt_add_lottery_to_cart_item( $cart_item_data, $product_id ) {
     }
     return $cart_item_data;
 }
-add_filter( 'woocommerce_add_cart_item_data', 'winshirt_add_lottery_to_cart_item', 10, 2 );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_filter( 'woocommerce_add_cart_item_data', 'winshirt_add_lottery_to_cart_item', 10, 2 );
+}
 
 function winshirt_display_cart_item_data( $item_data, $cart_item ) {
     if ( ! empty( $cart_item['winshirt_lotteries'] ) ) {
@@ -672,7 +713,9 @@ function winshirt_display_cart_item_data( $item_data, $cart_item ) {
     }
     return $item_data;
 }
-add_filter( 'woocommerce_get_item_data', 'winshirt_display_cart_item_data', 10, 2 );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_filter( 'woocommerce_get_item_data', 'winshirt_display_cart_item_data', 10, 2 );
+}
 
 function winshirt_cart_item_preview( $name, $cart_item, $cart_item_key ) {
     $front = $cart_item['winshirt_front_image'] ?? '';
@@ -689,14 +732,18 @@ function winshirt_cart_item_preview( $name, $cart_item, $cart_item_key ) {
     }
     return $name;
 }
-add_filter( 'woocommerce_cart_item_name', 'winshirt_cart_item_preview', 10, 3 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_filter( 'woocommerce_cart_item_name', 'winshirt_cart_item_preview', 10, 3 );
+}
 
 function winshirt_save_lottery_order_item_meta( $item, $cart_item_key, $values, $order ) {
     if ( ! empty( $values['winshirt_lotteries'] ) ) {
         $item->update_meta_data( '_winshirt_lotteries', $values['winshirt_lotteries'] );
     }
 }
-add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_lottery_order_item_meta', 10, 4 );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_lottery_order_item_meta', 10, 4 );
+}
 
 function winshirt_register_lottery_participant( $order_id ) {
     $order = wc_get_order( $order_id );
@@ -745,12 +792,16 @@ function winshirt_register_lottery_participant( $order_id ) {
     $order->save();
 }
 // Update lottery participation when a payment is confirmed
-add_action( 'woocommerce_payment_complete', 'winshirt_register_lottery_participant' );
-add_action( 'woocommerce_order_status_processing', 'winshirt_register_lottery_participant' );
-add_action( 'woocommerce_order_status_completed', 'winshirt_register_lottery_participant' );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_action( 'woocommerce_payment_complete', 'winshirt_register_lottery_participant' );
+    add_action( 'woocommerce_order_status_processing', 'winshirt_register_lottery_participant' );
+    add_action( 'woocommerce_order_status_completed', 'winshirt_register_lottery_participant' );
+}
 
 // Increment participants for lotteries linked directly via product IDs
-add_action( 'woocommerce_order_status_completed', 'winshirt_increment_lottery_participants' );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_action( 'woocommerce_order_status_completed', 'winshirt_increment_lottery_participants' );
+}
 
 /**
  * Increase lottery participant count based on products defined
@@ -790,7 +841,9 @@ function winshirt_increment_lottery_participants( $order_id ) {
 }
 
 // Display related lottery info under each product line in emails and thankyou page
-add_filter( 'woocommerce_order_item_meta_end', 'winshirt_display_lottery_in_email', 10, 4 );
+if ( $winshirt_active && $winshirt_enable_lottery ) {
+    add_filter( 'woocommerce_order_item_meta_end', 'winshirt_display_lottery_in_email', 10, 4 );
+}
 
 function winshirt_order_item_preview( $item_id, $item, $order, $plain_text ) {
     $front = $item->get_meta( 'winshirt_front_preview' );
@@ -812,7 +865,9 @@ function winshirt_order_item_preview( $item_id, $item, $order, $plain_text ) {
         echo '<p class="winshirt-order-preview">' . $html . '</p>';
     }
 }
-add_action( 'woocommerce_order_item_meta_end', 'winshirt_order_item_preview', 5, 4 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_order_item_meta_end', 'winshirt_order_item_preview', 5, 4 );
+}
 
 /**
  * Append a message about the associated lottery below the order item.
@@ -840,7 +895,9 @@ function winshirt_display_lottery_in_email( $item_id, $item, $order, $plain_text
     }
 }
 
-add_action( 'woocommerce_email_order_meta', 'winshirt_email_custom_images', 15, 4 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_email_order_meta', 'winshirt_email_custom_images', 15, 4 );
+}
 /**
  * Show generated mockup images in order emails.
  */
@@ -915,7 +972,9 @@ function winshirt_cart_hidden_fields(){
     echo '<input type="hidden" name="winshirt_back_image" id="winshirt-back-image-field" />';
     echo '<input type="hidden" name="winshirt_extra_price" id="winshirt-extra-price-field" />';
 }
-add_action('woocommerce_before_add_to_cart_button','winshirt_cart_hidden_fields');
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action('woocommerce_before_add_to_cart_button','winshirt_cart_hidden_fields');
+}
 
 /**
  * Add custom data and production image to cart item data.
@@ -938,7 +997,9 @@ function winshirt_add_cart_item_custom( $cart_item_data, $product_id ){
     }
     return $cart_item_data;
 }
-add_filter( 'woocommerce_add_cart_item_data', 'winshirt_add_cart_item_custom', 20, 2 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_filter( 'woocommerce_add_cart_item_data', 'winshirt_add_cart_item_custom', 20, 2 );
+}
 
 /**
  * Save production image URL to order item meta and rename file with order ID.
@@ -1003,7 +1064,9 @@ function winshirt_save_order_item_custom( $item, $cart_item_key, $values, $order
         $item->add_meta_data( 'winshirt_extra_price', floatval( $values['winshirt_extra_price'] ) );
     }
 }
-add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_order_item_custom', 20, 4 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_checkout_create_order_line_item', 'winshirt_save_order_item_custom', 20, 4 );
+}
 
 /**
  * Apply extra price from customization zones to cart items.
@@ -1024,7 +1087,9 @@ function winshirt_apply_extra_price( $cart ) {
     }
     do_action( 'winshirt_apply_extra_price' );
 }
-add_action( 'woocommerce_before_calculate_totals', 'winshirt_apply_extra_price', 20, 1 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_before_calculate_totals', 'winshirt_apply_extra_price', 20, 1 );
+}
 
 /**
  * Push purchase event to Google DataLayer on thank you page.
@@ -1049,7 +1114,9 @@ function winshirt_push_purchase_datalayer( $order_id ){
     ];
     echo '<script>window.dataLayer=window.dataLayer||[];dataLayer.push(' . wp_json_encode( $data ) . ');</script>';
 }
-add_action( 'woocommerce_thankyou', 'winshirt_push_purchase_datalayer' );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_thankyou', 'winshirt_push_purchase_datalayer' );
+}
 
 // Display "Personnalisable" badge on product thumbnails in shop
 function winshirt_shop_customizable_badge() {
@@ -1061,25 +1128,31 @@ function winshirt_shop_customizable_badge() {
         echo '<span class="ws-customizable-badge">' . esc_html__( 'Personnalisable', 'winshirt' ) . '</span>';
     }
 }
-add_action( 'woocommerce_before_shop_loop_item_title', 'winshirt_shop_customizable_badge', 5 );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'woocommerce_before_shop_loop_item_title', 'winshirt_shop_customizable_badge', 5 );
+}
 
 // ----- Account section for saved customizations -----
-add_action( 'init', 'winshirt_account_endpoint' );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_action( 'init', 'winshirt_account_endpoint' );
+}
 function winshirt_account_endpoint() {
     add_rewrite_endpoint( 'mes-personnalisations', EP_ROOT | EP_PAGES );
 }
 
-add_filter( 'query_vars', function( $vars ) {
-    $vars[] = 'mes-personnalisations';
-    return $vars;
-} );
+if ( $winshirt_active && $winshirt_enable_customization ) {
+    add_filter( 'query_vars', function( $vars ) {
+        $vars[] = 'mes-personnalisations';
+        return $vars;
+    } );
 
-add_filter( 'woocommerce_account_menu_items', function( $items ) {
-    $items['mes-personnalisations'] = __( 'Mes personnalisations', 'winshirt' );
-    return $items;
-} );
+    add_filter( 'woocommerce_account_menu_items', function( $items ) {
+        $items['mes-personnalisations'] = __( 'Mes personnalisations', 'winshirt' );
+        return $items;
+    } );
 
-add_action( 'woocommerce_account_mes-personnalisations_endpoint', 'winshirt_account_customs_page' );
+    add_action( 'woocommerce_account_mes-personnalisations_endpoint', 'winshirt_account_customs_page' );
+}
 function winshirt_account_customs_page() {
     $user_id = get_current_user_id();
     $orders = wc_get_orders( [

@@ -137,10 +137,26 @@ function winshirt_register_admin_pages() {
  * Display the dashboard page.
  */
 function winshirt_page_dashboard() {
+    if ( isset( $_POST['winshirt_toggle_module'] ) && check_admin_referer( 'winshirt_toggle_module' ) ) {
+        update_option( 'winshirt_active', $_POST['winshirt_toggle_module'] === 'yes' ? 'yes' : 'no' );
+        echo '<div class="updated notice"><p>Option enregistrée.</p></div>';
+    }
+    if ( isset( $_POST['winshirt_toggle_lottery'] ) && check_admin_referer( 'winshirt_toggle_lottery' ) ) {
+        update_option( 'winshirt_enable_lottery', $_POST['winshirt_toggle_lottery'] === 'yes' ? 'yes' : 'no' );
+        echo '<div class="updated notice"><p>Option enregistrée.</p></div>';
+    }
+    if ( isset( $_POST['winshirt_toggle_customization'] ) && check_admin_referer( 'winshirt_toggle_customization' ) ) {
+        update_option( 'winshirt_enable_customization', $_POST['winshirt_toggle_customization'] === 'yes' ? 'yes' : 'no' );
+        echo '<div class="updated notice"><p>Option enregistrée.</p></div>';
+    }
     if ( isset( $_POST['winshirt_custom_page'] ) && check_admin_referer( 'winshirt_save_custom_page' ) ) {
         update_option( 'winshirt_custom_page', absint( $_POST['winshirt_custom_page'] ) );
         echo '<div class="updated notice"><p>' . esc_html__( 'Page enregistrée.', 'winshirt' ) . '</p></div>';
     }
+
+    $module_active  = get_option( 'winshirt_active', 'yes' ) === 'yes';
+    $lottery_active = get_option( 'winshirt_enable_lottery', 'yes' ) === 'yes';
+    $custom_active  = get_option( 'winshirt_enable_customization', 'yes' ) === 'yes';
     // Gather counts based on product metadata
     $products          = wc_get_products(['limit' => -1, 'status' => 'publish']);
     $mockup_ids        = [];

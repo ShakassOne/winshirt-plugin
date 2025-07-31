@@ -1,6 +1,12 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+$winshirt_active             = get_option( 'winshirt_active', 'yes' ) === 'yes';
+$winshirt_enable_customization = get_option( 'winshirt_enable_customization', 'yes' ) === 'yes';
+if ( ! $winshirt_active || ! $winshirt_enable_customization ) {
+    return;
+}
+
 /**
  * Handle upload of production image captured client side.
  */

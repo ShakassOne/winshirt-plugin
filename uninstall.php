@@ -11,6 +11,9 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 delete_option( 'winshirt_ftp_host' );
 delete_option( 'winshirt_ftp_user' );
 delete_option( 'winshirt_ftp_pass' );
+delete_option( 'winshirt_active' );
+delete_option( 'winshirt_enable_lottery' );
+delete_option( 'winshirt_enable_customization' );
 
 // Remove custom posts created by the plugin
 $post_types = [ 'winshirt_mockup', 'winshirt_visual', 'winshirt_lottery' ];

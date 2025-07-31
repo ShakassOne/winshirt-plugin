@@ -1,6 +1,12 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) exit;
 
+$winshirt_active         = get_option( 'winshirt_active', 'yes' ) === 'yes';
+$winshirt_enable_lottery = get_option( 'winshirt_enable_lottery', 'yes' ) === 'yes';
+if ( ! $winshirt_active || ! $winshirt_enable_lottery ) {
+    return;
+}
+
 // Add meta boxes to posts for lottery fields
 function winshirt_add_lottery_meta_box() {
     add_meta_box(
